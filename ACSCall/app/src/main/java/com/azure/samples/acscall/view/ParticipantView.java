@@ -21,95 +21,84 @@ import com.azure.android.communication.calling.ScalingMode;
 import com.azure.samples.acscall.R;
 
 public class ParticipantView extends RelativeLayout {
-
-    private static final String LOG_TAG = ParticipantView.class.getSimpleName();
-
     // participant view properties
     private Renderer renderer;
     private RendererView rendererView;
-    private int remoteVideoStreamId;
-    private String localVideoSourceId;
-    private Context context;
+    private String videoStreamId;
 
     // layout properties
-    private TextView title;
-    private ImageView defaultAvatar;
-    private ConstraintLayout videoContainer;
+    private final TextView title;
+    private final ImageView defaultAvatar;
+    private final ConstraintLayout videoContainer;
 
-
-    public ParticipantView(@NonNull Context context) {
+    public ParticipantView(@NonNull final Context context) {
         super(context);
-        this.context = context;
         inflate(context, R.layout.participant_view, this);
         this.title = findViewById(R.id.display_name);
         this.defaultAvatar = findViewById(R.id.default_avatar);
         this.videoContainer = findViewById(R.id.video_container);
     }
 
-    public void updateVideoStream(RemoteVideoStream remoteVideoStream) {
-
+    public void setVideoStream(final RemoteVideoStream remoteVideoStream) {
         if (remoteVideoStream == null) {
             cleanUpVideoRendering();
-            updateVideoDisplayed(false);
+            setVideoDisplayed(false);
             return;
         }
 
-        if (remoteVideoStream.getId() == remoteVideoStreamId) {
+        final String newVideoStreamId = "RemoteVideoStream:" + remoteVideoStream.getId();
+        if (newVideoStreamId.equals(videoStreamId)) {
             return;
         }
 
-        if (remoteVideoStream != null) {
-            try {
-                Renderer videoRenderer = new Renderer(remoteVideoStream, context);
-                updateRendering(videoRenderer);
-                this.remoteVideoStreamId = remoteVideoStream.getId();
-            } catch (CommunicationException e) {
-                e.printStackTrace();
-            }
+        try {
+            final Renderer videoRenderer = new Renderer(remoteVideoStream, getContext());
+            setVideoRenderer(videoRenderer);
+            this.videoStreamId = newVideoStreamId;
+        } catch (final CommunicationException e) {
+            e.printStackTrace();
         }
     }
 
-    public void updateVideoStream(LocalVideoStream localVideoStream) {
-
+    public void setVideoStream(final LocalVideoStream localVideoStream) {
         if (localVideoStream == null) {
             cleanUpVideoRendering();
             return;
         }
 
-        if (localVideoStream.getSource().getId() == localVideoSourceId) {
+        final String newVideoStreamId = "LocalVideoStream:" + localVideoStream.getSource().getId();
+        if (newVideoStreamId.equals(videoStreamId)) {
             return;
         }
 
-        if (localVideoStream != null) {
-            try {
-                Renderer videoRenderer = new Renderer(localVideoStream, context);
-                updateRendering(videoRenderer);
-                this.localVideoSourceId = localVideoStream.getSource().getId();
-            } catch (CommunicationException e) {
-                e.printStackTrace();
-            }
+        try {
+            final Renderer videoRenderer = new Renderer(localVideoStream, getContext());
+            setVideoRenderer(videoRenderer);
+            this.videoStreamId = newVideoStreamId;
+        } catch (final CommunicationException e) {
+            e.printStackTrace();
         }
     }
 
-    public void updateDisplayName(String displayName) {
+    public void setDisplayName(final String displayName) {
         this.title.setText(displayName);
     }
 
-    public void updateDisplayNameVisible(boolean isDisplayNameVisible) {
+    public void setDisplayNameVisible(final boolean isDisplayNameVisible) {
         this.title.setVisibility(isDisplayNameVisible ? VISIBLE : INVISIBLE);
     }
 
-    public void updateVideoDisplayed(boolean isDisplayVideo) {
+    public void setVideoDisplayed(final boolean isDisplayVideo) {
         defaultAvatar.setVisibility(isDisplayVideo ? INVISIBLE : VISIBLE);
     }
 
-    private void updateRendering(Renderer videoRenderer) {
+    private void setVideoRenderer(final Renderer videoRenderer) {
         this.renderer = videoRenderer;
         this.rendererView = videoRenderer.createView(new RenderingOptions(ScalingMode.Crop));
         attachRendererView(rendererView);
     }
 
-    private void attachRendererView(RendererView rendererView) {
+    private void attachRendererView(final RendererView rendererView) {
         this.rendererView = rendererView;
         if (rendererView != null) {
             this.defaultAvatar.setVisibility(View.GONE);
@@ -123,22 +112,23 @@ public class ParticipantView extends RelativeLayout {
     public void cleanUpVideoRendering() {
         disposeRenderView(this.rendererView);
         disposeRenderer(this.renderer);
+        videoStreamId = null;
     }
 
-    private void disposeRenderer(Renderer renderer) {
+    private void disposeRenderer(final Renderer renderer) {
         if (renderer != null) {
             renderer.dispose();
         }
     }
 
-    private void disposeRenderView(RendererView rendererView) {
+    private void disposeRenderView(final RendererView rendererView) {
         detachFromParentView(rendererView);
         if (rendererView != null) {
             rendererView.dispose();
         }
     }
 
-    private void detachFromParentView(RendererView rendererView) {
+    private void detachFromParentView(final RendererView rendererView) {
         if (rendererView != null && rendererView.getParent() != null) {
             ((ViewGroup) rendererView.getParent()).removeView(rendererView);
         }

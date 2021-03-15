@@ -42,7 +42,8 @@ import java.util.Timer;
 public class CallActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CallActivity.class.getSimpleName();
-    private static final int MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES = 250;
+
+    private static final int MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES = 2500;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private CallingContext callingContext;
     private PermissionHelper permissionHelper;
@@ -65,7 +66,7 @@ public class CallActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupScreenLayout();
 
@@ -86,7 +87,8 @@ public class CallActivity extends AppCompatActivity {
         initializeDisplayedParticipantsLiveData();
 
         /* get Join Call Config */
-        JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent().getSerializableExtra(Constants.JOIN_CALL_CONFIG);
+        final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
+                .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
         setLayoutComponentState(joinCallConfig.isMicrophoneMuted(), joinCallConfig.isCameraOn(),
                 this.callHangUpOverlaid);
 
@@ -130,7 +132,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setStatusBarVisibility();
         setupScreenLayout();
@@ -148,9 +150,10 @@ public class CallActivity extends AppCompatActivity {
         if (videoAccess == PermissionState.DENIED) {
             videoImageButton.setEnabled(false);
         } else if (videoAccess == PermissionState.NOT_ASKED) {
-            initialVideoToggleRequest =
-                    permissionHelper.createVideoPermissionRequest(this,
-                            this::onInitialVideoToggleRequest);
+            if (initialVideoToggleRequest == null) {
+                initialVideoToggleRequest = permissionHelper.createVideoPermissionRequest(this,
+                        this::onInitialVideoToggleRequest);
+            }
             videoImageButton.setEnabled(true);
         } else {
             videoImageButton.setEnabled(true);
@@ -159,14 +162,14 @@ public class CallActivity extends AppCompatActivity {
 
     private void setStatusBarVisibility() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            View decorView = getWindow().getDecorView();
+            final View decorView = getWindow().getDecorView();
             // Hide Status Bar.
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            final int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
         } else {
-            View decorView = getWindow().getDecorView();
+            final View decorView = getWindow().getDecorView();
             // Show Status Bar.
-            int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+            final int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
             decorView.setSystemUiVisibility(uiOptions);
         }
     }
@@ -217,15 +220,15 @@ public class CallActivity extends AppCompatActivity {
     private void initParticipantViews() {
         // load local participant's view
         localParticipantView = new ParticipantView(this);
-        localParticipantView.updateDisplayName(callingContext.getDisplayName() + " (Me)");
-        localParticipantView.updateVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
+        localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
-                runOnUiThread(() -> localParticipantView.updateVideoStream(localVideoStream));
+                runOnUiThread(() -> localParticipantView.setVideoStream(localVideoStream));
             }));
         } else {
-            localParticipantView.updateVideoStream((LocalVideoStream) null);
+            localParticipantView.setVideoStream((LocalVideoStream) null);
         }
 
         // finalize the view data
@@ -238,33 +241,33 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void updateParticipantViews() {
-        List<ParticipantView> prevParticipantViewList = participantViewList;
-        Map<String, Integer> preParticipantIdIndexPathMap = participantIdIndexPathMap;
+        final List<ParticipantView> prevParticipantViewList = participantViewList;
+        final Map<String, Integer> preParticipantIdIndexPathMap = participantIdIndexPathMap;
 
         participantViewList = new ArrayList<>();
         participantIdIndexPathMap = new HashMap<>();
 
-        List<RemoteParticipant> displayedRemoteParticipants =
+        final List<RemoteParticipant> displayedRemoteParticipants =
                 callingContext.getDisplayedParticipantsLiveData().getValue();
         int indexForNewParticipantViewList = 0;
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
-            RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
-            ParticipantState participantState = remoteParticipant.getState();
-            String id = callingContext.getId(remoteParticipant);
+            final RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
+            final ParticipantState participantState = remoteParticipant.getState();
+            final String id = callingContext.getId(remoteParticipant);
             if (ParticipantState.Disconnected == participantState) {
                 continue;
             }
-            ParticipantView pv;
+            final ParticipantView pv;
             if (preParticipantIdIndexPathMap.containsKey(id)) {
-                int prevIndex = preParticipantIdIndexPathMap.get(id);
+                final int prevIndex = preParticipantIdIndexPathMap.get(id);
                 pv = prevParticipantViewList.get(prevIndex);
-                RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
-                pv.updateVideoStream(remoteVideoStream);
+                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                pv.setVideoStream(remoteVideoStream);
             } else {
                 pv = new ParticipantView(this);
-                pv.updateDisplayName(remoteParticipant.getDisplayName());
-                RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
-                pv.updateVideoStream(remoteVideoStream);
+                pv.setDisplayName(remoteParticipant.getDisplayName());
+                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                pv.setVideoStream(remoteVideoStream);
             }
 
             // update the participantIdIndexPathMap, participantViewList and participantsRenderList
@@ -272,11 +275,11 @@ public class CallActivity extends AppCompatActivity {
             participantViewList.add(pv);
         }
 
-        for (String id : preParticipantIdIndexPathMap.keySet()) {
+        for (final String id : preParticipantIdIndexPathMap.keySet()) {
             if (participantIdIndexPathMap.containsKey(id)) {
                 continue;
             }
-            ParticipantView discardedParticipantView =
+            final ParticipantView discardedParticipantView =
                     prevParticipantViewList.get(preParticipantIdIndexPathMap.get(id));
             discardedParticipantView.cleanUpVideoRendering();
         }
@@ -341,27 +344,28 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void setParticipantCountToFloatingHeader(Integer text) {
+    private void setParticipantCountToFloatingHeader(final Integer text) {
         runOnUiThread(() ->
                 ((TextView) findViewById(R.id.participantCountTextView)).setText(Integer.toString(text + 1)));
     }
 
-    private void setFloatingHeaderVisibility(int visibility) {
+    private void setFloatingHeaderVisibility(final int visibility) {
         runOnUiThread(() -> infoHeaderView.setVisibility(visibility));
     }
 
     private void openShareDialogue() {
         Log.d(LOG_TAG, "Share button clicked!");
-        Intent sendIntent = new Intent();
+        final Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, callingContext.getGroupId());
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
         sendIntent.setType("text/plain");
-        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        final Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
     }
 
-    private void setLayoutComponentState(boolean isMicrophoneMuted, boolean isCameraOn, boolean isCallHangUpOverLaid) {
+    private void setLayoutComponentState(
+            final boolean isMicrophoneMuted, final boolean isCameraOn, final boolean isCallHangUpOverLaid) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
@@ -390,12 +394,12 @@ public class CallActivity extends AppCompatActivity {
         stopService(inCallServiceIntent);
         callHangupConfirmButton.setEnabled(false);
         callingContext.hangupAsync();
-        Intent intent = new Intent(this, EndActivity.class);
+        final Intent intent = new Intent(this, EndActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void toggleVideo(boolean isSelected) {
+    private void toggleVideo(final boolean isSelected) {
         if (!isSelected) {
             if (initialVideoToggleRequest != null) {
                 initialVideoToggleRequest.run();
@@ -409,7 +413,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void onInitialVideoToggleRequest() {
-        PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
+        final PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
         if (videoAccess == PermissionState.GRANTED) {
             toggleVideoOn();
         } else {
@@ -424,8 +428,8 @@ public class CallActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "toggleVideo -> on");
         callingContext.turnOnVideoAsync().whenComplete((localVideoStream, throwable) -> {
             runOnUiThread(() -> {
-                localParticipantView.updateVideoStream(localVideoStream);
-                localParticipantView.updateVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setVideoStream(localVideoStream);
+                localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
@@ -438,8 +442,8 @@ public class CallActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "toggleVideo -> off");
         callingContext.turnOffVideoAsync().whenComplete((aVoid, throwable) -> {
             runOnUiThread(() -> {
-                localParticipantView.updateVideoStream((LocalVideoStream) null);
-                localParticipantView.updateVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setVideoStream((LocalVideoStream) null);
+                localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
@@ -448,7 +452,7 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
-    private void toggleAudio(boolean toggleOff) {
+    private void toggleAudio(final boolean toggleOff) {
         if (!toggleOff) {
             callingContext.turnOnAudioAsync().whenComplete((aVoid, throwable) -> {
                 audioImageButton.setSelected(true);
@@ -460,13 +464,13 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void detachFromParentView(View view) {
+    private void detachFromParentView(final View view) {
         if (view != null && view.getParent() != null) {
             ((ViewGroup) view.getParent()).removeView(view);
         }
     }
 
-    private RemoteVideoStream getFirstVideoStream(RemoteParticipant remoteParticipant) {
+    private RemoteVideoStream getFirstVideoStream(final RemoteParticipant remoteParticipant) {
         if (remoteParticipant.getVideoStreams().size() > 0) {
             return remoteParticipant.getVideoStreams().get(0);
         }
@@ -475,7 +479,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void setupScreenLayout() {
         setContentView(R.layout.activity_call);
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -488,16 +492,16 @@ public class CallActivity extends AppCompatActivity {
         audioImageButton = findViewById(R.id.call_audio);
         audioImageButton.setOnClickListener(l -> toggleAudio(audioImageButton.isSelected()));
 
-        ImageButton shareButton = findViewById(R.id.call_share);
+        final ImageButton shareButton = findViewById(R.id.call_share);
         shareButton.setOnClickListener(l -> openShareDialogue());
 
-        ImageButton hangupButton = findViewById(R.id.call_hangup);
+        final ImageButton hangupButton = findViewById(R.id.call_hangup);
         hangupButton.setOnClickListener(l -> openHangupDialog());
 
         callHangupConfirmButton = findViewById(R.id.call_hangup_confirm);
         callHangupConfirmButton.setOnClickListener(l -> hangup());
 
-        Button callHangupCancelButton = findViewById(R.id.call_hangup_cancel);
+        final Button callHangupCancelButton = findViewById(R.id.call_hangup_cancel);
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
         infoHeaderView = findViewById(R.id.info_header);
@@ -538,7 +542,7 @@ public class CallActivity extends AppCompatActivity {
     private void loadGridLayoutViews() {
         setupGridLayout();
         for (int i = 0; i < participantViewList.size(); i++) {
-            ParticipantView participantView = participantViewList.get(i);
+            final ParticipantView participantView = participantViewList.get(i);
             detachFromParentView(participantView);
             ((LinearLayout) gridLayout.getChildAt(i)).addView(participantView, 0);
         }
@@ -547,28 +551,28 @@ public class CallActivity extends AppCompatActivity {
     private void setLocalParticipantView() {
         detachFromParentView(localParticipantView);
         localVideoViewContainer.setVisibility(callingContext.getCameraOn() ? View.VISIBLE : View.INVISIBLE);
-        localParticipantView.updateDisplayNameVisible(false);
+        localParticipantView.setDisplayNameVisible(false);
         localVideoViewContainer.addView(localParticipantView);
         localVideoViewContainer.bringToFront();
     }
 
     private void appendLocalParticipantView() {
         localParticipantViewGridIndex = participantViewList.size();
-        localParticipantView.updateDisplayNameVisible(true);
-        localParticipantView.updateVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setDisplayNameVisible(true);
+        localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
     }
 
     private void updateGridLayoutViews() {
         for (int i = 0; i < gridLayout.getChildCount(); i++) {
-            LinearLayout wrap = (LinearLayout) gridLayout.getChildAt(i);
-            ParticipantView preParticipantView = (ParticipantView) wrap.getChildAt(0);
+            final LinearLayout wrap = (LinearLayout) gridLayout.getChildAt(i);
+            final ParticipantView preParticipantView = (ParticipantView) wrap.getChildAt(0);
 
             if (i >= participantViewList.size()) {
                 wrap.removeAllViews();
             } else {
-                ParticipantView newParticipantView = participantViewList.get(i);
+                final ParticipantView newParticipantView = participantViewList.get(i);
                 if (preParticipantView != newParticipantView) {
                     detachFromParentView(newParticipantView);
                     wrap.removeAllViews();
@@ -578,9 +582,9 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private LinearLayout createCellForGridLayout(int width, int height) {
-        LinearLayout cell = new LinearLayout(this);
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+    private LinearLayout createCellForGridLayout(final int width, final int height) {
+        final LinearLayout cell = new LinearLayout(this);
+        final GridLayout.LayoutParams params = new GridLayout.LayoutParams();
         params.width = width;
         params.height = height;
         cell.setLayoutParams(params);

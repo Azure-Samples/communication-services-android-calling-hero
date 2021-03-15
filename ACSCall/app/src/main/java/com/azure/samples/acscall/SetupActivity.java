@@ -58,12 +58,12 @@ public class SetupActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
         // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
+        final ActionBar ab = getSupportActionBar();
         // Disable the Up button
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
@@ -75,9 +75,9 @@ public class SetupActivity extends AppCompatActivity {
         handleAllPermissions();
 
         callingContext = ((ACSCall) getApplication()).getCallingContext();
-        CompletableFuture<Void> setupCompletableFuture =  callingContext.setupAsync();
+        final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         groupId = intent.getStringExtra(Constants.GROUP_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
@@ -106,17 +106,17 @@ public class SetupActivity extends AppCompatActivity {
         setupName = findViewById(R.id.setup_name);
         setupName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
                 // Do nothing
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
                 // Do nothing
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(final Editable editable) {
                 setJoinButtonState();
             }
         });
@@ -159,9 +159,9 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void openSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
         finishAffinity();
         startActivity(intent);
@@ -174,18 +174,18 @@ public class SetupActivity extends AppCompatActivity {
                 if (rendererView != null) {
                     rendererView.dispose();
                 }
-                JoinCallConfig joinCallConfig = new JoinCallConfig(
+                final JoinCallConfig joinCallConfig = new JoinCallConfig(
                         groupId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
                         setupName.getText().toString());
                 finishAffinity();
-                Intent intent = new Intent(this, CallActivity.class);
+                final Intent intent = new Intent(this, CallActivity.class);
                 intent.putExtra(Constants.JOIN_CALL_CONFIG, joinCallConfig);
                 startActivity(intent);
             });
         });
     }
 
-    private void toggleVideo(boolean toggleOn) {
+    private void toggleVideo(final boolean toggleOn) {
         if (toggleOn) {
             if (initialVideoToggleRequest != null) {
                 initialVideoToggleRequest.run();
@@ -199,7 +199,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void onInitialVideoToggleRequest() {
-        PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
+        final PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
         if (videoAccess == PermissionState.GRANTED) {
             toggleVideoOn();
         } else {
@@ -232,7 +232,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
@@ -241,8 +241,8 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void handleButtonStates() {
-        PermissionState audioAccess = permissionHelper.getAudioPermissionState(this);
-        PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
+        final PermissionState audioAccess = permissionHelper.getAudioPermissionState(this);
+        final PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
 
         runOnUiThread(() -> {
             if ((audioAccess == PermissionState.DENIED)
@@ -269,7 +269,7 @@ public class SetupActivity extends AppCompatActivity {
     private void handleAllPermissions() {
         permissionHelper = ((ACSCall) getApplication()).getPermissionHelper();
 
-        PermissionState audioAccess = permissionHelper.getAudioPermissionState(this);
+        final PermissionState audioAccess = permissionHelper.getAudioPermissionState(this);
 
         if (audioAccess == PermissionState.NOT_ASKED) {
             initialAudioPermissionRequest =

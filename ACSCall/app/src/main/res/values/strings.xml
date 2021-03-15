@@ -12,7 +12,7 @@
     values-round/strings.xml for round devices.
     -->
     <string name="join_enter">Enter meeting ID</string>
-    <string name="join_join_hint">ex. 409 304 3300</string>
+    <string name="join_join_hint">ex. 4fe34380-81e5-11eb-a16e-6161a3176f61</string>
     <string name="join_start">Join Call</string>
     <string name="title_activity_setup">Lobby</string>
 

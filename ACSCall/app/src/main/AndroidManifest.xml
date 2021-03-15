@@ -61,7 +61,7 @@
             android:exported="true"
             android:label="@string/title_activity_setup"
             android:taskAffinity="com.azure.samples.acscall.setupaffinity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName="com.azure.samples.acscall.IntroActivity"
             android:screenOrientation="portrait" />
         <activity

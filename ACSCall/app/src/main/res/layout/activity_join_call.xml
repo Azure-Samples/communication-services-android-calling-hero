@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="Meeting ID"
             android:ems="10"
+            android:ellipsize="end"
             android:hint="@string/join_join_hint"
             android:inputType="textNoSuggestions"
             android:singleLine="true"

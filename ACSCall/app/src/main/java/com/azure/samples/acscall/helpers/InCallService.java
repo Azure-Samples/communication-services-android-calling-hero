@@ -26,12 +26,12 @@ public class InCallService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(final Intent intent) {
         return null;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, final int flags, final int startId) {
         Log.d(LOG_TAG, "InCallService onStartCommand called");
         createInCallNotificationChannel(this);
         startInCallNotification(this);
@@ -39,7 +39,7 @@ public class InCallService extends Service {
     }
 
     @Override
-    public void onTaskRemoved(Intent rootIntent) {
+    public void onTaskRemoved(final Intent rootIntent) {
         Log.d(LOG_TAG, "InCallService onTaskRemoved called");
         stopSelf();
         super.onTaskRemoved(rootIntent);
@@ -51,28 +51,28 @@ public class InCallService extends Service {
         super.onCreate();
     }
 
-    public void createInCallNotificationChannel(Context context) {
+    public void createInCallNotificationChannel(final Context context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "ACSCall Call Status";
-            String description = "Provides a notification for on-going calls";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(IN_CALL_CHANNEL_ID, name, importance);
+            final CharSequence name = "ACSCall Call Status";
+            final String description = "Provides a notification for on-going calls";
+            final int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            final NotificationChannel channel = new NotificationChannel(IN_CALL_CHANNEL_ID, name, importance);
             channel.setDescription(description);
             channel.setSound(null, null);
-            NotificationManager notificationManager
+            final NotificationManager notificationManager
                     = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    public void startInCallNotification(Context context) {
-        Intent intent = new Intent(context, CallActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        int notificationId = 100;
+    public void startInCallNotification(final Context context) {
+        final Intent intent = new Intent(context, CallActivity.class);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        final int notificationId = 100;
 
-        Notification notification =
+        final Notification notification =
             new NotificationCompat.Builder(context, IN_CALL_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_fluent_call_16_filled)
                     .setContentTitle("ACSCall")

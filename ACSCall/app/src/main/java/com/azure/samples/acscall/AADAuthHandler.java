@@ -22,28 +22,29 @@ import java.util.function.Consumer;
 
 public class AADAuthHandler {
     private static final String LOG_TAG = AADAuthHandler.class.getSimpleName();
-    private AppSettings appSettings;
+
+    private final AppSettings appSettings;
     private ISingleAccountPublicClientApplication mSingleAccountApp;
     private String accessToken;
 
-    public AADAuthHandler(AppSettings appSettings) {
+    public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
     }
 
-    public void signIn(Activity activity, Runnable onSuccess) {
+    public void signIn(final Activity activity, final Runnable onSuccess) {
         if (mSingleAccountApp == null) {
             return;
         }
         mSingleAccountApp.signIn(activity, null, appSettings.getAADScopes(), new AuthenticationCallback() {
 
             @Override
-            public void onSuccess(IAuthenticationResult authenticationResult) {
+            public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
                 onSuccess.run();
             }
 
             @Override
-            public void onError(MsalException exception) {
+            public void onError(final MsalException exception) {
                 Log.e(LOG_TAG, exception.getMessage());
             }
 
@@ -58,7 +59,7 @@ public class AADAuthHandler {
         return accessToken;
     }
 
-    public void signOut(Runnable onSuccess) {
+    public void signOut(final Runnable onSuccess) {
         if (mSingleAccountApp == null) {
             return;
         }
@@ -70,33 +71,33 @@ public class AADAuthHandler {
             }
 
             @Override
-            public void onError(@NonNull MsalException exception) {
+            public void onError(@NonNull final MsalException exception) {
                 Log.e(LOG_TAG, exception.getMessage());
             }
         });
     }
 
-    private void getCurrentAccount(Activity activity, Consumer<Boolean> aadCallback) {
+    private void getCurrentAccount(final Activity activity, final Consumer<Boolean> aadCallback) {
         if (mSingleAccountApp == null) {
             return;
         }
 
         mSingleAccountApp.getCurrentAccountAsync(new ISingleAccountPublicClientApplication.CurrentAccountCallback() {
             @Override
-            public void onAccountLoaded(@Nullable IAccount activeAccount) {
+            public void onAccountLoaded(@Nullable final IAccount activeAccount) {
                 if (activeAccount == null) {
                     aadCallback.accept(false);
                 } else {
                     mSingleAccountApp.acquireToken(activity, appSettings.getAADScopes(), new AuthenticationCallback() {
 
                         @Override
-                        public void onSuccess(IAuthenticationResult authenticationResult) {
+                        public void onSuccess(final IAuthenticationResult authenticationResult) {
                             accessToken = authenticationResult.getAccessToken();
                             aadCallback.accept(true);
                         }
 
                         @Override
-                        public void onError(MsalException exception) {
+                        public void onError(final MsalException exception) {
                             Log.e(LOG_TAG, exception.getMessage());
                         }
 
@@ -109,7 +110,9 @@ public class AADAuthHandler {
             }
 
             @Override
-            public void onAccountChanged(@Nullable IAccount priorAccount, @Nullable IAccount currentAccount) {
+            public void onAccountChanged(
+                    @Nullable final IAccount priorAccount,
+                    @Nullable final IAccount currentAccount) {
                 if (currentAccount == null) {
                     // Perform a cleanup task as the signed-in account changed.
                     aadCallback.accept(false);
@@ -117,7 +120,7 @@ public class AADAuthHandler {
             }
 
             @Override
-            public void onError(@NonNull MsalException exception) {
+            public void onError(@NonNull final MsalException exception) {
                 Log.e(LOG_TAG, exception.getMessage());
             }
         });
@@ -125,21 +128,20 @@ public class AADAuthHandler {
 
 
     //When app comes to the foreground, load existing account to determine if user is signed in
-    public void loadAccount(Activity activity, Consumer<Boolean> aadCallback) {
+    public void loadAccount(final Activity activity, final Consumer<Boolean> aadCallback) {
         PublicClientApplication.createSingleAccountPublicClientApplication(activity.getApplicationContext(),
                 R.raw.auth_config_single_account,
                 new IPublicClientApplication.ISingleAccountApplicationCreatedListener() {
                     @Override
-                    public void onCreated(ISingleAccountPublicClientApplication application) {
+                    public void onCreated(final ISingleAccountPublicClientApplication application) {
                         mSingleAccountApp = application;
                         getCurrentAccount(activity, aadCallback);
                     }
 
                     @Override
-                    public void onError(MsalException exception) {
+                    public void onError(final MsalException exception) {
                         Log.e(LOG_TAG, exception.getMessage());
                     }
                 });
-
     }
 }

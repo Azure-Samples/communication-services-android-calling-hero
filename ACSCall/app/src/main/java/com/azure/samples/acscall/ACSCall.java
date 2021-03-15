@@ -25,7 +25,7 @@ public class ACSCall extends Application {
 
     private void initializeDependencies() {
         this.appSettings = new AppSettings(getApplicationContext());
-        String tokenGenerationAddress = appSettings.getACSTokenFetchUrl();
+        final String tokenGenerationAddress = appSettings.getACSTokenFetchUrl();
         this.aadAuthHandler = new AADAuthHandler(appSettings);
         this.tokenService = new TokenService(
                 getApplicationContext(), tokenGenerationAddress, () -> aadAuthHandler.getAccessToken());
@@ -49,6 +49,6 @@ public class ACSCall extends Application {
     }
 
     public PermissionHelper getPermissionHelper() {
-        return permissionHelper; }
-
+        return permissionHelper;
+    }
 }

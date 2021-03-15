@@ -278,5 +278,8 @@ page at http://checkstyle.sourceforge.net/config.html -->
 
     <module name="DeclarationOrder"/>
     <module name="OneTopLevelClass"/>
+    <module name="FinalClass"/>
+    <module name="FinalLocalVariable"/>
+    <module name="FinalParameters"/>
   </module>
 </module>

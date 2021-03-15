@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -50,7 +49,7 @@ public class CallingContext {
     //region Properties
     Context appContext;
 
-    private Callable<String> tokenFetcher;
+    private final Callable<String> tokenFetcher;
     private String groupId;
     private CallClient callClient;
     private Call call;
@@ -67,20 +66,20 @@ public class CallingContext {
     private boolean micOn;
     private boolean isVideoOnHold = false;
 
-    private List<RemoteParticipant> remoteParticipants;
-    private List<RemoteParticipant> displayedRemoteParticipants;
-    private MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
-    private Set<String> displayedRemoteParticipantIds;
+    private final List<RemoteParticipant> remoteParticipants;
+    private final List<RemoteParticipant> displayedRemoteParticipants;
+    private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
+    private final Set<String> displayedRemoteParticipantIds;
 
-    private Map<String, RemoteVideoStreamsUpdatedListener> videoStreamsUpdatedListenersMap;
-    private Map<String, PropertyChangedListener> mutedChangedListenersMap;
-    private Map<String, PropertyChangedListener> isSpeakingChangedListenerMap;
-    private Map<String, PropertyChangedListener> participantStateChangedListenerMap;
+    private final Map<String, RemoteVideoStreamsUpdatedListener> videoStreamsUpdatedListenersMap;
+    private final Map<String, PropertyChangedListener> mutedChangedListenersMap;
+    private final Map<String, PropertyChangedListener> isSpeakingChangedListenerMap;
+    private final Map<String, PropertyChangedListener> participantStateChangedListenerMap;
     //endregion
 
 
     //region Constructors
-    public CallingContext(Context applicationContext, Callable<String> tokenFetcher) {
+    public CallingContext(final Context applicationContext, final Callable<String> tokenFetcher) {
         Log.d(LOG_TAG, "Creating CallingContext");
         this.tokenFetcher = tokenFetcher;
         appContext = applicationContext;
@@ -134,8 +133,6 @@ public class CallingContext {
         return setupCompletableFuture;
     }
 
-
-
     public CompletableFuture<LocalVideoStream> getLocalVideoStreamCompletableFuture() {
         if (localVideoStreamCompletableFuture == null) {
             localVideoStreamCompletableFuture = createLocalVideoStreamAsync();
@@ -162,7 +159,7 @@ public class CallingContext {
     /**
      * Join a call
      */
-    public CompletableFuture<Void> joinCallAsync(JoinCallConfig joinCallConfig) {
+    public CompletableFuture<Void> joinCallAsync(final JoinCallConfig joinCallConfig) {
         // Recreate Token and Call Agent as a work-around
         communicationUserCredentialCompletableFuture = new CompletableFuture<>();
         callAgentCompletableFuture = new CompletableFuture<>();
@@ -174,16 +171,16 @@ public class CallingContext {
         } else {
             groupId = joinCallConfig.getGroupId();
         }
-        GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(groupId));
+        final GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(groupId));
 
-        AudioOptions audioOptions = new AudioOptions();
+        final AudioOptions audioOptions = new AudioOptions();
         audioOptions.setMuted(joinCallConfig.isMicrophoneMuted());
 
 
         return callAgentCompletableFuture.thenAccept(agent -> {
             if (joinCallConfig.isCameraOn()) {
                 localVideoStreamCompletableFuture.thenAccept(localVideoStream -> {
-                    VideoOptions videoOptions = new VideoOptions(localVideoStream);
+                    final VideoOptions videoOptions = new VideoOptions(localVideoStream);
                     callWithOptions(agent, audioOptions, videoOptions, groupCallLocator);
                 });
             } else {
@@ -198,22 +195,24 @@ public class CallingContext {
     }
 
     public CompletableFuture<LocalVideoStream> turnOnVideoAsync() {
-        Objects.requireNonNull(call, "Call cannot be null");
+        if (call == null) {
+            throw new IllegalStateException("Call can't be null");
+        }
 
-        return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream -> {
-            return call.startVideo(localVideoStream).thenApply(nothing -> {
-                cameraOn = true;
-                return localVideoStream;
-            });
-        });
+        return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream ->
+                call.startVideo(localVideoStream).thenApply(nothing -> {
+                    cameraOn = true;
+                    return localVideoStream;
+                }));
     }
 
     public CompletableFuture turnOffVideoAsync() {
-        Objects.requireNonNull(call, "Call cannot be null");
+        if (call == null) {
+            throw new IllegalStateException("Call can't be null");
+        }
 
-        return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream -> {
-            return call.stopVideo(localVideoStream).thenRun(() -> cameraOn = false);
-        });
+        return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream ->
+                call.stopVideo(localVideoStream).thenRun(() -> cameraOn = false));
     }
 
     public void pauseVideo() {
@@ -233,13 +232,17 @@ public class CallingContext {
     }
 
     public CompletableFuture turnOnAudioAsync() {
-        Objects.requireNonNull(call, "Call cannot be null");
+        if (call == null) {
+            throw new IllegalStateException("Call can't be null");
+        }
 
         return call.unmute().thenRun(() -> micOn = true);
     }
 
     public CompletableFuture turnOffAudioAsync() {
-        Objects.requireNonNull(call, "Call cannot be null");
+        if (call == null) {
+            throw new IllegalStateException("Call can't be null");
+        }
 
         return call.mute().thenRun(() -> micOn = false);
     }
@@ -256,7 +259,8 @@ public class CallingContext {
     //region Private Methods
 
     private void createTokenCredential() {
-        CommunicationTokenCredential credential = new CommunicationTokenCredential(tokenFetcher, true, null);
+        final CommunicationTokenCredential credential = new CommunicationTokenCredential(
+                tokenFetcher, true, null);
         communicationUserCredentialCompletableFuture.complete(credential);
     }
 
@@ -277,8 +281,8 @@ public class CallingContext {
             boolean cameraFound = false;
             while (!cameraFound) {
                 cameras = deviceManager.getCameras();
-                for (VideoDeviceInfo camera: cameras) {
-                    String cameraFacingName = camera.getCameraFacing().name();
+                for (final VideoDeviceInfo camera: cameras) {
+                    final String cameraFacingName = camera.getCameraFacing().name();
 
                     if (cameraFacingName.equalsIgnoreCase("front")) {
                         Log.i(LOG_TAG, "Desired Camera selected");
@@ -292,16 +296,16 @@ public class CallingContext {
     }
 
     private void initializeSpeaker() {
-        AudioManager audioManager = (AudioManager) appContext.getSystemService(Context.AUDIO_SERVICE);
+        final AudioManager audioManager = (AudioManager) appContext.getSystemService(Context.AUDIO_SERVICE);
         audioManager.setSpeakerphoneOn(true);
     }
 
-    private void createCallAgent(String userName) {
+    private void createCallAgent(final String userName) {
         communicationUserCredentialCompletableFuture.whenComplete((communicationUserCredential, throwable) -> {
-            CompletableFuture<CallAgent> completableFuture;
+            final CompletableFuture<CallAgent> completableFuture;
             if (userName != null) {
                 displayName = userName;
-                CallAgentOptions options = new CallAgentOptions();
+                final CallAgentOptions options = new CallAgentOptions();
                 options.setDisplayName(userName);
                 completableFuture = callClient.createCallAgent(appContext, communicationUserCredential, options);
             } else {
@@ -319,8 +323,11 @@ public class CallingContext {
     }
 
     private void callWithOptions(
-            CallAgent agent, AudioOptions audioOptions, VideoOptions videoOptions, GroupCallLocator groupCallLocator) {
-        JoinCallOptions joinCallOptions = new JoinCallOptions();
+            final CallAgent agent,
+            final AudioOptions audioOptions,
+            final VideoOptions videoOptions,
+            final GroupCallLocator groupCallLocator) {
+        final JoinCallOptions joinCallOptions = new JoinCallOptions();
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
         call = agent.join(appContext, groupCallLocator, joinCallOptions);
@@ -332,10 +339,10 @@ public class CallingContext {
         micOn = !audioOptions.isMuted();
     }
 
-    private boolean addParticipants(List<RemoteParticipant> addedParticipants) {
+    private boolean addParticipants(final List<RemoteParticipant> addedParticipants) {
         boolean isParticipantsAddedToDisplayedRemoteParticipants = false;
 
-        for (RemoteParticipant addedParticipant: addedParticipants) {
+        for (final RemoteParticipant addedParticipant: addedParticipants) {
             remoteParticipants.add(addedParticipant);
             bindOnVideoStreamsUpdatedListener(addedParticipant);
             bindOnIsMutedChangedListener(addedParticipant);
@@ -344,11 +351,11 @@ public class CallingContext {
         }
 
         if (remoteParticipants.size() > displayedRemoteParticipants.size()) {
-            for (RemoteParticipant remoteParticipant : remoteParticipants) {
+            for (final RemoteParticipant remoteParticipant : remoteParticipants) {
                 if (displayedRemoteParticipants.size() == Constants.DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT) {
                     break;
                 }
-                String id = getId(remoteParticipant);
+                final String id = getId(remoteParticipant);
                 if (!displayedRemoteParticipantIds.contains(id)) {
                     displayedRemoteParticipants.add(remoteParticipant);
                     displayedRemoteParticipantIds.add(id);
@@ -360,10 +367,10 @@ public class CallingContext {
         return isParticipantsAddedToDisplayedRemoteParticipants;
     }
 
-    private boolean removeParticipants(List<RemoteParticipant> removedParticipants) {
+    private boolean removeParticipants(final List<RemoteParticipant> removedParticipants) {
         boolean isDisplayedRemoteParticipantsChanged = false;
-        for (RemoteParticipant removedParticipant: removedParticipants) {
-            String removedParticipantId = getId(removedParticipant);
+        for (final RemoteParticipant removedParticipant: removedParticipants) {
+            final String removedParticipantId = getId(removedParticipant);
 
             unbindOnVideoStreamsUpdatedListener(removedParticipant);
             unbindOnIsMutedChangedListener(removedParticipant);
@@ -372,7 +379,7 @@ public class CallingContext {
 
             int indexTobeRemovedForRemoteParticipants = -1;
             for (int i = 0; i < remoteParticipants.size(); i++) {
-                String currentRemoteParticipantId = getId(remoteParticipants.get(i));
+                final String currentRemoteParticipantId = getId(remoteParticipants.get(i));
                 if (currentRemoteParticipantId.equals(removedParticipantId)) {
                     indexTobeRemovedForRemoteParticipants = i;
                     break;
@@ -383,7 +390,7 @@ public class CallingContext {
             if (displayedRemoteParticipantIds.contains(removedParticipantId)) {
                 int indexTobeRmovedForDisplayedRemoteParticipants = -1;
                 for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
-                    String currentDisplayedRemoteParticipantId = getId(displayedRemoteParticipants.get(i));
+                    final String currentDisplayedRemoteParticipantId = getId(displayedRemoteParticipants.get(i));
                     if (currentDisplayedRemoteParticipantId.equals(removedParticipantId)) {
                         indexTobeRmovedForDisplayedRemoteParticipants = i;
                         break;
@@ -397,11 +404,11 @@ public class CallingContext {
             }
         }
         if (remoteParticipants.size() > displayedRemoteParticipants.size()) {
-            for (RemoteParticipant remoteParticipant : remoteParticipants) {
+            for (final RemoteParticipant remoteParticipant : remoteParticipants) {
                 if (displayedRemoteParticipants.size() == Constants.DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT) {
                     break;
                 }
-                String id = getId(remoteParticipant);
+                final String id = getId(remoteParticipant);
                 if (!displayedRemoteParticipantIds.contains(id)) {
                     displayedRemoteParticipants.add(remoteParticipant);
                     displayedRemoteParticipantIds.add(id);
@@ -413,7 +420,7 @@ public class CallingContext {
     }
 
 
-    private void onParticipantsUpdated(ParticipantsUpdatedEvent participantsUpdatedEvent) {
+    private void onParticipantsUpdated(final ParticipantsUpdatedEvent participantsUpdatedEvent) {
         boolean doUpdate = false;
         if (!participantsUpdatedEvent.getRemovedParticipants().isEmpty()) {
             doUpdate |= removeParticipants(participantsUpdatedEvent.getRemovedParticipants());
@@ -426,10 +433,10 @@ public class CallingContext {
         }
     }
 
-    private void bindOnVideoStreamsUpdatedListener(RemoteParticipant remoteParticipant) {
-        String username = remoteParticipant.getDisplayName();
-        String id = getId(remoteParticipant);
-        RemoteVideoStreamsUpdatedListener remoteVideoStreamsUpdatedListener = remoteVideoStreamsEvent -> {
+    private void bindOnVideoStreamsUpdatedListener(final RemoteParticipant remoteParticipant) {
+        final String username = remoteParticipant.getDisplayName();
+        final String id = getId(remoteParticipant);
+        final RemoteVideoStreamsUpdatedListener remoteVideoStreamsUpdatedListener = remoteVideoStreamsEvent -> {
             if (!displayedRemoteParticipantIds.contains(id)) {
                 return;
             }
@@ -440,30 +447,30 @@ public class CallingContext {
         videoStreamsUpdatedListenersMap.put(id, remoteVideoStreamsUpdatedListener);
     }
 
-    private void unbindOnVideoStreamsUpdatedListener(RemoteParticipant remoteParticipant) {
-        String removedParticipantId = getId(remoteParticipant);
+    private void unbindOnVideoStreamsUpdatedListener(final RemoteParticipant remoteParticipant) {
+        final String removedParticipantId = getId(remoteParticipant);
         remoteParticipant.removeOnVideoStreamsUpdatedListener(
                 videoStreamsUpdatedListenersMap.remove(removedParticipantId));
     }
 
-    private void bindOnIsMutedChangedListener(RemoteParticipant remoteParticipant) {
-        String username = remoteParticipant.getDisplayName();
-        String id = getId(remoteParticipant);
-        PropertyChangedListener remoteIsMutedChangedListener = propertyChangedEvent ->
+    private void bindOnIsMutedChangedListener(final RemoteParticipant remoteParticipant) {
+        final String username = remoteParticipant.getDisplayName();
+        final String id = getId(remoteParticipant);
+        final PropertyChangedListener remoteIsMutedChangedListener = propertyChangedEvent ->
                 Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsMutedChangedListener called", username));
         remoteParticipant.addOnIsMutedChangedListener(remoteIsMutedChangedListener);
         mutedChangedListenersMap.put(id, remoteIsMutedChangedListener);
     }
 
-    private void unbindOnIsMutedChangedListener(RemoteParticipant remoteParticipant) {
-        String removedParticipantId = getId(remoteParticipant);
+    private void unbindOnIsMutedChangedListener(final RemoteParticipant remoteParticipant) {
+        final String removedParticipantId = getId(remoteParticipant);
         remoteParticipant.removeOnIsMutedChangedListener(mutedChangedListenersMap.remove(removedParticipantId));
     }
 
-    private void bindOnIsSpeakingChangedListener(RemoteParticipant remoteParticipant) {
-        String username = remoteParticipant.getDisplayName();
-        String id = getId(remoteParticipant);
-        PropertyChangedListener remoteIsSpeakingChangedListener = propertyChangedEvent -> {
+    private void bindOnIsSpeakingChangedListener(final RemoteParticipant remoteParticipant) {
+        final String username = remoteParticipant.getDisplayName();
+        final String id = getId(remoteParticipant);
+        final PropertyChangedListener remoteIsSpeakingChangedListener = propertyChangedEvent -> {
             if (displayedRemoteParticipantIds.contains(id)) {
                 return;
             }
@@ -474,31 +481,31 @@ public class CallingContext {
         isSpeakingChangedListenerMap.put(id, remoteIsSpeakingChangedListener);
     }
 
-    private void unbindOnIsSpeakingChangedListener(RemoteParticipant remoteParticipant) {
-        String removedParticipantId = getId(remoteParticipant);
+    private void unbindOnIsSpeakingChangedListener(final RemoteParticipant remoteParticipant) {
+        final String removedParticipantId = getId(remoteParticipant);
         remoteParticipant.removeOnIsSpeakingChangedListener(isSpeakingChangedListenerMap.remove(removedParticipantId));
     }
 
-    private void bindOnParticipantStateChangedListener(RemoteParticipant remoteParticipant) {
-        String username = remoteParticipant.getDisplayName();
-        String id = getId(remoteParticipant);
-        PropertyChangedListener remoteParticipantStateChangedListener = propertyChangedEvent ->
+    private void bindOnParticipantStateChangedListener(final RemoteParticipant remoteParticipant) {
+        final String username = remoteParticipant.getDisplayName();
+        final String id = getId(remoteParticipant);
+        final PropertyChangedListener remoteParticipantStateChangedListener = propertyChangedEvent ->
                 Log.d(LOG_TAG, String.format(
                         "Remote Participant %s addOnParticipantStateChangedListener called", username));
         remoteParticipant.addOnStateChangedListener(remoteParticipantStateChangedListener);
         participantStateChangedListenerMap.put(id, remoteParticipantStateChangedListener);
     }
 
-    private void unbindOnParticipantStateChangedListener(RemoteParticipant remoteParticipant) {
-        String removedParticipantId = getId(remoteParticipant);
+    private void unbindOnParticipantStateChangedListener(final RemoteParticipant remoteParticipant) {
+        final String removedParticipantId = getId(remoteParticipant);
         remoteParticipant.removeOnStateChangedListener(participantStateChangedListenerMap.remove(removedParticipantId));
     }
 
-    private void findInactiveSpeakerToSwap(RemoteParticipant remoteParticipant, String id) {
+    private void findInactiveSpeakerToSwap(final RemoteParticipant remoteParticipant, final String id) {
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
-            RemoteParticipant displayedRemoteParticipant = displayedRemoteParticipants.get(i);
+            final RemoteParticipant displayedRemoteParticipant = displayedRemoteParticipants.get(i);
             if (!displayedRemoteParticipant.isSpeaking()) {
-                String originId = getId(displayedRemoteParticipant);
+                final String originId = getId(displayedRemoteParticipant);
                 displayedRemoteParticipantIds.remove(originId);
                 displayedRemoteParticipants.set(i, remoteParticipant);
                 displayedRemoteParticipantIds.add(id);
@@ -508,8 +515,8 @@ public class CallingContext {
         }
     }
 
-    public String getId(RemoteParticipant remoteParticipant) {
-        CommunicationIdentifier identifier = remoteParticipant.getIdentifier();
+    public String getId(final RemoteParticipant remoteParticipant) {
+        final CommunicationIdentifier identifier = remoteParticipant.getIdentifier();
         if (identifier instanceof PhoneNumberIdentifier) {
             return ((PhoneNumberIdentifier) identifier).getPhoneNumber();
         } else if (identifier instanceof MicrosoftTeamsUserIdentifier) {

@@ -14,23 +14,23 @@ import android.widget.TextView;
 
 public class EndActivity extends AppCompatActivity {
 
-    TextView endTextView;
-    Button feedBackButton;
+    private TextView endTextView;
+    private Button feedBackButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end);
 
-        ActionBar ab = getSupportActionBar();
+        final ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.hide();
         }
 
         feedBackButton = findViewById(R.id.end_feedback_button);
         feedBackButton.setOnClickListener(l -> {
-            Uri uri = Uri.parse(getString(R.string.end_feedbackUrl));
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            final Uri uri = Uri.parse(getString(R.string.end_feedbackUrl));
+            final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });
 

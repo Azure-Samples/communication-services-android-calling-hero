@@ -14,7 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.UUID;
 
 public class JoinCallActivity extends AppCompatActivity {
     private static final String LOG_TAG = JoinCallActivity.class.getSimpleName();
@@ -23,12 +26,12 @@ public class JoinCallActivity extends AppCompatActivity {
     private TextView joinButtonText;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_call);
 
         // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
+        final ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setTitle("Join a call");
@@ -38,7 +41,7 @@ public class JoinCallActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
@@ -56,17 +59,18 @@ public class JoinCallActivity extends AppCompatActivity {
         editTextTextMeetingName = findViewById(R.id.join_meeting);
         editTextTextMeetingName.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                public void beforeTextChanged(
+                        final CharSequence charSequence, final int i, final int i1, final int i2) {
                     // Do nothing
                 }
 
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                public void onTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
                     // Do nothing
                 }
 
                 @Override
-                public void afterTextChanged(Editable editable) {
+                public void afterTextChanged(final Editable editable) {
                     if (editable.length() == 0) {
                         //TODO: Error: "SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length" occurs after
                         // clearing text
@@ -90,8 +94,31 @@ public class JoinCallActivity extends AppCompatActivity {
 
     private void joinCall() {
         Log.d(LOG_TAG, "Join call button clicked!");
-        Intent intent = new Intent(this, SetupActivity.class);
-        intent.putExtra(Constants.GROUP_ID, editTextTextMeetingName.getText().toString());
-        startActivity(intent);
+        final String groupId = editTextTextMeetingName.getText().toString().trim();
+        if (!isValidGroupID(groupId)) {
+            showInvalidGroupIDDialog();
+        } else {
+            final Intent intent = new Intent(this, SetupActivity.class);
+            intent.putExtra(Constants.GROUP_ID, groupId);
+            startActivity(intent);
+        }
+    }
+
+    private void showInvalidGroupIDDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("The meeting ID entered is invalid. Please try again.")
+                .setTitle("Unable to join")
+                .setCancelable(false)
+                .setPositiveButton("Dismiss", null);
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private boolean isValidGroupID(final String groupId) {
+        try {
+            return UUID.fromString(groupId).toString().equals(groupId);
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
     }
 }

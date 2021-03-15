@@ -8,18 +8,19 @@ import java.io.IOException;
 import java.util.Properties;
 
 public final class AppSettings {
-    private static Properties properties;
     private static final String CONFIG_FILE = "appSettings.properties";
     private static final String TOKEN_URL = "acsTokenFetchUrl";
     private static final String IS_AAD_AUTH_ENABLED = "isAADAuthEnabled";
     private static final String SCOPES = "aadScopes";
 
-    public AppSettings(Context context) {
+    private final Properties properties;
+
+    public AppSettings(final Context context) {
         try {
             properties = new Properties();
             properties.load(context.getAssets().open(CONFIG_FILE));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -32,7 +33,7 @@ public final class AppSettings {
     }
 
     public boolean isAADAuthEnabled() {
-        String isAadAuthEnabled = properties.getProperty(IS_AAD_AUTH_ENABLED);
+        final String isAadAuthEnabled = properties.getProperty(IS_AAD_AUTH_ENABLED);
         return Boolean.parseBoolean(isAadAuthEnabled);
     }
 }

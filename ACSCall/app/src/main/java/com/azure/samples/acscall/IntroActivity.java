@@ -26,12 +26,12 @@ public class IntroActivity extends AppCompatActivity {
     private AADAuthHandler authHandler;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
         // Get a support ActionBar corresponding to this toolbar
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -59,14 +59,14 @@ public class IntroActivity extends AppCompatActivity {
         signOutTextView = findViewById(R.id.intro_sign_out);
         signOutTextView.setOnClickListener(l -> signOut());
 
-        TextView learnTextView = findViewById(R.id.intro_learn);
+        final TextView learnTextView = findViewById(R.id.intro_learn);
         learnTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void initializeAuth() {
         authHandler = ((ACSCall) getApplication()).getAadAuthHandler();
         // if Azure Active directory authentication is enabled, display Login UI
-        AppSettings appSettings = ((ACSCall) getApplication()).getAppSettings();
+        final AppSettings appSettings = ((ACSCall) getApplication()).getAppSettings();
         if (appSettings.isAADAuthEnabled()) {
             hideAllButtons();
             authHandler.loadAccount(this, (isAccountFound) -> {
@@ -112,14 +112,14 @@ public class IntroActivity extends AppCompatActivity {
     private void setupCall() {
         Log.d(LOG_TAG, "Setup new meeting button clicked!");
         ((ACSCall) getApplication()).createCallingContext();
-        Intent intent = new Intent(this, SetupActivity.class);
+        final Intent intent = new Intent(this, SetupActivity.class);
         startActivity(intent);
     }
 
     private void joinCall() {
         Log.d(LOG_TAG, "Join call button clicked!");
         ((ACSCall) getApplication()).createCallingContext();
-        Intent intent = new Intent(this, JoinCallActivity.class);
+        final Intent intent = new Intent(this, JoinCallActivity.class);
         startActivity(intent);
     }
 
