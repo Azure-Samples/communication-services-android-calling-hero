@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="50"
+    android:alpha="1"
+    android:backgroundTint="#A6CC3333"
+    tools:context=".CallActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/previewHolder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/call_buttons"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/participant_header_notification"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/groupCallTable"
+                android:clickable="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/yourCameraHolder"
+                android:layout_width="120dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/call_buttons"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        android:background="@color/grey200"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/previewHolder"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/call_hangup"
+            style="@style/FluentButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button_filled"
+            android:backgroundTint="#A6CC3333"
+            android:contentDescription="@string/call_hangup"
+            android:src="@drawable/ic_fluent_call_end_28_filled">
+
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/call_share"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/call_share"
+            android:src="@drawable/ic_fluent_share_android_24_filled">
+
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/call_audio"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/call_audio"
+            android:src="@drawable/toggle_selector_mic">
+
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/call_video"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/call_video"
+            android:src="@drawable/toggle_selector_camera">
+
+        </ImageButton>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/call_hangup_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#66000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/call_buttons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="invisible">
+
+        <Button
+            android:id="@+id/call_hangup_confirm"
+            style="@style/FluentButton"
+            android:layout_width="wrap_content"
+            android:minWidth="400dp"
+            android:maxWidth="400dp"
+            android:layout_height="52dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_filled"
+            android:backgroundTint="@color/colorAccent"
+            android:text="@string/call_hangup_confirm"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/call_hangup_cancel"
+            style="@style/FluentButton"
+            android:layout_width="wrap_content"
+            android:minWidth="400dp"
+            android:maxWidth="400dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_outlined_grey"
+            android:text="@string/call_hangup_cancel"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

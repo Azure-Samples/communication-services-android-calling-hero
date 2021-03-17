@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setup_constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:foregroundTint="@color/grey200"
+    android:gravity="center_horizontal"
+    tools:context=".SetupActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/setup_video_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_filled"
+        android:backgroundTint="@color/grey200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/setup_name_holder">
+        <ImageView
+            android:id="@+id/default_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_no_camera_50_64"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/setup_missing_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/grey200"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/setup_missing_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginBottom="45dp"
+                android:contentDescription="@string/setup_missing_cd"
+                app:srcCompat="@drawable/ic_fluent_warning_24_filled"
+                app:tint="@color/warnings" />
+
+            <TextView
+                android:id="@+id/setup_missing_text"
+                android:layout_width="219dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="35dp"
+                android:gravity="center"
+                android:lineSpacingExtra="8sp"
+                android:text="@string/setup_missing_text"
+                android:textColor="#B3B0AD" />
+
+            <Button
+                android:id="@+id/setup_missing_button"
+                style="@style/FluentButton"
+                android:layout_width="142dp"
+                android:layout_height="48dp"
+                android:background="@drawable/button_outlined_blue"
+                android:text="@string/setup_missing_button"
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/setup_gradient"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:alpha="0.6"
+            android:background="@drawable/background_gradient"
+            android:contentDescription="@string/setup_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/setup_video_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="@id/setup_video_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ToggleButton
+                android:id="@+id/setup_video"
+                style="@style/FluentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@android:color/transparent"
+                android:checked="false"
+                android:drawableTop="@drawable/toggle_selector_camera"
+                android:drawablePadding="5dp"
+                android:textColor="#FFFFFF"
+                android:textOff="@string/setup_video_off"
+                android:textOn="@string/setup_video_on" />
+
+            <ToggleButton
+                android:id="@+id/setup_audio"
+                style="@style/FluentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@android:color/transparent"
+                android:checked="false"
+                android:drawableTop="@drawable/toggle_selector_mic"
+                android:drawablePadding="5dp"
+                android:drawableTint="@android:color/white"
+                android:textColor="#FFFFFF"
+                android:textOff="@string/setup_mic_off"
+                android:textOn="@string/setup_mic_on" />
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/setup_name_holder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/setup_holder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/setup_enter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_enter"
+            android:textColor="@color/textbox_primary" />
+
+        <EditText
+            android:id="@+id/setup_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="Enter name"
+            android:ems="10"
+            android:hint="@string/setup_name_hint"
+            android:inputType="textCapSentences"
+            android:singleLine="true"
+            android:textColorHint="@color/textbox_secondary" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/setup_holder"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/setup_button"
+            style="@style/FluentButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/button_filled"
+            android:backgroundTint="@color/selector_primary"
+            android:clickable="false"
+            android:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/setup_button_text"
+            style="@style/FluentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:enabled="false"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/setup_start_call"
+            android:textColor="@color/selector_secondary"
+            app:drawableLeftCompat="@drawable/ic_fluent_meet_now_24_regular"
+            app:drawableTint="@color/selector_secondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

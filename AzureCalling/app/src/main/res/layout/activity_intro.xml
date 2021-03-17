@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".IntroActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/intro_logoHolder"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <ImageView
+            android:id="@+id/intro_cloud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/intro_cloud_cd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_android_cloudhero" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/intro_exception"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:letterSpacing="0.01"
+        android:text="@string/intro_exception"
+        android:textColor="@color/text_primary"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/intro_features"
+        style="@style/intro_features"
+        android:layout_width="219dp"
+        android:layout_height="76dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="25dp"
+        android:gravity="center"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="8sp"
+        android:text="@string/intro_features"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <Button
+        android:id="@+id/intro_start_button"
+        style="@style/FluentButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="25dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/intro_start"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_filled"
+        android:backgroundTint="@color/colorAccent" />
+
+    <Button
+        android:id="@+id/intro_sign_in"
+        style="@style/FluentButton"
+        android:layout_width="wrap_content"
+        android:minWidth="400dp"
+        android:maxWidth="400dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="13dp"
+        android:background="@drawable/button_filled"
+        android:backgroundTint="@color/colorAccent"
+        android:text="@string/intro_sign_in"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/intro_join"
+        style="@style/FluentButton"
+        android:layout_width="wrap_content"
+        android:minWidth="400dp"
+        android:maxWidth="400dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="23dp"
+        android:background="@drawable/button_outlined_blue"
+        android:text="@string/intro_join"
+        android:textColor="@color/colorAccent" />
+    <TextView
+        android:id="@+id/intro_sign_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/intro_sign_out"
+        android:textColor="@color/colorAccent"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/intro_learn"
+        style="@style/intro_learn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/intro_learn"
+        android:textColor="@color/text_secondary"
+        android:textColorLink="@color/colorAccent"/>
+
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Microsoft Corporation.
+  ~ Licensed under the MIT license.
+  -->
+
+<resources>
+    <color name="window_background">@color/grey950</color>
+    <color name="colorPrimary">@color/grey950</color>
+    <color name="colorPrimaryDark">@color/grey400</color>
+    <color name="colorAccent">#0078D4</color>
+    <color name="colorAccent_light">#C7E0F4</color>
+    <color name="text_primary">@android:color/white</color>
+    <color name="text_secondary">@android:color/white</color>
+    <color name="textbox_primary">@color/grey400</color>
+    <color name="textbox_secondary">@color/grey300</color>
+
+
+</resources>
