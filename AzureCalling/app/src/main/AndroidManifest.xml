@@ -27,9 +27,9 @@
         android:hardwareAccelerated="true"
         android:hasFragileUserData="true">
         <activity
-            android:name="com.azure.samples.communication.calling.EndActivity"
+            android:name="com.azure.samples.communication.calling.activities.EndActivity"
             android:exported="true"
-            android:parentActivityName="com.azure.samples.communication.calling.CallActivity"
+            android:parentActivityName="com.azure.samples.communication.calling.activities.CallActivity"
             android:screenOrientation="portrait" />
 
         <uses-library
@@ -50,30 +50,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.azure.samples.communication.calling.CallActivity"
+            android:name="com.azure.samples.communication.calling.activities.CallActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout"
-            android:parentActivityName="com.azure.samples.communication.calling.SetupActivity"
+            android:parentActivityName="com.azure.samples.communication.calling.activities.SetupActivity"
             android:screenOrientation="sensor"
             android:launchMode="singleTop"/>
         <activity
-            android:name="com.azure.samples.communication.calling.SetupActivity"
+            android:name="com.azure.samples.communication.calling.activities.SetupActivity"
             android:exported="true"
             android:label="@string/title_activity_setup"
             android:taskAffinity="com.azure.samples.communication.calling.setupaffinity"
             android:windowSoftInputMode="adjustPan"
-            android:parentActivityName="com.azure.samples.communication.calling.IntroActivity"
+            android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.azure.samples.communication.calling.JoinCallActivity"
+            android:name="com.azure.samples.communication.calling.activities.JoinCallActivity"
             android:exported="true"
             android:label="@string/title_activity_join_call"
             android:taskAffinity="com.azure.samples.communication.calling.setupaffinity"
             android:windowSoftInputMode="adjustResize"
-            android:parentActivityName="com.azure.samples.communication.calling.IntroActivity"
+            android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.azure.samples.communication.calling.IntroActivity"
+            android:name="com.azure.samples.communication.calling.activities.IntroActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <intent-filter>

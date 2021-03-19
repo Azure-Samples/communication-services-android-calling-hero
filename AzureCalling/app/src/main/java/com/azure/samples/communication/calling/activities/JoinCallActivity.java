@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling;
+package com.azure.samples.communication.calling.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.azure.samples.communication.calling.helpers.Constants;
+import com.azure.samples.communication.calling.R;
 
 import java.util.UUID;
 

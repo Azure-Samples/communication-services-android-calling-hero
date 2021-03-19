@@ -8,7 +8,7 @@
     android:layout_marginRight="16dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".EndActivity">
+    tools:context=".activities.EndActivity">
 
     <Space
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
         android:layout_width="219dp"
         android:layout_height="76dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="135dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/end_have"
         android:textColor="@color/text_secondary"

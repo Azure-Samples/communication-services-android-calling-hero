@@ -8,7 +8,7 @@
     android:layout_marginRight="16dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".IntroActivity">
+    tools:context=".activities.IntroActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/intro_logoHolder"

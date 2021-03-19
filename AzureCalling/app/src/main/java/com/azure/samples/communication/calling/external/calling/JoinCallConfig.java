@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling;
+package com.azure.samples.communication.calling.external.calling;
 
 import java.io.Serializable;
 

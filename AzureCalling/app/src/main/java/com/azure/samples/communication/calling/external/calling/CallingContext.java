@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling;
+package com.azure.samples.communication.calling.external.calling;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -32,6 +32,7 @@ import com.azure.android.communication.common.CommunicationUserIdentifier;
 import com.azure.android.communication.common.MicrosoftTeamsUserIdentifier;
 import com.azure.android.communication.common.PhoneNumberIdentifier;
 import com.azure.android.communication.common.UnknownIdentifier;
+import com.azure.samples.communication.calling.helpers.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;

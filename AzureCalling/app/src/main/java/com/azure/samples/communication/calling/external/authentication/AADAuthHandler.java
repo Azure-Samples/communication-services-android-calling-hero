@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling;
+package com.azure.samples.communication.calling.external.authentication;
 
 import android.app.Activity;
 import android.util.Log;
@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.AppSettings;
 import com.microsoft.identity.client.AuthenticationCallback;
 import com.microsoft.identity.client.IAccount;

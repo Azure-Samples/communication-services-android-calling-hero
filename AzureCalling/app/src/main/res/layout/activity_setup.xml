@@ -9,7 +9,7 @@
     android:layout_marginRight="16dp"
     android:foregroundTint="@color/grey200"
     android:gravity="center_horizontal"
-    tools:context=".SetupActivity">
+    tools:context=".activities.SetupActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/setup_video_layout"
@@ -23,6 +23,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/setup_name_holder">
+
+        <ProgressBar
+            android:id="@+id/setup_progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"/>
+
         <ImageView
             android:id="@+id/default_avatar"
             android:layout_width="wrap_content"
@@ -32,7 +44,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:src="@drawable/ic_no_camera_50_64"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/setup_missing_layout"

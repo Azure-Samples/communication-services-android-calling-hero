@@ -8,7 +8,7 @@
     android:layout_marginRight="16dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".JoinCallActivity">
+    tools:context=".activities.JoinCallActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

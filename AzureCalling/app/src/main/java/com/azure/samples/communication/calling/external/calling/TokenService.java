@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling.helpers;
+package com.azure.samples.communication.calling.external.calling;
 
 import android.content.Context;
 import android.util.Log;

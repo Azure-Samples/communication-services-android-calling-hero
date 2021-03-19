@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling;
+package com.azure.samples.communication.calling.activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +29,11 @@ import com.azure.android.communication.calling.LocalVideoStream;
 import com.azure.android.communication.calling.ParticipantState;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
+import com.azure.samples.communication.calling.AzureCalling;
+import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.Constants;
+import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
+import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;

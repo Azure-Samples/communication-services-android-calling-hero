@@ -17,8 +17,9 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.azure.samples.communication.calling.CallActivity;
+import com.azure.samples.communication.calling.activities.CallActivity;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.external.calling.TokenService;
 
 public class InCallService extends Service {
     private static final String LOG_TAG = TokenService.class.getSimpleName();

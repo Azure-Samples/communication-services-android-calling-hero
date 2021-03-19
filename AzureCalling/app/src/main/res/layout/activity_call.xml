@@ -8,7 +8,7 @@
     android:layout_weight="50"
     android:alpha="1"
     android:backgroundTint="#A6CC3333"
-    tools:context=".CallActivity">
+    tools:context=".activities.CallActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/previewHolder"

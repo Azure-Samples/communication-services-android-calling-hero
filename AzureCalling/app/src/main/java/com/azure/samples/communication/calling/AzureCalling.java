@@ -5,8 +5,10 @@ package com.azure.samples.communication.calling;
 
 import android.app.Application;
 
+import com.azure.samples.communication.calling.external.authentication.AADAuthHandler;
+import com.azure.samples.communication.calling.external.calling.CallingContext;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
-import com.azure.samples.communication.calling.helpers.TokenService;
+import com.azure.samples.communication.calling.external.calling.TokenService;
 import com.azure.samples.communication.calling.helpers.AppSettings;
 
 public class AzureCalling extends Application {

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.samples.communication.calling;
+package com.azure.samples.communication.calling.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -28,6 +29,11 @@ import com.azure.android.communication.calling.VideoStreamRenderer;
 import com.azure.android.communication.calling.VideoStreamRendererView;
 import com.azure.android.communication.calling.RenderingOptions;
 import com.azure.android.communication.calling.ScalingMode;
+import com.azure.samples.communication.calling.AzureCalling;
+import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.Constants;
+import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
+import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 
@@ -36,10 +42,10 @@ import java9.util.concurrent.CompletableFuture;
 public class SetupActivity extends AppCompatActivity {
     private static final String LOG_TAG = SetupActivity.class.getSimpleName();
 
-
     private String groupId;
     private EditText setupName;
     private LinearLayout setupMissingLayout;
+    private ProgressBar setupProgressBar;
     private ImageView defaultAvatar;
     private ImageView setupMissingImage;
     private TextView setupMissingText;
@@ -82,7 +88,11 @@ public class SetupActivity extends AppCompatActivity {
         groupId = intent.getStringExtra(Constants.GROUP_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
-            runOnUiThread(() -> videoToggleButton.setEnabled(true));
+            runOnUiThread(() -> {
+                videoToggleButton.setEnabled(true);
+                setupProgressBar.setVisibility(View.GONE);
+                defaultAvatar.setVisibility(View.VISIBLE);
+            });
         });
     }
 
@@ -91,7 +101,10 @@ public class SetupActivity extends AppCompatActivity {
         setupMissingImage = findViewById(R.id.setup_missing_image);
         setupMissingText = findViewById(R.id.setup_missing_text);
         setupMissingButton = findViewById(R.id.setup_missing_button);
+
+        setupProgressBar = findViewById(R.id.setup_progress_bar);
         defaultAvatar = findViewById(R.id.default_avatar);
+
         setupMissingButton.setOnClickListener(l -> openSettings());
 
         setupGradient = findViewById(R.id.setup_gradient);
