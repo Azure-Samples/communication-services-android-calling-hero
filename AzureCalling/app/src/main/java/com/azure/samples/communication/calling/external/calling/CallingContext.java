@@ -14,10 +14,12 @@ import com.azure.android.communication.calling.Call;
 import com.azure.android.communication.calling.CallAgent;
 import com.azure.android.communication.calling.CallAgentOptions;
 import com.azure.android.communication.calling.CallClient;
+import com.azure.android.communication.calling.CallState;
 import com.azure.android.communication.calling.DeviceManager;
 import com.azure.android.communication.calling.GroupCallLocator;
 import com.azure.android.communication.calling.HangUpOptions;
 import com.azure.android.communication.calling.JoinCallOptions;
+import com.azure.android.communication.calling.JoinMeetingLocator;
 import com.azure.android.communication.calling.LocalVideoStream;
 import com.azure.android.communication.calling.ParticipantsUpdatedEvent;
 import com.azure.android.communication.calling.PropertyChangedListener;
@@ -70,7 +72,7 @@ public class CallingContext {
     private boolean micOn;
     private boolean isVideoOnHold = false;
 
-    private final List<RemoteParticipant> remoteParticipants;
+    private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
     private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
     private final Set<String> displayedRemoteParticipantIds;
@@ -87,7 +89,7 @@ public class CallingContext {
         Log.d(LOG_TAG, "Creating CallingContext");
         this.tokenFetcher = tokenFetcher;
         appContext = applicationContext;
-        remoteParticipants = new ArrayList<>();
+        remoteParticipantsMap = new HashMap<>();
         displayedRemoteParticipants = new ArrayList<>();
         displayedParticipantsLiveData = new MutableLiveData<>();
         displayedRemoteParticipantIds = new HashSet<>();
@@ -252,7 +254,7 @@ public class CallingContext {
     }
 
     public int getRemoteParticipantCount() {
-        return remoteParticipants.size();
+        return remoteParticipantsMap.size();
     }
 
     public MutableLiveData<List<RemoteParticipant>> getDisplayedParticipantsLiveData() {
@@ -330,13 +332,20 @@ public class CallingContext {
             final CallAgent agent,
             final AudioOptions audioOptions,
             final VideoOptions videoOptions,
-            final GroupCallLocator groupCallLocator) {
+            final JoinMeetingLocator groupCallLocator) {
         final JoinCallOptions joinCallOptions = new JoinCallOptions();
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
         call = agent.join(appContext, groupCallLocator, joinCallOptions);
         Log.d(LOG_TAG, "Call ID: " + groupId);
 
+        call.addOnStateChangedListener(propertyChangedEvent -> {
+            final CallState state = call.getState();
+            if (state == CallState.CONNECTED) {
+                addParticipants(call.getRemoteParticipants());
+                displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
+            }
+        });
         call.addOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
 
         cameraOn = (videoOptions != null);
@@ -347,21 +356,23 @@ public class CallingContext {
         boolean isParticipantsAddedToDisplayedRemoteParticipants = false;
 
         for (final RemoteParticipant addedParticipant: addedParticipants) {
-            remoteParticipants.add(addedParticipant);
+            final String id = getId(addedParticipant);
+            if (remoteParticipantsMap.containsKey(id)) {
+                continue;
+            }
+            remoteParticipantsMap.put(id, addedParticipant);
             bindOnVideoStreamsUpdatedListener(addedParticipant);
             bindOnIsMutedChangedListener(addedParticipant);
             bindOnIsSpeakingChangedListener(addedParticipant);
             bindOnParticipantStateChangedListener(addedParticipant);
         }
-
-        if (remoteParticipants.size() > displayedRemoteParticipants.size()) {
-            for (final RemoteParticipant remoteParticipant : remoteParticipants) {
+        if (remoteParticipantsMap.size() > displayedRemoteParticipants.size()) {
+            for (final String id : remoteParticipantsMap.keySet()) {
                 if (displayedRemoteParticipants.size() == Constants.DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT) {
                     break;
                 }
-                final String id = getId(remoteParticipant);
                 if (!displayedRemoteParticipantIds.contains(id)) {
-                    displayedRemoteParticipants.add(remoteParticipant);
+                    displayedRemoteParticipants.add(remoteParticipantsMap.get(id));
                     displayedRemoteParticipantIds.add(id);
                     isParticipantsAddedToDisplayedRemoteParticipants = true;
                 }
@@ -381,15 +392,7 @@ public class CallingContext {
             unbindOnIsSpeakingChangedListener(removedParticipant);
             unbindOnParticipantStateChangedListener(removedParticipant);
 
-            int indexTobeRemovedForRemoteParticipants = -1;
-            for (int i = 0; i < remoteParticipants.size(); i++) {
-                final String currentRemoteParticipantId = getId(remoteParticipants.get(i));
-                if (currentRemoteParticipantId.equals(removedParticipantId)) {
-                    indexTobeRemovedForRemoteParticipants = i;
-                    break;
-                }
-            }
-            remoteParticipants.remove(indexTobeRemovedForRemoteParticipants);
+            remoteParticipantsMap.remove(removedParticipantId);
 
             if (displayedRemoteParticipantIds.contains(removedParticipantId)) {
                 int indexTobeRmovedForDisplayedRemoteParticipants = -1;
@@ -407,14 +410,13 @@ public class CallingContext {
                 }
             }
         }
-        if (remoteParticipants.size() > displayedRemoteParticipants.size()) {
-            for (final RemoteParticipant remoteParticipant : remoteParticipants) {
+        if (remoteParticipantsMap.size() > displayedRemoteParticipants.size()) {
+            for (final String id : remoteParticipantsMap.keySet()) {
                 if (displayedRemoteParticipants.size() == Constants.DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT) {
                     break;
                 }
-                final String id = getId(remoteParticipant);
                 if (!displayedRemoteParticipantIds.contains(id)) {
-                    displayedRemoteParticipants.add(remoteParticipant);
+                    displayedRemoteParticipants.add(remoteParticipantsMap.get(id));
                     displayedRemoteParticipantIds.add(id);
                     isDisplayedRemoteParticipantsChanged = true;
                 }
