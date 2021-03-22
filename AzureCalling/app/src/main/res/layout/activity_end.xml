@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".activities.EndActivity">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="80dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/intro_logoHolder"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <ImageView
+            android:id="@+id/intro_cloud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/intro_cloud_cd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_android_cloudhero" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/end_call"
+        style="@style/intro_exceptional"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:letterSpacing="0.01"
+        android:text="@string/end_call"
+        android:textColor="@color/text_primary"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/end_have"
+        style="@style/intro_features"
+        android:layout_width="219dp"
+        android:layout_height="76dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:text="@string/end_have"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/end_feedback_holder"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/end_feedback_button"
+            style="@style/FluentButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_filled"
+            android:backgroundTint="@color/colorAccent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/end_feedback_text"
+            style="@style/FluentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/end_feedback"
+            android:textColor="@android:color/white"
+            app:drawableLeftCompat="@drawable/ic_fluent_edit_24_regular"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/end_return"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/end_return"
+        android:textColor="@color/colorAccent"
+        android:lineSpacingExtra="2sp"
+        android:textSize="15sp"
+        android:gravity="center_horizontal|top"/>
+
+</LinearLayout>
