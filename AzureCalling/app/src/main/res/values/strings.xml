@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Azure Calling</string>
+    <string name="intro_exception">"Exceptionally simple video calling"</string>
+    <string name="intro_features">"Up to 16 participants \nHigh quality video and sound \nIndustry leading security"</string>
+    <string name="intro_start">Start new call</string>
+    <string name="intro_join">Join a call</string>
+    <string name="intro_learn"><a href="https://aka.ms/ACS-CallingSample-Android">Learn more</a> about this sample app</string>
+    <string name="intro_cloud_cd">cloud</string>
+    <string name="intro_sign_in">Sign in to Microsoft Account</string>
+    <string name="intro_sign_out">Sign out</string>
+
+    <string name="title_activity_join_call">JoinCall</string>
+    <string name="join_enter">Enter meeting ID</string>
+    <string name="join_join_hint">ex. 4fe34380-81e5-11eb-a16e-6161a3176f61</string>
+    <string name="join_start">Join Call</string>
+
+    <string name="title_activity_setup">Lobby</string>
+    <string name="setup_enter">Enter your name</string>
+    <string name="setup_name_hint">John Smith</string>
+    <string name="setup_start_call">Start call</string>
+    <string name="setup_missing_cd">Missing placeholder</string>
+    <string name="setup_missing_text">Missing placeholder</string>
+    <string name="setup_missing_button">Go to Settings</string>
+    <string name="setup_video_off">Video is off</string>
+    <string name="setup_video_on">Video is on</string>
+    <string name="setup_mic_off">Mic is off</string>
+    <string name="setup_mic_on">Mic is on</string>
+    <string name="setup_missing_video">Your camera is disabled. To enable, please go to Settings to allow access.</string>
+    <string name="setup_missing_mic">Your audio is disabled. To enable, please go to Settings to allow access. You must enable audio to start this call.</string>
+    <string name="setup_missing_video_mic">Your camera and audio are disabled. To enable, please go to Settings to
+        allow access. You must enable audio to start this call.</string>
+    <string name="setup_gradient">Setup Gradient</string>
+
+    <string name="call_hangup_confirm">Leave call</string>
+    <string name="call_hangup_cancel">Cancel</string>
+    <string name="call_share">Share Content</string>
+    <string name="call_hangup">Hang Up</string>
+    <string name="call_video">Toggle Video</string>
+    <string name="call_audio">Toggle Audio</string>
+    <string name="number_of_participants">Number of participants:</string>
+
+    <string name="end_call">Call ended</string>
+    <string name="end_have">Have any feedback for us? We’d love to hear how we can improve this experience.</string>
+    <string name="end_feedback">Provide feedback</string>
+    <string name="end_feedbackUrl">https://github.com/Azure/Communication/issues</string>
+    <string name="end_return">Return to home screen</string>
+</resources>
