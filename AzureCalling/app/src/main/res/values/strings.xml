@@ -42,6 +42,6 @@
     <string name="end_call">Call ended</string>
     <string name="end_have">Have any feedback for us? We’d love to hear how we can improve this experience.</string>
     <string name="end_feedback">Provide feedback</string>
-    <string name="end_feedbackUrl">https://github.com/Azure/Communication/issues</string>
+    <string name="end_feedbackUrl">https://aka.ms/ACS-CallingSample-Android-Issues</string>
     <string name="end_return">Return to home screen</string>
 </resources>
