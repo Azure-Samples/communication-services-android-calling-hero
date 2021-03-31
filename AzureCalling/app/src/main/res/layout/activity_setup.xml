@@ -44,6 +44,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:src="@drawable/ic_no_camera_50_64"
+            android:visibility="visible"/>
             android:visibility="gone"/>
 
         <LinearLayout
