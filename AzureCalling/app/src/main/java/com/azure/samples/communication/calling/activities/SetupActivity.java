@@ -34,6 +34,7 @@ import com.azure.samples.communication.calling.external.calling.CallingContext;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 
@@ -42,9 +43,11 @@ import java9.util.concurrent.CompletableFuture;
 public class SetupActivity extends AppCompatActivity {
     private static final String LOG_TAG = SetupActivity.class.getSimpleName();
 
-    private String groupId;
+    private String joinId;
+    private JoinCallType callType;
     private EditText setupName;
     private LinearLayout setupMissingLayout;
+    private String groupId;
     private ProgressBar setupProgressBar;
     private ImageView defaultAvatar;
     private ImageView setupMissingImage;
@@ -85,7 +88,8 @@ public class SetupActivity extends AppCompatActivity {
         final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
-        groupId = intent.getStringExtra(Constants.GROUP_ID);
+        callType = (JoinCallType) intent.getSerializableExtra(Constants.CALL_TYPE);
+        joinId = intent.getStringExtra(Constants.JOIN_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
             runOnUiThread(() -> {
@@ -178,7 +182,8 @@ public class SetupActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
-        finishAffinity();
+        setResult(RESULT_OK);
+        finish();
         startActivity(intent);
     }
 
@@ -190,9 +195,8 @@ public class SetupActivity extends AppCompatActivity {
                     rendererView.dispose();
                 }
                 final JoinCallConfig joinCallConfig = new JoinCallConfig(
-                        groupId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
-                        setupName.getText().toString());
-                finishAffinity();
+                        joinId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
+                        setupName.getText().toString(), callType);
                 final Intent intent = new Intent(this, CallActivity.class);
                 intent.putExtra(Constants.JOIN_CALL_CONFIG, joinCallConfig);
                 startActivity(intent);

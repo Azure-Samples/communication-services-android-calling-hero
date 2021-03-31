@@ -4,10 +4,12 @@
 package com.azure.samples.communication.calling.activities;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+
 import androidx.lifecycle.Observer;
 
 import android.content.res.Configuration;
@@ -15,6 +17,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +27,10 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.azure.android.communication.calling.CallState;
 import com.azure.android.communication.calling.LocalVideoStream;
 import com.azure.android.communication.calling.ParticipantState;
 import com.azure.android.communication.calling.RemoteParticipant;
@@ -34,11 +40,11 @@ import com.azure.samples.communication.calling.external.calling.CallingContext;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
+
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
 import com.azure.samples.communication.calling.view.ParticipantView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +65,7 @@ public class CallActivity extends AppCompatActivity {
     private ImageButton audioImageButton;
     private LinearLayout callHangupOverlay;
     private View infoHeaderView;
+    private View recordingActivityHeader;
     private Timer timer;
     private Integer localParticipantViewGridIndex;
     private Map<String, Integer> participantIdIndexPathMap;
@@ -67,9 +74,10 @@ public class CallActivity extends AppCompatActivity {
     private ConstraintLayout localVideoViewContainer;
     private volatile boolean viewUpdatePending = false;
     private volatile long lastViewUpdateTimestamp = 0;
-    private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
+    private ProgressBar callActivityProgressBar;
+    private LinearLayout inLobbyWaitingOverlay;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -89,14 +97,20 @@ public class CallActivity extends AppCompatActivity {
 
         setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
+
         /* initialize execution control of participant views update */
         initializeDisplayedParticipantsLiveData();
-
+        initializeCallStateLiveData();
+        initializeRecordingStateLiveData();
+        
         /* get Join Call Config */
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
                 .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
+
         setLayoutComponentState(joinCallConfig.isMicrophoneMuted(), joinCallConfig.isCameraOn(),
-                this.callHangUpOverlaid);
+                false,
+                false,
+                callActivityProgressBar.getVisibility() == View.VISIBLE);
 
         // if the app is already in landscape mode, this check will hide status bar
         setStatusBarVisibility();
@@ -107,10 +121,38 @@ public class CallActivity extends AppCompatActivity {
                 initializeCallNotification();
 
                 audioImageButton.setEnabled(true);
+                
                 initParticipantViews();
-                showParticipantHeaderNotification();
             });
         });
+    }
+
+    private void initializeCallStateLiveData() {
+        final Observer<CallState> observerCallState = callState -> {
+            Log.d(LOG_TAG, "CallActivity initializeCallStateLiveData: " + callState.toString());
+            if (callState == CallState.IN_LOBBY) {
+                hideCallActivityProgressBar();
+                showInLobbyWaitingOverlay();
+            } else if (callState == CallState.CONNECTED) {
+                hideCallActivityProgressBar();
+                hideInLobbyWaitingOverlay();
+                showParticipantHeaderNotification();
+            } else if (callState == CallState.NONE) {
+                if (inLobbyWaitingOverlay.getVisibility() == View.VISIBLE) {
+                    showMeetingAccessDeniedAlertDialog();
+                } else if (localParticipantView != null && localParticipantView.getVisibility() == View.VISIBLE) {
+                    showRemovedFromTeamsMeetingAlertDialog();
+                }
+            }
+        };
+        callingContext.getCallStateLiveData().observe(this, observerCallState);
+    }
+
+    private void initializeRecordingStateLiveData() {
+        final Observer<Boolean> observerRecordingState = recordingState -> {
+            showRecordingActiveNotification();
+        };
+        callingContext.getRecordingStateLiveData().observe(this, observerRecordingState);
     }
 
     private void initializeDisplayedParticipantsLiveData() {
@@ -140,10 +182,19 @@ public class CallActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        final boolean callHangUpOverlaid = callHangupOverlay.getVisibility() == View.VISIBLE;
+        final boolean isInLobbyWaitingOverlaid = inLobbyWaitingOverlay.getVisibility() == View.VISIBLE;
+        final boolean isProgressBarVisible = callActivityProgressBar.getVisibility() == View.VISIBLE;
+        final boolean isRecordingActivityHeaderVisible = recordingActivityHeader.getVisibility() == View.VISIBLE;
         setStatusBarVisibility();
         setupScreenLayout();
         setVideoImageButtonEnabledState();
-        setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(), this.callHangUpOverlaid);
+        if (isRecordingActivityHeaderVisible) {
+            showRecordingActiveNotification();
+        }
+        setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
+                callHangUpOverlaid, isInLobbyWaitingOverlaid,
+                isProgressBarVisible);
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
@@ -209,12 +260,12 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(LOG_TAG, "CallActivity onDestroy");
+        callingContext.getCallStateLiveData().removeObservers(this);
         callingContext.getDisplayedParticipantsLiveData().removeObservers(this);
         if (localParticipantView != null) {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
         }
-
         super.onDestroy();
     }
 
@@ -311,6 +362,16 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
+    private void showRecordingActiveNotification() {
+        if (callingContext.isRecordingActive()) {
+            setRecordingActivityNotification(getText(R.string.start_recording));
+        } else {
+            setRecordingActivityNotification(getText(R.string.stop_recording));
+        }
+        recordingActivityHeader.setVisibility(View.VISIBLE);
+        recordingActivityHeader.bringToFront();
+    }
+
     private void updateParticipantNotificationCount() {
         // if notification header is visible, the count will be updated, otherwise ignored
         setParticipantCountToFloatingHeader(callingContext.getRemoteParticipantCount());
@@ -340,7 +401,7 @@ public class CallActivity extends AppCompatActivity {
             public void run() {
                 setFloatingHeaderVisibility(View.GONE);
             }
-        },  5000);
+        }, 5000);
     }
 
     private void recycleTimer() {
@@ -348,6 +409,14 @@ public class CallActivity extends AppCompatActivity {
             timer.cancel();
             timer = null;
         }
+    }
+
+    private void setRecordingActivityNotification(final CharSequence text) {
+        runOnUiThread(() -> {
+            final TextView recordingNotification = findViewById(R.id.recordingNotification);
+            recordingNotification.setText(text);
+            recordingNotification.setMovementMethod(LinkMovementMethod.getInstance());
+        });
     }
 
     private void setParticipantCountToFloatingHeader(final Integer text) {
@@ -363,7 +432,7 @@ public class CallActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Share button clicked!");
         final Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, callingContext.getGroupId());
+        sendIntent.putExtra(Intent.EXTRA_TEXT, callingContext.getJoinId());
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
         sendIntent.setType("text/plain");
         final Intent shareIntent = Intent.createChooser(sendIntent, null);
@@ -371,28 +440,37 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void setLayoutComponentState(
-            final boolean isMicrophoneMuted, final boolean isCameraOn, final boolean isCallHangUpOverLaid) {
+            final boolean isMicrophoneMuted, final boolean isCameraOn,
+            final boolean isCallHangUpOverLaid, final boolean isInLobbyWaitingOverlaid,
+            final boolean isProgressBarVisible) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
+        inLobbyWaitingOverlay.setVisibility(isInLobbyWaitingOverlaid ? View.VISIBLE : View.INVISIBLE);
+        callActivityProgressBar.setVisibility(isProgressBarVisible ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void openHangupDialog() {
-        if (!callHangUpOverlaid) {
-            callHangUpOverlaid = true;
+        if (callHangupOverlay.getVisibility() != View.VISIBLE) {
             callHangupOverlay.setVisibility(View.VISIBLE);
         }
     }
 
     private void closeHangupDialog() {
-        if (callHangUpOverlaid) {
-            callHangUpOverlaid = false;
+        if (callHangupOverlay.getVisibility() == View.VISIBLE) {
             callHangupOverlay.setVisibility(View.GONE);
         }
     }
 
     private void hangup() {
         Log.d(LOG_TAG, "Hangup button clicked!");
+        endCall();
+        final Intent intent = new Intent(this, EndActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void endCall() {
         if (localParticipantView != null) {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
@@ -400,9 +478,6 @@ public class CallActivity extends AppCompatActivity {
         stopService(inCallServiceIntent);
         callHangupConfirmButton.setEnabled(false);
         callingContext.hangupAsync();
-        final Intent intent = new Intent(this, EndActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private void toggleVideo(final boolean isSelected) {
@@ -492,6 +567,11 @@ public class CallActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        callActivityProgressBar = findViewById(R.id.call_activity_progress_bar);
+        showCallActivityProgressBar();
+
+        inLobbyWaitingOverlay = findViewById(R.id.in_lobby_waiting_overlay);
+
         videoImageButton = findViewById(R.id.call_video);
         videoImageButton.setOnClickListener(l -> toggleVideo(videoImageButton.isSelected()));
 
@@ -511,8 +591,11 @@ public class CallActivity extends AppCompatActivity {
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
         infoHeaderView = findViewById(R.id.info_header);
+        recordingActivityHeader = findViewById(R.id.recordingActivityHeader);
+        final ImageButton closeButtonForRecordingNotification = findViewById(R.id.closeRecordingNotification);
         gridLayout = findViewById(R.id.groupCallTable);
         localVideoViewContainer = findViewById(R.id.yourCameraHolder);
+        callHangupOverlay = findViewById(R.id.call_hangup_overlay);
 
         gridLayout.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -525,7 +608,9 @@ public class CallActivity extends AppCompatActivity {
             return false;
         });
 
-        callHangupOverlay = findViewById(R.id.call_hangup_overlay);
+        closeButtonForRecordingNotification.setOnClickListener(v -> {
+            recordingActivityHeader.setVisibility(View.GONE);
+        });
     }
 
     private void setupGridLayout() {
@@ -595,5 +680,50 @@ public class CallActivity extends AppCompatActivity {
         params.height = height;
         cell.setLayoutParams(params);
         return cell;
+    }
+
+    private void hideCallActivityProgressBar() {
+        if (callActivityProgressBar.getVisibility() == View.VISIBLE) {
+            callActivityProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void showCallActivityProgressBar() {
+        if (callActivityProgressBar.getVisibility() != View.VISIBLE) {
+            callActivityProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showInLobbyWaitingOverlay() {
+        if (inLobbyWaitingOverlay.getVisibility() != View.VISIBLE) {
+            inLobbyWaitingOverlay.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideInLobbyWaitingOverlay() {
+        if (inLobbyWaitingOverlay.getVisibility() == View.VISIBLE) {
+            inLobbyWaitingOverlay.setVisibility(View.GONE);
+        }
+    }
+
+    private void showMeetingAccessDeniedAlertDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Sorry, you were denied access to the meeting")
+                .setCancelable(false)
+                .setPositiveButton("Dismiss", (dialog, result) -> {
+                    endCall();
+                    finish();
+                });
+        builder.create().show();
+    }
+
+    private void showRemovedFromTeamsMeetingAlertDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("You've been removed from this meeting")
+                .setCancelable(false)
+                .setPositiveButton("Dismiss", (dialog, result) -> {
+                    hangup();
+                });
+        builder.create().show();
     }
 }

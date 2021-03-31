@@ -9,22 +9,24 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.azure.android.communication.calling.CallState;
+import com.azure.android.communication.calling.JoinMeetingLocator;
 import com.azure.android.communication.calling.AudioOptions;
 import com.azure.android.communication.calling.Call;
 import com.azure.android.communication.calling.CallAgent;
 import com.azure.android.communication.calling.CallAgentOptions;
 import com.azure.android.communication.calling.CallClient;
-import com.azure.android.communication.calling.CallState;
 import com.azure.android.communication.calling.DeviceManager;
 import com.azure.android.communication.calling.GroupCallLocator;
 import com.azure.android.communication.calling.HangUpOptions;
 import com.azure.android.communication.calling.JoinCallOptions;
-import com.azure.android.communication.calling.JoinMeetingLocator;
 import com.azure.android.communication.calling.LocalVideoStream;
 import com.azure.android.communication.calling.ParticipantsUpdatedEvent;
+import com.azure.android.communication.calling.PropertyChangedEvent;
 import com.azure.android.communication.calling.PropertyChangedListener;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStreamsUpdatedListener;
+import com.azure.android.communication.calling.TeamsMeetingLinkLocator;
 import com.azure.android.communication.calling.VideoDeviceInfo;
 import com.azure.android.communication.calling.VideoOptions;
 import com.azure.android.communication.common.CommunicationIdentifier;
@@ -56,7 +58,7 @@ public class CallingContext {
     Context appContext;
 
     private final Callable<String> tokenFetcher;
-    private String groupId;
+    private String joinId;
     private CallClient callClient;
     private Call call;
     private String displayName;
@@ -71,10 +73,13 @@ public class CallingContext {
     private boolean cameraOn;
     private boolean micOn;
     private boolean isVideoOnHold = false;
+    private boolean isRecordingActive = false;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
     private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
+    private final MutableLiveData<CallState> callStateLiveData;
+    private final MutableLiveData<Boolean> recordingStateLiveData;
     private final Set<String> displayedRemoteParticipantIds;
 
     private final Map<String, RemoteVideoStreamsUpdatedListener> videoStreamsUpdatedListenersMap;
@@ -92,6 +97,8 @@ public class CallingContext {
         remoteParticipantsMap = new HashMap<>();
         displayedRemoteParticipants = new ArrayList<>();
         displayedParticipantsLiveData = new MutableLiveData<>();
+        callStateLiveData = new MutableLiveData<>();
+        recordingStateLiveData = new MutableLiveData<>();
         displayedRemoteParticipantIds = new HashSet<>();
         videoStreamsUpdatedListenersMap = new HashMap<>();
         mutedChangedListenersMap = new HashMap<>();
@@ -158,8 +165,12 @@ public class CallingContext {
         callClient = new CallClient();
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getJoinId() {
+        return joinId;
+    }
+
+    public boolean isRecordingActive() {
+        return isRecordingActive;
     }
 
     /**
@@ -171,13 +182,21 @@ public class CallingContext {
         callAgentCompletableFuture = new CompletableFuture<>();
         createTokenCredential();
         createCallAgent(joinCallConfig.getDisplayName());
-
-        if (joinCallConfig.getGroupId() == null) {
-            groupId = UUID.randomUUID().toString();
-        } else {
-            groupId = joinCallConfig.getGroupId();
+        final JoinMeetingLocator callLocator;
+        joinId = joinCallConfig.getJoinId();
+        switch (joinCallConfig.getCallType()) {
+            case GROUP_CALL:
+                if (joinId == null) {
+                    joinId = UUID.randomUUID().toString();
+                }
+                callLocator = new GroupCallLocator(UUID.fromString(joinId));
+                break;
+            case TEAMS_MEETING:
+                callLocator = new TeamsMeetingLinkLocator(joinId);
+                break;
+            default:
+                throw new IllegalStateException("Illegal value for CallType.");
         }
-        final GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(groupId));
 
         final AudioOptions audioOptions = new AudioOptions();
         audioOptions.setMuted(joinCallConfig.isMicrophoneMuted());
@@ -187,16 +206,18 @@ public class CallingContext {
             if (joinCallConfig.isCameraOn()) {
                 localVideoStreamCompletableFuture.thenAccept(localVideoStream -> {
                     final VideoOptions videoOptions = new VideoOptions(localVideoStream);
-                    callWithOptions(agent, audioOptions, videoOptions, groupCallLocator);
+                    callWithOptions(agent, audioOptions, videoOptions, callLocator);
                 });
             } else {
-                callWithOptions(agent, audioOptions, null, groupCallLocator);
+                callWithOptions(agent, audioOptions, null, callLocator);
             }
         });
     }
 
     public CompletableFuture hangupAsync() {
         call.removeOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
+        call.removeOnStateChangedListener(this::onStateChanged);
+        call.removeOnIsRecordingActiveChangedListener(this::onRecordingChanged);
         return call.hangUp(new HangUpOptions());
     }
 
@@ -259,6 +280,14 @@ public class CallingContext {
 
     public MutableLiveData<List<RemoteParticipant>> getDisplayedParticipantsLiveData() {
         return displayedParticipantsLiveData;
+    }
+
+    public MutableLiveData<CallState> getCallStateLiveData() {
+        return callStateLiveData;
+    }
+
+    public MutableLiveData<Boolean> getRecordingStateLiveData() {
+        return recordingStateLiveData;
     }
 
     //endregion
@@ -332,24 +361,40 @@ public class CallingContext {
             final CallAgent agent,
             final AudioOptions audioOptions,
             final VideoOptions videoOptions,
-            final JoinMeetingLocator groupCallLocator) {
+            final JoinMeetingLocator joinMeetingLocator) {
         final JoinCallOptions joinCallOptions = new JoinCallOptions();
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
-        call = agent.join(appContext, groupCallLocator, joinCallOptions);
-        Log.d(LOG_TAG, "Call ID: " + groupId);
+        call = agent.join(appContext, joinMeetingLocator, joinCallOptions);
+        Log.d(LOG_TAG, "JOIN ID: " + joinId);
 
         call.addOnStateChangedListener(propertyChangedEvent -> {
+            onStateChanged(propertyChangedEvent);
             final CallState state = call.getState();
             if (state == CallState.CONNECTED) {
-                addParticipants(call.getRemoteParticipants());
-                displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
+                if (joinMeetingLocator.getClass() == GroupCallLocator.class) {
+                    addParticipants(call.getRemoteParticipants());
+                    displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
+                }
             }
         });
         call.addOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
+        call.addOnIsRecordingActiveChangedListener(this::onRecordingChanged);
 
         cameraOn = (videoOptions != null);
         micOn = !audioOptions.isMuted();
+    }
+
+    private void onStateChanged(final PropertyChangedEvent propertyChangedEvent) {
+        callStateLiveData.postValue(call.getState());
+    }
+
+    private void onRecordingChanged(final PropertyChangedEvent propertyChangedEvent) {
+        final boolean newRecordingActive = call.isRecordingActive();
+        if (newRecordingActive != isRecordingActive) {
+            isRecordingActive = newRecordingActive;
+            recordingStateLiveData.postValue(isRecordingActive);
+        }
     }
 
     private boolean addParticipants(final List<RemoteParticipant> addedParticipants) {

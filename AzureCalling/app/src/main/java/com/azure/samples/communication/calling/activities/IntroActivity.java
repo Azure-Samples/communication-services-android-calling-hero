@@ -14,9 +14,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.azure.samples.communication.calling.helpers.JoinCallType;
+import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.authentication.AADAuthHandler;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
+
 import com.azure.samples.communication.calling.helpers.AppSettings;
 
 public class IntroActivity extends AppCompatActivity {
@@ -116,6 +119,7 @@ public class IntroActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Setup new meeting button clicked!");
         ((AzureCalling) getApplication()).createCallingContext();
         final Intent intent = new Intent(this, SetupActivity.class);
+        intent.putExtra(Constants.CALL_TYPE, JoinCallType.GROUP_CALL);
         startActivity(intent);
     }
 
