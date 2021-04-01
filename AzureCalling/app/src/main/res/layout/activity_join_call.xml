@@ -25,7 +25,7 @@
             android:checked="true"
             android:fontFamily="sans-serif-medium"
             android:paddingLeft="10dp"
-            android:text="@string/meeting_id_enter" />
+            android:text="@string/join_enter" />
 
         <EditText
             android:id="@+id/group_call_text"
@@ -35,7 +35,7 @@
             android:autofillHints="Meeting ID"
             android:ellipsize="end"
             android:ems="10"
-            android:hint="@string/join_group_call_hint"
+            android:hint="@string/join_join_hint"
             android:inputType="textNoSuggestions"
             android:singleLine="true"
             android:textColorHint="@color/textbox_secondary" />

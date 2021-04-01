@@ -6,16 +6,10 @@
     <string name="intro_join">Join a call</string>
     <string name="intro_learn"><a href="https://aka.ms/ACS-CallingSample-Android">Learn more</a> about this sample app</string>
     <string name="intro_cloud_cd">cloud</string>
+    <string name="intro_sign_in">Sign in to Microsoft Account</string>
+    <string name="intro_sign_out">Sign out</string>
 
     <string name="title_activity_join_call">JoinCall</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="meeting_id_enter">Meeting ID</string>
-    <string name="join_teams_enter">Join a Teams meeting</string>
-    <string name="join_group_call_hint">ex. 4fe34380-81e5-11eb-a16e-6161a3176f61</string>
-    <string name="join_teams_meeting_hint">ex. https://teams.microsoft.com/l/meetup-join/...</string>
     <string name="join_enter">Enter meeting ID</string>
     <string name="join_join_hint">ex. 4fe34380-81e5-11eb-a16e-6161a3176f61</string>
     <string name="join_start">Join Call</string>
@@ -44,15 +38,17 @@
     <string name="call_video">Toggle Video</string>
     <string name="call_audio">Toggle Audio</string>
     <string name="number_of_participants">Number of participants:</string>
-    <string name="intro_sign_in">Sign in to Microsoft Account</string>
-    <string name="intro_sign_out">Sign out</string>
-    <string name="in_lobby_waiting_message_title">Waiting for host</string>
-    <string name="in_lobby_waiting_message_description">Someone in the meeting will let you in soon</string>
+
     <string name="end_call">Call ended</string>
     <string name="end_have">Have any feedback for us? We’d love to hear how we can improve this experience.</string>
     <string name="end_feedback">Provide feedback</string>
-    <string name="end_feedbackUrl">https://github.com/Azure/Communication/issues</string>
+    <string name="end_feedbackUrl">https://aka.ms/ACS-CallingSample-Android-Issues</string>
     <string name="end_return">Return to home screen</string>
+
+    <string name="join_teams_enter">Join a Teams meeting</string>
+    <string name="join_teams_meeting_hint">ex. https://teams.microsoft.com/l/meetup-join/...</string>
+    <string name="in_lobby_waiting_message_title">Waiting for host</string>
+    <string name="in_lobby_waiting_message_description">Someone in the meeting will let you in soon</string>
     <string name="start_recording"><b>Recording has started.</b> This meeting is being recorded. By joining, you are giving consent for this meeting to be recorded.
         <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
     <string name="stop_recording"><b>Recording is being saved. </b>Recording has stopped.
