@@ -33,7 +33,7 @@
                 android:id="@+id/display_name"
                 android:layout_width="wrap_content"
                 android:maxLines="1"
-                android:inputType="text"
+                android:inputType="textNoSuggestions"
                 app:autoSizeTextType="uniform"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
