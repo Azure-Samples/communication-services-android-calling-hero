@@ -7,7 +7,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/recordingActivityHeader"
+        android:id="@+id/noticeBanner"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@color/recording_transcription_notification_bar"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/info_header">
         <TextView
-            android:id="@+id/recordingNotification"
+            android:id="@+id/noticeBannerText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
@@ -33,7 +33,7 @@
             android:layout_marginEnd="40dp"
             android:layout_marginStart="12dp" />
         <ImageButton
-            android:id="@+id/closeRecordingNotification"
+            android:id="@+id/closeNoticeBannerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,7 +53,7 @@
         android:alpha="0.8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recordingActivityHeader">
+        app:layout_constraintTop_toBottomOf="@+id/noticeBanner">
         <TextView
             android:id="@+id/participantTextView"
             android:layout_width="wrap_content"

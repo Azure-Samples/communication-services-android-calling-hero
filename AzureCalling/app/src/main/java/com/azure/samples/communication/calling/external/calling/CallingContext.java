@@ -74,12 +74,14 @@ public class CallingContext {
     private boolean micOn;
     private boolean isVideoOnHold = false;
     private boolean isRecordingActive = false;
+    private boolean isTranscriptionActive = false;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
     private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
     private final MutableLiveData<CallState> callStateLiveData;
     private final MutableLiveData<Boolean> recordingStateLiveData;
+    private final MutableLiveData<Boolean> transcriptionStateLiveData;
     private final Set<String> displayedRemoteParticipantIds;
 
     private final Map<String, RemoteVideoStreamsUpdatedListener> videoStreamsUpdatedListenersMap;
@@ -99,6 +101,7 @@ public class CallingContext {
         displayedParticipantsLiveData = new MutableLiveData<>();
         callStateLiveData = new MutableLiveData<>();
         recordingStateLiveData = new MutableLiveData<>();
+        transcriptionStateLiveData = new MutableLiveData<>();
         displayedRemoteParticipantIds = new HashSet<>();
         videoStreamsUpdatedListenersMap = new HashMap<>();
         mutedChangedListenersMap = new HashMap<>();
@@ -171,6 +174,10 @@ public class CallingContext {
 
     public boolean isRecordingActive() {
         return isRecordingActive;
+    }
+
+    public Boolean isTranscriptionActive() {
+        return isTranscriptionActive;
     }
 
     /**
@@ -290,6 +297,10 @@ public class CallingContext {
         return recordingStateLiveData;
     }
 
+    public MutableLiveData<Boolean> getTranscriptionStateLiveData() {
+        return transcriptionStateLiveData;
+    }
+
     //endregion
     //region Private Methods
 
@@ -380,6 +391,7 @@ public class CallingContext {
         });
         call.addOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
         call.addOnIsRecordingActiveChangedListener(this::onRecordingChanged);
+        call.addOnIsTranscriptionActiveChangedListener(this::onTranscriptionChanged);
 
         cameraOn = (videoOptions != null);
         micOn = !audioOptions.isMuted();
@@ -394,6 +406,14 @@ public class CallingContext {
         if (newRecordingActive != isRecordingActive) {
             isRecordingActive = newRecordingActive;
             recordingStateLiveData.postValue(isRecordingActive);
+        }
+    }
+
+    private void onTranscriptionChanged(final PropertyChangedEvent propertyChangedEvent) {
+        final boolean newTranscriptionActive = call.isTranscriptionActive();
+        if (newTranscriptionActive != isTranscriptionActive) {
+            isTranscriptionActive = newTranscriptionActive;
+            transcriptionStateLiveData.postValue(isTranscriptionActive);
         }
     }
 
