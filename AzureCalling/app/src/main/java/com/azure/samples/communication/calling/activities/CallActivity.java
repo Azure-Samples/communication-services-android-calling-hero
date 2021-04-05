@@ -65,7 +65,8 @@ public class CallActivity extends AppCompatActivity {
     private ImageButton audioImageButton;
     private LinearLayout callHangupOverlay;
     private View infoHeaderView;
-    private View recordingActivityHeader;
+    private View noticeBannerView;
+    private TextView noticeBannerText;
     private Timer timer;
     private Integer localParticipantViewGridIndex;
     private Map<String, Integer> participantIdIndexPathMap;
@@ -102,6 +103,7 @@ public class CallActivity extends AppCompatActivity {
         initializeDisplayedParticipantsLiveData();
         initializeCallStateLiveData();
         initializeRecordingStateLiveData();
+        initializeTranscriptionStateLiveData();
         
         /* get Join Call Config */
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
@@ -150,9 +152,18 @@ public class CallActivity extends AppCompatActivity {
 
     private void initializeRecordingStateLiveData() {
         final Observer<Boolean> observerRecordingState = recordingState -> {
-            showRecordingActiveNotification();
+            showNoticeBanner(NoticeBannerType.RECORDING);
+            showNoticeBanner();
         };
         callingContext.getRecordingStateLiveData().observe(this, observerRecordingState);
+    }
+
+    private void initializeTranscriptionStateLiveData() {
+        final Observer<Boolean> observerTranscriptionState = transcriptionState -> {
+            showNoticeBanner(NoticeBannerType.TRANSCRIPTION);
+            showNoticeBanner();
+        };
+        callingContext.getTranscriptionStateLiveData().observe(this, observerTranscriptionState);
     }
 
     private void initializeDisplayedParticipantsLiveData() {
@@ -185,12 +196,14 @@ public class CallActivity extends AppCompatActivity {
         final boolean callHangUpOverlaid = callHangupOverlay.getVisibility() == View.VISIBLE;
         final boolean isInLobbyWaitingOverlaid = inLobbyWaitingOverlay.getVisibility() == View.VISIBLE;
         final boolean isProgressBarVisible = callActivityProgressBar.getVisibility() == View.VISIBLE;
-        final boolean isRecordingActivityHeaderVisible = recordingActivityHeader.getVisibility() == View.VISIBLE;
+        final boolean isFloatingHeaderAreaVisible = noticeBannerView.getVisibility() == View.VISIBLE;
+        final CharSequence textForFloatingHeader = noticeBannerText.getText();
         setStatusBarVisibility();
         setupScreenLayout();
         setVideoImageButtonEnabledState();
-        if (isRecordingActivityHeaderVisible) {
-            showRecordingActiveNotification();
+        if (isFloatingHeaderAreaVisible) {
+            setNoticeBannerText(textForFloatingHeader);
+            showNoticeBanner();
         }
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
                 callHangUpOverlaid, isInLobbyWaitingOverlaid,
@@ -362,14 +375,37 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
-    private void showRecordingActiveNotification() {
-        if (callingContext.isRecordingActive()) {
-            setRecordingActivityNotification(getText(R.string.start_recording));
-        } else {
-            setRecordingActivityNotification(getText(R.string.stop_recording));
+    private void showNoticeBanner(final NoticeBannerType noticeBannerType) {
+        if (callingContext.isRecordingActive() && callingContext.isTranscriptionActive()) {
+            setNoticeBannerText(getText(R.string.start_recording_and_transcribing));
+            return;
         }
-        recordingActivityHeader.setVisibility(View.VISIBLE);
-        recordingActivityHeader.bringToFront();
+        if (noticeBannerType == NoticeBannerType.RECORDING) {
+            if (callingContext.isRecordingActive()) {
+                setNoticeBannerText(getText(R.string.start_recording));
+            } else {
+                if (callingContext.isTranscriptionActive()) {
+                    setNoticeBannerText(getText(R.string.stop_recording_while_transcribing));
+                } else {
+                    setNoticeBannerText(getText(R.string.stop_recording));
+                }
+            }
+        } else if (noticeBannerType == NoticeBannerType.TRANSCRIPTION) {
+            if (callingContext.isTranscriptionActive()) {
+                setNoticeBannerText(getText(R.string.start_transcribing));
+            } else {
+                if (callingContext.isRecordingActive()) {
+                    setNoticeBannerText(getText(R.string.stop_transcribing_while_recording));
+                } else {
+                    setNoticeBannerText(getText(R.string.stop_transcribing));
+                }
+            }
+        }
+    }
+
+    private void showNoticeBanner() {
+        noticeBannerView.setVisibility(View.VISIBLE);
+        noticeBannerView.bringToFront();
     }
 
     private void updateParticipantNotificationCount() {
@@ -411,11 +447,10 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void setRecordingActivityNotification(final CharSequence text) {
+    private void setNoticeBannerText(final CharSequence text) {
         runOnUiThread(() -> {
-            final TextView recordingNotification = findViewById(R.id.recordingNotification);
-            recordingNotification.setText(text);
-            recordingNotification.setMovementMethod(LinkMovementMethod.getInstance());
+            noticeBannerText.setText(text);
+            noticeBannerText.setMovementMethod(LinkMovementMethod.getInstance());
         });
     }
 
@@ -591,8 +626,9 @@ public class CallActivity extends AppCompatActivity {
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
         infoHeaderView = findViewById(R.id.info_header);
-        recordingActivityHeader = findViewById(R.id.recordingActivityHeader);
-        final ImageButton closeButtonForRecordingNotification = findViewById(R.id.closeRecordingNotification);
+        noticeBannerView = findViewById(R.id.noticeBanner);
+        noticeBannerText = findViewById(R.id.noticeBannerText);
+        final ImageButton closeButtonForRecordingNotification = findViewById(R.id.closeNoticeBannerButton);
         gridLayout = findViewById(R.id.groupCallTable);
         localVideoViewContainer = findViewById(R.id.yourCameraHolder);
         callHangupOverlay = findViewById(R.id.call_hangup_overlay);
@@ -609,7 +645,7 @@ public class CallActivity extends AppCompatActivity {
         });
 
         closeButtonForRecordingNotification.setOnClickListener(v -> {
-            recordingActivityHeader.setVisibility(View.GONE);
+            noticeBannerView.setVisibility(View.GONE);
         });
     }
 
@@ -725,5 +761,10 @@ public class CallActivity extends AppCompatActivity {
                     hangup();
                 });
         builder.create().show();
+    }
+
+    private enum NoticeBannerType {
+        RECORDING,
+        TRANSCRIPTION
     }
 }
