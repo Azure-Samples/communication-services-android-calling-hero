@@ -1,3 +1,12 @@
+---
+page_type: sample
+languages:
+- java
+products:
+- azure
+- azure-communication-services
+---
+
 # Group Calling Sample
 
 The sample is a native Android application that uses the Azure Communication Services Android client libraries to build a calling experience that features both voice and video calling. The application uses a server-side component to provision access tokens that are then used to initialize the Azure Communication Services client library. To configure this server-side component, feel free to follow the [Trusted Service with Azure Functions](https://docs.microsoft.com/azure/communication-services/tutorials/trusted-service-tutorial) tutorial.
