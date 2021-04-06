@@ -12,11 +12,11 @@ public class JoinCallConfig implements Serializable {
     private final String displayName;
 
     public JoinCallConfig(
-            final String groupId,
+            final String joinId,
             final boolean isMicrophoneMuted,
             final boolean isCameraOn,
             final String displayName) {
-        this.joinId = groupId;
+        this.joinId = joinId;
         this.isMicrophoneMuted = isMicrophoneMuted;
         this.isCameraOn = isCameraOn;
         this.displayName = displayName;

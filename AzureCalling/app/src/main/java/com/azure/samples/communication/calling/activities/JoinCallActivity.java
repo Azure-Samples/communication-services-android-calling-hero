@@ -98,8 +98,8 @@ public class JoinCallActivity extends AppCompatActivity {
     private void joinCall() {
         Log.d(LOG_TAG, "Join call button clicked!");
         final String joinId = editTextTextMeetingName.getText().toString().trim();
-        if (!isValidGroupID(joinId)) {
-            showInvalidGroupIDDialog();
+        if (!isValidJoinID(joinId)) {
+            showInvalidJoinIDDialog();
         } else {
             final Intent intent = new Intent(this, SetupActivity.class);
             intent.putExtra(Constants.JOIN_ID, joinId);
@@ -107,7 +107,7 @@ public class JoinCallActivity extends AppCompatActivity {
         }
     }
 
-    private void showInvalidGroupIDDialog() {
+    private void showInvalidJoinIDDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("The meeting ID entered is invalid. Please try again.")
                 .setTitle("Unable to join")
@@ -117,9 +117,9 @@ public class JoinCallActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private boolean isValidGroupID(final String groupId) {
+    private boolean isValidJoinID(final String joinID) {
         try {
-            return UUID.fromString(groupId).toString().equals(groupId);
+            return UUID.fromString(joinID).toString().equals(joinID);
         } catch (IllegalArgumentException exception) {
             return false;
         }

@@ -42,7 +42,7 @@ import java9.util.concurrent.CompletableFuture;
 public class SetupActivity extends AppCompatActivity {
     private static final String LOG_TAG = SetupActivity.class.getSimpleName();
 
-    private String groupId;
+    private String joinId;
     private EditText setupName;
     private LinearLayout setupMissingLayout;
     private ProgressBar setupProgressBar;
@@ -85,7 +85,7 @@ public class SetupActivity extends AppCompatActivity {
         final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
-        groupId = intent.getStringExtra(Constants.JOIN_ID);
+        joinId = intent.getStringExtra(Constants.JOIN_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
             runOnUiThread(() -> {
@@ -190,7 +190,7 @@ public class SetupActivity extends AppCompatActivity {
                     rendererView.dispose();
                 }
                 final JoinCallConfig joinCallConfig = new JoinCallConfig(
-                        groupId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
+                        joinId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
                         setupName.getText().toString());
                 finishAffinity();
                 final Intent intent = new Intent(this, CallActivity.class);
