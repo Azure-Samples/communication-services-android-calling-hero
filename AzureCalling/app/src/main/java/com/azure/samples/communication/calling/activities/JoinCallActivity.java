@@ -3,6 +3,7 @@
 
 package com.azure.samples.communication.calling.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import java.util.UUID;
 public class JoinCallActivity extends AppCompatActivity {
     private static final String LOG_TAG = JoinCallActivity.class.getSimpleName();
     private EditText editTextTextMeetingName;
+    private ActivityResultLauncher<Intent> mStartForResult;
     private Button joinButton;
     private TextView joinButtonText;
 
@@ -41,6 +45,15 @@ public class JoinCallActivity extends AppCompatActivity {
         }
 
         initializeUI();
+
+        // JoinCallActivity is destroyed when user open
+        // change application permissions dialog from setup activity
+        mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    finish();
+                }
+            });
     }
 
     @Override
@@ -55,6 +68,7 @@ public class JoinCallActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(LOG_TAG, "JoinCallActivity - onDestroy");
+        mStartForResult.unregister();
         super.onDestroy();
     }
 
@@ -103,7 +117,7 @@ public class JoinCallActivity extends AppCompatActivity {
         } else {
             final Intent intent = new Intent(this, SetupActivity.class);
             intent.putExtra(Constants.GROUP_ID, groupId);
-            startActivity(intent);
+            mStartForResult.launch(intent);
         }
     }
 

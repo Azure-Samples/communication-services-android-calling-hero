@@ -60,7 +60,6 @@
             android:name="com.azure.samples.communication.calling.activities.SetupActivity"
             android:exported="true"
             android:label="@string/title_activity_setup"
-            android:taskAffinity="com.azure.samples.communication.calling.setupaffinity"
             android:windowSoftInputMode="adjustPan"
             android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
             android:screenOrientation="portrait" />
@@ -68,7 +67,6 @@
             android:name="com.azure.samples.communication.calling.activities.JoinCallActivity"
             android:exported="true"
             android:label="@string/title_activity_join_call"
-            android:taskAffinity="com.azure.samples.communication.calling.setupaffinity"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
             android:screenOrientation="portrait" />

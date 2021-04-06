@@ -178,8 +178,9 @@ public class SetupActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
-        finishAffinity();
         startActivity(intent);
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void startCall() {
