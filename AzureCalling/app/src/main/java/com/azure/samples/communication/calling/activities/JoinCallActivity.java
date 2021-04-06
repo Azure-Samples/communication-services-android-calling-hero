@@ -97,12 +97,12 @@ public class JoinCallActivity extends AppCompatActivity {
 
     private void joinCall() {
         Log.d(LOG_TAG, "Join call button clicked!");
-        final String groupId = editTextTextMeetingName.getText().toString().trim();
-        if (!isValidGroupID(groupId)) {
+        final String joinId = editTextTextMeetingName.getText().toString().trim();
+        if (!isValidGroupID(joinId)) {
             showInvalidGroupIDDialog();
         } else {
             final Intent intent = new Intent(this, SetupActivity.class);
-            intent.putExtra(Constants.GROUP_ID, groupId);
+            intent.putExtra(Constants.JOIN_ID, joinId);
             startActivity(intent);
         }
     }

@@ -6,7 +6,7 @@ package com.azure.samples.communication.calling.external.calling;
 import java.io.Serializable;
 
 public class JoinCallConfig implements Serializable {
-    private final String groupId;
+    private final String joinId;
     private final boolean isMicrophoneMuted;
     private final boolean isCameraOn;
     private final String displayName;
@@ -16,14 +16,14 @@ public class JoinCallConfig implements Serializable {
             final boolean isMicrophoneMuted,
             final boolean isCameraOn,
             final String displayName) {
-        this.groupId = groupId;
+        this.joinId = groupId;
         this.isMicrophoneMuted = isMicrophoneMuted;
         this.isCameraOn = isCameraOn;
         this.displayName = displayName;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getJoinId() {
+        return joinId;
     }
 
     public boolean isMicrophoneMuted() {

@@ -85,7 +85,7 @@ public class SetupActivity extends AppCompatActivity {
         final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
-        groupId = intent.getStringExtra(Constants.GROUP_ID);
+        groupId = intent.getStringExtra(Constants.JOIN_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
             runOnUiThread(() -> {

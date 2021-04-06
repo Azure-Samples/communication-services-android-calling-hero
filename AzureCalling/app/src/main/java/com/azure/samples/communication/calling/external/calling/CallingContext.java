@@ -56,7 +56,7 @@ public class CallingContext {
     Context appContext;
 
     private final Callable<String> tokenFetcher;
-    private String groupId;
+    private String joinId;
     private CallClient callClient;
     private Call call;
     private String displayName;
@@ -158,8 +158,8 @@ public class CallingContext {
         callClient = new CallClient();
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getJoinId() {
+        return joinId;
     }
 
     /**
@@ -172,12 +172,12 @@ public class CallingContext {
         createTokenCredential();
         createCallAgent(joinCallConfig.getDisplayName());
 
-        if (joinCallConfig.getGroupId() == null) {
-            groupId = UUID.randomUUID().toString();
+        if (joinCallConfig.getJoinId() == null) {
+            joinId = UUID.randomUUID().toString();
         } else {
-            groupId = joinCallConfig.getGroupId();
+            joinId = joinCallConfig.getJoinId();
         }
-        final GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(groupId));
+        final GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(joinId));
 
         final AudioOptions audioOptions = new AudioOptions();
         audioOptions.setMuted(joinCallConfig.isMicrophoneMuted());
@@ -337,7 +337,7 @@ public class CallingContext {
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
         call = agent.join(appContext, groupCallLocator, joinCallOptions);
-        Log.d(LOG_TAG, "Call ID: " + groupId);
+        Log.d(LOG_TAG, "Call ID: " + joinId);
 
         call.addOnStateChangedListener(propertyChangedEvent -> {
             final CallState state = call.getState();
