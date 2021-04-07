@@ -63,6 +63,8 @@ public class SetupActivity extends AppCompatActivity {
     private Button setupMissingButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
+    private PermissionState onStopAudioPermissionState;
+    private PermissionState onStopVideoPermissionState;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -164,6 +166,17 @@ public class SetupActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    protected void onResume() {
+        super.onResume();
+
+        if (isAudioPermissionChangedOnResume() || isVideoPermissionChangedOnResume()) {
+            final Intent intent = new Intent(this, IntroActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
+            startActivity(intent);
+        }
+    }
+
     @Override
     protected void onStop() {
         Log.d(LOG_TAG, "SetupActivity - onStop");
@@ -171,6 +184,21 @@ public class SetupActivity extends AppCompatActivity {
             rendererView.dispose();
         }
         super.onStop();
+
+        onStopAudioPermissionState = this.permissionHelper.getAudioPermissionState(this);
+        onStopVideoPermissionState = this.permissionHelper.getVideoPermissionState(this);
+    }
+
+    private boolean isAudioPermissionChangedOnResume() {
+        return onStopAudioPermissionState != null
+                && onStopAudioPermissionState
+                != this.permissionHelper.getAudioPermissionState(this);
+    }
+
+    private boolean isVideoPermissionChangedOnResume() {
+        return onStopVideoPermissionState != null
+                && onStopVideoPermissionState
+                != this.permissionHelper.getVideoPermissionState(this);
     }
 
     private void openSettings() {
@@ -179,8 +207,6 @@ public class SetupActivity extends AppCompatActivity {
         final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
         startActivity(intent);
-        setResult(RESULT_OK);
-        finish();
     }
 
     private void startCall() {
