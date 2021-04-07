@@ -21,6 +21,18 @@ public class EndActivity extends AppCompatActivity {
     private Button feedBackButton;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startIntroActivity();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(LOG_TAG, "EndActivity - onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end);
@@ -48,18 +60,6 @@ public class EndActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, IntroActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startIntroActivity();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d(LOG_TAG, "EndActivity - onDestroy");
-        super.onDestroy();
     }
 }
 
