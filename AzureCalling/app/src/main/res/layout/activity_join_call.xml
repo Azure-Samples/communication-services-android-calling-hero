@@ -56,12 +56,6 @@
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="10dp"
                 android:text="@string/join_teams_enter" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_fluent_teams_filled" />
         </RelativeLayout>
 
         <EditText
