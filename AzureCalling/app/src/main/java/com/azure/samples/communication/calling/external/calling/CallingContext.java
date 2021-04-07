@@ -171,26 +171,30 @@ public class CallingContext {
         callAgentCompletableFuture = new CompletableFuture<>();
         createTokenCredential();
         createCallAgent(joinCallConfig.getDisplayName());
-
-        if (joinCallConfig.getJoinId() == null) {
-            joinId = UUID.randomUUID().toString();
-        } else {
-            joinId = joinCallConfig.getJoinId();
+        final JoinMeetingLocator callLocator;
+        joinId = joinCallConfig.getJoinId();
+        switch (joinCallConfig.getCallType()) {
+            case GROUP_CALL:
+                if (joinId == null) {
+                    joinId = UUID.randomUUID().toString();
+                }
+                callLocator = new GroupCallLocator(UUID.fromString(joinId));
+                break;
+            default:
+                throw new IllegalStateException("Illegal value for CallType.");
         }
-        final GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(joinId));
 
         final AudioOptions audioOptions = new AudioOptions();
         audioOptions.setMuted(joinCallConfig.isMicrophoneMuted());
-
 
         return callAgentCompletableFuture.thenAccept(agent -> {
             if (joinCallConfig.isCameraOn()) {
                 localVideoStreamCompletableFuture.thenAccept(localVideoStream -> {
                     final VideoOptions videoOptions = new VideoOptions(localVideoStream);
-                    callWithOptions(agent, audioOptions, videoOptions, groupCallLocator);
+                    callWithOptions(agent, audioOptions, videoOptions, callLocator);
                 });
             } else {
-                callWithOptions(agent, audioOptions, null, groupCallLocator);
+                callWithOptions(agent, audioOptions, null, callLocator);
             }
         });
     }
