@@ -34,6 +34,7 @@ import com.azure.samples.communication.calling.external.calling.CallingContext;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 
@@ -43,6 +44,7 @@ public class SetupActivity extends AppCompatActivity {
     private static final String LOG_TAG = SetupActivity.class.getSimpleName();
 
     private String joinId;
+    private JoinCallType callType;
     private EditText setupName;
     private LinearLayout setupMissingLayout;
     private ProgressBar setupProgressBar;
@@ -85,6 +87,7 @@ public class SetupActivity extends AppCompatActivity {
         final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
+        callType = (JoinCallType) intent.getSerializableExtra(Constants.CALL_TYPE);
         joinId = intent.getStringExtra(Constants.JOIN_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
@@ -191,7 +194,7 @@ public class SetupActivity extends AppCompatActivity {
                 }
                 final JoinCallConfig joinCallConfig = new JoinCallConfig(
                         joinId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
-                        setupName.getText().toString());
+                        setupName.getText().toString(), callType);
                 finishAffinity();
                 final Intent intent = new Intent(this, CallActivity.class);
                 intent.putExtra(Constants.JOIN_CALL_CONFIG, joinCallConfig);

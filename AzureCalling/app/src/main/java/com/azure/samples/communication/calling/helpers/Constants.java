@@ -17,4 +17,6 @@ public class Constants {
     /* The key for the Join Call Config */
     public static final String JOIN_CALL_CONFIG = "JOIN_CALL_CONFIG";
 
+    /* The key for the Join Call Type */
+    public static final String CALL_TYPE = "CALL_TYPE";
 }

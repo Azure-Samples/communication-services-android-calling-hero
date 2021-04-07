@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 
 import java.util.UUID;
 
@@ -102,6 +103,7 @@ public class JoinCallActivity extends AppCompatActivity {
             showInvalidJoinIdDialog();
         } else {
             final Intent intent = new Intent(this, SetupActivity.class);
+            intent.putExtra(Constants.CALL_TYPE, JoinCallType.GROUP_CALL);
             intent.putExtra(Constants.JOIN_ID, joinId);
             startActivity(intent);
         }
