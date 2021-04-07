@@ -364,7 +364,7 @@ public class CallActivity extends AppCompatActivity {
         final Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, callingContext.getJoinId());
-        sendIntent.putExtra(Intent.EXTRA_TITLE, "Join Call ID");
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
         sendIntent.setType("text/plain");
         final Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
