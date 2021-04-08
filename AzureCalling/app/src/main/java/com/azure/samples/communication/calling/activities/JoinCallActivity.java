@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.helpers.JoinCallType;
@@ -70,13 +71,29 @@ public class JoinCallActivity extends AppCompatActivity {
     private void initializeUI() {
         groupCallEditText = findViewById(R.id.group_call_text);
         teamsMeetingEditText = findViewById(R.id.teams_meeting_text);
-
-        groupCallEditText.addTextChangedListener(onEditTextChanged());
-        teamsMeetingEditText.addTextChangedListener(onEditTextChanged());
-
         joinButton = findViewById(R.id.join_button);
         joinButtonMeetingText = findViewById(R.id.join_button_text);
         groupCallRadioButton = findViewById(R.id.group_call_radio_button);
+        teamsMeetingRadioButton = findViewById(R.id.teams_meeting_radio_button);
+
+        groupCallEditText.addTextChangedListener(onEditTextChanged());
+        groupCallEditText.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                groupCallRadioButton.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            } else {
+                groupCallRadioButton.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+            }
+        });
+
+        teamsMeetingEditText.addTextChangedListener(onEditTextChanged());
+        teamsMeetingEditText.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                teamsMeetingRadioButton.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            } else {
+                teamsMeetingRadioButton.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+            }
+        });
+
         groupCallRadioButton.setOnClickListener(l -> {
             groupCallEditText.setVisibility(View.VISIBLE);
             groupCallEditText.requestFocus();
@@ -86,7 +103,7 @@ public class JoinCallActivity extends AppCompatActivity {
                 teamsMeetingEditText.setVisibility(View.GONE);
             }
         });
-        teamsMeetingRadioButton = findViewById(R.id.teams_meeting_radio_button);
+
         teamsMeetingRadioButton.setOnClickListener(l -> {
             teamsMeetingEditText.setVisibility(View.VISIBLE);
             teamsMeetingEditText.requestFocus();
