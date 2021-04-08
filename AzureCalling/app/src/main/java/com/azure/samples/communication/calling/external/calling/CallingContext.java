@@ -56,7 +56,7 @@ public class CallingContext {
     Context appContext;
 
     private final Callable<String> tokenFetcher;
-    private String groupId;
+    private String joinId;
     private CallClient callClient;
     private Call call;
     private String displayName;
@@ -158,8 +158,8 @@ public class CallingContext {
         callClient = new CallClient();
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getJoinId() {
+        return joinId;
     }
 
     /**
@@ -171,26 +171,30 @@ public class CallingContext {
         callAgentCompletableFuture = new CompletableFuture<>();
         createTokenCredential();
         createCallAgent(joinCallConfig.getDisplayName());
-
-        if (joinCallConfig.getGroupId() == null) {
-            groupId = UUID.randomUUID().toString();
-        } else {
-            groupId = joinCallConfig.getGroupId();
+        final JoinMeetingLocator callLocator;
+        joinId = joinCallConfig.getJoinId();
+        switch (joinCallConfig.getCallType()) {
+            case GROUP_CALL:
+                if (joinId == null) {
+                    joinId = UUID.randomUUID().toString();
+                }
+                callLocator = new GroupCallLocator(UUID.fromString(joinId));
+                break;
+            default:
+                throw new IllegalStateException("Illegal value for CallType.");
         }
-        final GroupCallLocator groupCallLocator = new GroupCallLocator(UUID.fromString(groupId));
 
         final AudioOptions audioOptions = new AudioOptions();
         audioOptions.setMuted(joinCallConfig.isMicrophoneMuted());
-
 
         return callAgentCompletableFuture.thenAccept(agent -> {
             if (joinCallConfig.isCameraOn()) {
                 localVideoStreamCompletableFuture.thenAccept(localVideoStream -> {
                     final VideoOptions videoOptions = new VideoOptions(localVideoStream);
-                    callWithOptions(agent, audioOptions, videoOptions, groupCallLocator);
+                    callWithOptions(agent, audioOptions, videoOptions, callLocator);
                 });
             } else {
-                callWithOptions(agent, audioOptions, null, groupCallLocator);
+                callWithOptions(agent, audioOptions, null, callLocator);
             }
         });
     }
@@ -337,7 +341,7 @@ public class CallingContext {
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
         call = agent.join(appContext, groupCallLocator, joinCallOptions);
-        Log.d(LOG_TAG, "Call ID: " + groupId);
+        Log.d(LOG_TAG, "Call ID: " + joinId);
 
         call.addOnStateChangedListener(propertyChangedEvent -> {
             final CallState state = call.getState();

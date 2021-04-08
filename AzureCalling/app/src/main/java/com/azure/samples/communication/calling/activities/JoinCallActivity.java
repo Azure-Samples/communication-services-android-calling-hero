@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 
 import java.util.UUID;
 
@@ -106,17 +107,18 @@ public class JoinCallActivity extends AppCompatActivity {
 
     private void joinCall() {
         Log.d(LOG_TAG, "Join call button clicked!");
-        final String groupId = editTextTextMeetingName.getText().toString().trim();
-        if (!isValidGroupID(groupId)) {
-            showInvalidGroupIDDialog();
+        final String joinId = editTextTextMeetingName.getText().toString().trim();
+        if (!isValidJoinId(joinId)) {
+            showInvalidJoinIdDialog();
         } else {
             final Intent intent = new Intent(this, SetupActivity.class);
-            intent.putExtra(Constants.GROUP_ID, groupId);
+            intent.putExtra(Constants.CALL_TYPE, JoinCallType.GROUP_CALL);
+            intent.putExtra(Constants.JOIN_ID, joinId);
             startActivity(intent);
         }
     }
 
-    private void showInvalidGroupIDDialog() {
+    private void showInvalidJoinIdDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("The meeting ID entered is invalid. Please try again.")
                 .setTitle("Unable to join")
@@ -126,9 +128,9 @@ public class JoinCallActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private boolean isValidGroupID(final String groupId) {
+    private boolean isValidJoinId(final String joinId) {
         try {
-            return UUID.fromString(groupId).toString().equals(groupId);
+            return UUID.fromString(joinId).toString().equals(joinId);
         } catch (IllegalArgumentException exception) {
             return false;
         }

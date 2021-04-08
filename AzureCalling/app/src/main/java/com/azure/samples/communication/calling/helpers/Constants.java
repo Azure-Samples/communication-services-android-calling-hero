@@ -12,9 +12,11 @@ public class Constants {
     public static final int DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT = 3;
 
     /* The key for the meeting name */
-    public static final String GROUP_ID = "GROUP_ID";
+    public static final String JOIN_ID = "JOIN_ID";
 
     /* The key for the Join Call Config */
     public static final String JOIN_CALL_CONFIG = "JOIN_CALL_CONFIG";
 
+    /* The key for the Join Call Type */
+    public static final String CALL_TYPE = "CALL_TYPE";
 }
