@@ -6,6 +6,7 @@ package com.azure.samples.communication.calling.helpers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+
 import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;

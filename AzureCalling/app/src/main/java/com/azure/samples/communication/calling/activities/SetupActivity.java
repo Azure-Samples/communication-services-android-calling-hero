@@ -112,12 +112,6 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        Log.d(LOG_TAG, "SetupActivity - onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
@@ -127,6 +121,12 @@ public class SetupActivity extends AppCompatActivity {
             finish();
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(LOG_TAG, "SetupActivity - onDestroy");
+        super.onDestroy();
     }
 
     @Override
