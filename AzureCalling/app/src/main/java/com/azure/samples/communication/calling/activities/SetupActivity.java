@@ -241,7 +241,6 @@ public class SetupActivity extends AppCompatActivity {
                 final JoinCallConfig joinCallConfig = new JoinCallConfig(
                         joinId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
                         setupName.getText().toString(), callType);
-                finishAffinity();
                 final Intent intent = new Intent(this, CallActivity.class);
                 intent.putExtra(Constants.JOIN_CALL_CONFIG, joinCallConfig);
                 startActivity(intent);
