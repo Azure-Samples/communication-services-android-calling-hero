@@ -65,6 +65,17 @@ public class SetupActivity extends AppCompatActivity {
     private Button setupMissingButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
+    private PermissionState onStopAudioPermissionState;
+    private PermissionState onStopVideoPermissionState;
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -97,6 +108,36 @@ public class SetupActivity extends AppCompatActivity {
                 defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isAudioPermissionChangedOnResume() || isVideoPermissionChangedOnResume()) {
+            final Intent intent = new Intent(this, IntroActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(LOG_TAG, "SetupActivity - onStop");
+        if (rendererView != null) {
+            rendererView.dispose();
+        }
+        super.onStop();
+
+        onStopAudioPermissionState = this.permissionHelper.getAudioPermissionState(this);
+        onStopVideoPermissionState = this.permissionHelper.getVideoPermissionState(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(LOG_TAG, "SetupActivity - onDestroy");
+        super.onDestroy();
     }
 
     private void initializeUI() {
@@ -161,19 +202,16 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        Log.d(LOG_TAG, "SetupActivity - onDestroy");
-        super.onDestroy();
+    private boolean isAudioPermissionChangedOnResume() {
+        return onStopAudioPermissionState != null
+                && onStopAudioPermissionState
+                != this.permissionHelper.getAudioPermissionState(this);
     }
 
-    @Override
-    protected void onStop() {
-        Log.d(LOG_TAG, "SetupActivity - onStop");
-        if (rendererView != null) {
-            rendererView.dispose();
-        }
-        super.onStop();
+    private boolean isVideoPermissionChangedOnResume() {
+        return onStopVideoPermissionState != null
+                && onStopVideoPermissionState
+                != this.permissionHelper.getVideoPermissionState(this);
     }
 
     private void openSettings() {
@@ -181,7 +219,6 @@ public class SetupActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
-        finishAffinity();
         startActivity(intent);
     }
 
@@ -249,15 +286,6 @@ public class SetupActivity extends AppCompatActivity {
         previewVideo = null;
         videoToggleButton.setChecked(false);
         defaultAvatar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void handleButtonStates() {
@@ -336,6 +364,5 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
-
     }
 }
