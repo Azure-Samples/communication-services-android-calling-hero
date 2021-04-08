@@ -21,6 +21,8 @@ import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
 
 import com.azure.samples.communication.calling.helpers.AppSettings;
+import com.azure.samples.communication.calling.helpers.Constants;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 
 public class IntroActivity extends AppCompatActivity {
     private static final String LOG_TAG = IntroActivity.class.getSimpleName();

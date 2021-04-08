@@ -208,7 +208,6 @@ public class CallingContext {
         final AudioOptions audioOptions = new AudioOptions();
         audioOptions.setMuted(joinCallConfig.isMicrophoneMuted());
 
-
         return callAgentCompletableFuture.thenAccept(agent -> {
             if (joinCallConfig.isCameraOn()) {
                 localVideoStreamCompletableFuture.thenAccept(localVideoStream -> {

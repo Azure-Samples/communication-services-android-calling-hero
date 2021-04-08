@@ -71,8 +71,10 @@ public class JoinCallActivity extends AppCompatActivity {
     private void initializeUI() {
         groupCallEditText = findViewById(R.id.group_call_text);
         teamsMeetingEditText = findViewById(R.id.teams_meeting_text);
+
         joinButton = findViewById(R.id.join_button);
         joinButtonMeetingText = findViewById(R.id.join_button_text);
+
         groupCallRadioButton = findViewById(R.id.group_call_radio_button);
         teamsMeetingRadioButton = findViewById(R.id.teams_meeting_radio_button);
 
@@ -152,7 +154,7 @@ public class JoinCallActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Join call button clicked!");
         if (groupCallRadioButton.isChecked()) {
             final String joinId = groupCallEditText.getText().toString().trim();
-            if (!isValidJoinID(joinId)) {
+            if (!isValidJoinId(joinId)) {
                 showInvalidInputDialog();
             } else {
                 final Intent intent = new Intent(this, SetupActivity.class);
@@ -199,7 +201,7 @@ public class JoinCallActivity extends AppCompatActivity {
         return "The meeting link entered is invalid. Please try again.";
     }
 
-    private boolean isValidJoinID(final String joinId) {
+    private boolean isValidJoinId(final String joinId) {
         try {
             return UUID.fromString(joinId).toString().equals(joinId);
         } catch (IllegalArgumentException exception) {

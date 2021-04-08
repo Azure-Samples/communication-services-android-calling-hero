@@ -228,7 +228,6 @@ public class SetupActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
-        setResult(RESULT_OK);
         startActivity(intent);
     }
 
@@ -373,6 +372,5 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
-
     }
 }
