@@ -25,6 +25,7 @@
             android:checked="true"
             android:fontFamily="sans-serif-medium"
             android:paddingLeft="10dp"
+            android:textColor="@color/textbox_secondary"
             android:text="@string/join_enter" />
 
         <EditText
@@ -55,6 +56,7 @@
                 android:checked="false"
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="10dp"
+                android:textColor="@color/textbox_secondary"
                 android:text="@string/join_teams_enter" />
 
         </RelativeLayout>
