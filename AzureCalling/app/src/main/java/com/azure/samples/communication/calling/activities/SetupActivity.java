@@ -60,6 +60,7 @@ public class SetupActivity extends AppCompatActivity {
     private ToggleButton audioToggleButton;
     private Button joinButton;
     private TextView joinButtonText;
+    private TextView setupEnter;
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
@@ -163,6 +164,7 @@ public class SetupActivity extends AppCompatActivity {
         audioToggleButton.setChecked(true);
 
         setupName = findViewById(R.id.setup_name);
+        setupEnter = findViewById(R.id.setup_enter);
         setupName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
@@ -177,6 +179,13 @@ public class SetupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(final Editable editable) {
                 setJoinButtonState();
+            }
+        });
+        setupName.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                setupEnter.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            } else {
+                setupEnter.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
             }
         });
 

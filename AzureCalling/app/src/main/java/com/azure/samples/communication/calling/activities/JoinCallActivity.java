@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.R;
@@ -28,6 +29,7 @@ public class JoinCallActivity extends AppCompatActivity {
     private EditText editTextTextMeetingName;
     private Button joinButton;
     private TextView joinButtonText;
+    private TextView joinEnterText;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class JoinCallActivity extends AppCompatActivity {
 
     private void initializeUI() {
         editTextTextMeetingName = findViewById(R.id.join_meeting);
+        joinEnterText = findViewById(R.id.join_enter);
         editTextTextMeetingName.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(
@@ -91,7 +94,13 @@ public class JoinCallActivity extends AppCompatActivity {
                     }
                 }
             });
-
+        editTextTextMeetingName.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                joinEnterText.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            } else {
+                joinEnterText.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+            }
+        });
         joinButton = findViewById(R.id.join_button);
         joinButtonText = findViewById(R.id.join_button_text);
     }
