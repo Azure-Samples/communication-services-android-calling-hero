@@ -160,7 +160,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/setup_enter"
-            android:textColor="@color/textbox_primary" />
+            android:textColor="@color/textbox_secondary" />
 
         <EditText
             android:id="@+id/setup_name"

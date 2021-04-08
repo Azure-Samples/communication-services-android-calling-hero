@@ -16,9 +16,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 
 import java.util.UUID;
 
@@ -27,6 +29,7 @@ public class JoinCallActivity extends AppCompatActivity {
     private EditText editTextTextMeetingName;
     private Button joinButton;
     private TextView joinButtonText;
+    private TextView joinEnterText;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class JoinCallActivity extends AppCompatActivity {
 
     private void initializeUI() {
         editTextTextMeetingName = findViewById(R.id.join_meeting);
+        joinEnterText = findViewById(R.id.join_enter);
         editTextTextMeetingName.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(
@@ -90,24 +94,31 @@ public class JoinCallActivity extends AppCompatActivity {
                     }
                 }
             });
-
+        editTextTextMeetingName.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                joinEnterText.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            } else {
+                joinEnterText.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+            }
+        });
         joinButton = findViewById(R.id.join_button);
         joinButtonText = findViewById(R.id.join_button_text);
     }
 
     private void joinCall() {
         Log.d(LOG_TAG, "Join call button clicked!");
-        final String groupId = editTextTextMeetingName.getText().toString().trim();
-        if (!isValidGroupID(groupId)) {
-            showInvalidGroupIDDialog();
+        final String joinId = editTextTextMeetingName.getText().toString().trim();
+        if (!isValidJoinId(joinId)) {
+            showInvalidJoinIdDialog();
         } else {
             final Intent intent = new Intent(this, SetupActivity.class);
-            intent.putExtra(Constants.GROUP_ID, groupId);
+            intent.putExtra(Constants.CALL_TYPE, JoinCallType.GROUP_CALL);
+            intent.putExtra(Constants.JOIN_ID, joinId);
             startActivity(intent);
         }
     }
 
-    private void showInvalidGroupIDDialog() {
+    private void showInvalidJoinIdDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("The meeting ID entered is invalid. Please try again.")
                 .setTitle("Unable to join")
@@ -117,9 +128,9 @@ public class JoinCallActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private boolean isValidGroupID(final String groupId) {
+    private boolean isValidJoinId(final String joinId) {
         try {
-            return UUID.fromString(groupId).toString().equals(groupId);
+            return UUID.fromString(joinId).toString().equals(joinId);
         } catch (IllegalArgumentException exception) {
             return false;
         }

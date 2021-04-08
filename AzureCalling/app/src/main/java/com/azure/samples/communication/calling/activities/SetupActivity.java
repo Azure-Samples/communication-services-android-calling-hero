@@ -34,6 +34,7 @@ import com.azure.samples.communication.calling.external.calling.CallingContext;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 
@@ -42,7 +43,8 @@ import java9.util.concurrent.CompletableFuture;
 public class SetupActivity extends AppCompatActivity {
     private static final String LOG_TAG = SetupActivity.class.getSimpleName();
 
-    private String groupId;
+    private String joinId;
+    private JoinCallType callType;
     private EditText setupName;
     private LinearLayout setupMissingLayout;
     private ProgressBar setupProgressBar;
@@ -58,11 +60,23 @@ public class SetupActivity extends AppCompatActivity {
     private ToggleButton audioToggleButton;
     private Button joinButton;
     private TextView joinButtonText;
+    private TextView setupEnter;
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
+    private PermissionState onStopAudioPermissionState;
+    private PermissionState onStopVideoPermissionState;
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -85,7 +99,8 @@ public class SetupActivity extends AppCompatActivity {
         final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
-        groupId = intent.getStringExtra(Constants.GROUP_ID);
+        callType = (JoinCallType) intent.getSerializableExtra(Constants.CALL_TYPE);
+        joinId = intent.getStringExtra(Constants.JOIN_ID);
 
         setupCompletableFuture.whenComplete((aVoid, throwable) -> {
             runOnUiThread(() -> {
@@ -94,6 +109,36 @@ public class SetupActivity extends AppCompatActivity {
                 defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isAudioPermissionChangedOnResume() || isVideoPermissionChangedOnResume()) {
+            final Intent intent = new Intent(this, IntroActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(LOG_TAG, "SetupActivity - onStop");
+        if (rendererView != null) {
+            rendererView.dispose();
+        }
+        super.onStop();
+
+        onStopAudioPermissionState = this.permissionHelper.getAudioPermissionState(this);
+        onStopVideoPermissionState = this.permissionHelper.getVideoPermissionState(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(LOG_TAG, "SetupActivity - onDestroy");
+        super.onDestroy();
     }
 
     private void initializeUI() {
@@ -119,6 +164,7 @@ public class SetupActivity extends AppCompatActivity {
         audioToggleButton.setChecked(true);
 
         setupName = findViewById(R.id.setup_name);
+        setupEnter = findViewById(R.id.setup_enter);
         setupName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
@@ -133,6 +179,13 @@ public class SetupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(final Editable editable) {
                 setJoinButtonState();
+            }
+        });
+        setupName.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                setupEnter.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            } else {
+                setupEnter.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
             }
         });
 
@@ -158,19 +211,16 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        Log.d(LOG_TAG, "SetupActivity - onDestroy");
-        super.onDestroy();
+    private boolean isAudioPermissionChangedOnResume() {
+        return onStopAudioPermissionState != null
+                && onStopAudioPermissionState
+                != this.permissionHelper.getAudioPermissionState(this);
     }
 
-    @Override
-    protected void onStop() {
-        Log.d(LOG_TAG, "SetupActivity - onStop");
-        if (rendererView != null) {
-            rendererView.dispose();
-        }
-        super.onStop();
+    private boolean isVideoPermissionChangedOnResume() {
+        return onStopVideoPermissionState != null
+                && onStopVideoPermissionState
+                != this.permissionHelper.getVideoPermissionState(this);
     }
 
     private void openSettings() {
@@ -178,7 +228,6 @@ public class SetupActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
-        finishAffinity();
         startActivity(intent);
     }
 
@@ -190,8 +239,8 @@ public class SetupActivity extends AppCompatActivity {
                     rendererView.dispose();
                 }
                 final JoinCallConfig joinCallConfig = new JoinCallConfig(
-                        groupId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
-                        setupName.getText().toString());
+                        joinId, !audioToggleButton.isChecked(), videoToggleButton.isChecked(),
+                        setupName.getText().toString(), callType);
                 finishAffinity();
                 final Intent intent = new Intent(this, CallActivity.class);
                 intent.putExtra(Constants.JOIN_CALL_CONFIG, joinCallConfig);
@@ -246,15 +295,6 @@ public class SetupActivity extends AppCompatActivity {
         previewVideo = null;
         videoToggleButton.setChecked(false);
         defaultAvatar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void handleButtonStates() {
@@ -333,6 +373,5 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
-
     }
 }

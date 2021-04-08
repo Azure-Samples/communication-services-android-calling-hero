@@ -18,6 +18,8 @@ import com.azure.samples.communication.calling.external.authentication.AADAuthHa
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.AppSettings;
+import com.azure.samples.communication.calling.helpers.Constants;
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 
 public class IntroActivity extends AppCompatActivity {
     private static final String LOG_TAG = IntroActivity.class.getSimpleName();
@@ -116,6 +118,7 @@ public class IntroActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Setup new meeting button clicked!");
         ((AzureCalling) getApplication()).createCallingContext();
         final Intent intent = new Intent(this, SetupActivity.class);
+        intent.putExtra(Constants.CALL_TYPE, JoinCallType.GROUP_CALL);
         startActivity(intent);
     }
 
