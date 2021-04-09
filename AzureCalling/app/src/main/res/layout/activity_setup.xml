@@ -199,7 +199,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/setup_start_call"
             android:layout_gravity="center_horizontal"
-            android:paddingStart="140dp"
+            android:paddingStart="130dp"
             android:paddingEnd="140dp"
             />
 
