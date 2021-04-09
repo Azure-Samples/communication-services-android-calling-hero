@@ -17,6 +17,8 @@
 
     <color name="fluent_default_icon_tint">@android:color/white</color>
 
+    <color name="button_outline">#0078D4</color>
+
     <color name="grey950">#FF141414</color>
     <color name="grey700">#FF303030</color>
     <color name="grey500">#FF6E6E6E</color>

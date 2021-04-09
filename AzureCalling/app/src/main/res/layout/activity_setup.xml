@@ -83,7 +83,7 @@
                 style="@style/FluentButton"
                 android:layout_width="142dp"
                 android:layout_height="48dp"
-                android:background="@drawable/button_outlined_blue"
+                android:background="@drawable/button_outlined"
                 android:text="@string/setup_missing_button"
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
@@ -189,31 +189,19 @@
             style="@style/FluentButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/button_filled"
-            android:backgroundTint="@color/selector_primary"
             android:clickable="false"
             android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/setup_button_text"
-            style="@style/FluentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="4dp"
-            android:enabled="false"
+            app:layout_constraintTop_toTopOf="parent"
+            android:drawableStart="@drawable/ic_fluent_meet_now_24_regular"
             android:fontFamily="sans-serif-medium"
             android:text="@string/setup_start_call"
-            android:textColor="@color/selector_secondary"
-            app:drawableLeftCompat="@drawable/ic_fluent_meet_now_24_regular"
-            app:drawableTint="@color/selector_secondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center_horizontal"
+            android:paddingStart="140dp"
+            android:paddingEnd="140dp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

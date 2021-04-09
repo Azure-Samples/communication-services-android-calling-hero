@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -28,7 +27,6 @@ public class JoinCallActivity extends AppCompatActivity {
     private static final String LOG_TAG = JoinCallActivity.class.getSimpleName();
     private EditText editTextTextMeetingName;
     private Button joinButton;
-    private TextView joinButtonText;
     private TextView joinEnterText;
 
     @Override
@@ -83,10 +81,8 @@ public class JoinCallActivity extends AppCompatActivity {
                         // clearing text
                         joinButton.setClickable(false);
                         joinButton.setEnabled(false);
-                        joinButtonText.setEnabled(false);
                     } else {
                         joinButton.setEnabled(true);
-                        joinButtonText.setEnabled(true);
                         joinButton.setClickable(true);
                         if (!joinButton.hasOnClickListeners()) {
                             joinButton.setOnClickListener(l -> joinCall());
@@ -102,7 +98,6 @@ public class JoinCallActivity extends AppCompatActivity {
             }
         });
         joinButton = findViewById(R.id.join_button);
-        joinButtonText = findViewById(R.id.join_button_text);
     }
 
     private void joinCall() {
