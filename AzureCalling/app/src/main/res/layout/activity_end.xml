@@ -71,10 +71,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="sans-serif-medium"
+            android:text="@string/end_feedback" />
+
+        <TextView
+            android:id="@+id/end_feedback_text"
+            style="@style/FluentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/end_feedback"
             app:drawableLeftCompat="@drawable/ic_fluent_edit_24_regular"
-            android:paddingStart="100dp"
-            android:paddingEnd="100dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

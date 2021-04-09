@@ -195,13 +195,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:drawableStart="@drawable/ic_fluent_meet_now_24_regular"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/setup_start_call" />
+
+        <TextView
+            android:id="@+id/setup_button_text"
+            style="@style/FluentButton"
+            android:stateListAnimator="@null"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:enabled="false"
             android:fontFamily="sans-serif-medium"
             android:text="@string/setup_start_call"
-            android:layout_gravity="center_horizontal"
-            android:paddingStart="130dp"
-            android:paddingEnd="140dp"
-            />
+            app:drawableLeftCompat="@drawable/ic_fluent_meet_now_24_regular"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

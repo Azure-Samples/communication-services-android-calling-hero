@@ -60,6 +60,7 @@ public class SetupActivity extends AppCompatActivity {
     private ToggleButton audioToggleButton;
     private Button joinButton;
     private TextView setupEnter;
+    private TextView joinButtonText;
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
@@ -189,6 +190,7 @@ public class SetupActivity extends AppCompatActivity {
         });
 
         joinButton = findViewById(R.id.setup_button);
+        joinButtonText = findViewById(R.id.setup_button_text);
         hidePermissionsWarning();
     }
 
@@ -198,9 +200,11 @@ public class SetupActivity extends AppCompatActivity {
             //TODO: Error: "SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length" occurs after clearing text
             joinButton.setEnabled(false);
             joinButton.setClickable(false);
+            joinButtonText.setEnabled(false);
         } else {
             joinButton.setClickable(true);
             joinButton.setEnabled(true);
+            joinButtonText.setEnabled(true);
             if (!joinButton.hasOnClickListeners()) {
                 joinButton.setOnClickListener(l -> startCall());
             }
