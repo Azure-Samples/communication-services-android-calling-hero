@@ -481,7 +481,9 @@ public class CallingContext {
         final String username = remoteParticipant.getDisplayName();
         final String id = getId(remoteParticipant);
         final PropertyChangedListener remoteIsSpeakingChangedListener = propertyChangedEvent -> {
-            if (displayedRemoteParticipantIds.contains(id)) {
+            // skip the participants who is already on the screen and
+            // check if participant is still speaking to reduce unnecessary speaking changes due to noise
+            if (displayedRemoteParticipantIds.contains(id) || !remoteParticipant.isSpeaking()) {
                 return;
             }
             findInactiveSpeakerToSwap(remoteParticipant, id);
