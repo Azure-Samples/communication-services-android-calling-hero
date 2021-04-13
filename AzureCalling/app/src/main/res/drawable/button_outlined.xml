@@ -6,6 +6,6 @@
         />
     <stroke
         android:width="2dp"
-        android:color="@color/colorAccent_light"
+        android:color="@color/selector_button_outlined"
         />
 </shape>

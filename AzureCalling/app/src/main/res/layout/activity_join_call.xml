@@ -46,27 +46,13 @@
             style="@style/FluentButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/button_filled"
-            android:backgroundTint="@color/selector_primary"
             android:clickable="false"
             android:enabled="false"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/join_button_text"
-            style="@style/FluentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="4dp"
-            android:enabled="false"
+            app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/join_start"
-            android:textColor="@color/selector_secondary"
-            app:drawableTint="@color/selector_secondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="@string/join_start"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -60,11 +60,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="25dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/intro_start"
-        android:textColor="@android:color/white"
-        android:background="@drawable/button_filled"
-        android:backgroundTint="@color/colorAccent" />
+        android:text="@string/intro_start" />
+
 
     <Button
         android:id="@+id/intro_sign_in"
@@ -74,23 +71,20 @@
         android:maxWidth="400dp"
         android:layout_height="48dp"
         android:layout_marginBottom="13dp"
-        android:background="@drawable/button_filled"
-        android:backgroundTint="@color/colorAccent"
         android:text="@string/intro_sign_in"
-        android:textColor="@android:color/white"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/intro_join"
-        style="@style/FluentButton"
+        style="@style/FluentButtonOutlined"
         android:layout_width="wrap_content"
         android:minWidth="400dp"
         android:maxWidth="400dp"
         android:layout_height="48dp"
         android:layout_marginBottom="23dp"
-        android:background="@drawable/button_outlined_blue"
-        android:text="@string/intro_join"
-        android:textColor="@color/colorAccent" />
+        android:text="@string/intro_join" />
+
+
     <TextView
         android:id="@+id/intro_sign_out"
         android:layout_width="match_parent"
