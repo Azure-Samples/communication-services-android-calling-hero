@@ -99,7 +99,6 @@
         android:text="@string/intro_sign_out"
         android:textColor="@color/colorAccent"
         android:visibility="gone"/>
-
     <TextView
         android:id="@+id/intro_learn"
         style="@style/intro_learn"
