@@ -468,8 +468,11 @@ public class CallingContext {
     private void bindOnIsMutedChangedListener(final RemoteParticipant remoteParticipant) {
         final String username = remoteParticipant.getDisplayName();
         final String id = getId(remoteParticipant);
-        final PropertyChangedListener remoteIsMutedChangedListener = propertyChangedEvent ->
-                Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsMutedChangedListener called", username));
+        final PropertyChangedListener remoteIsMutedChangedListener = propertyChangedEvent -> {
+            Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsMutedChangedListener called", username));
+            displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
+        };
+
         remoteParticipant.addOnIsMutedChangedListener(remoteIsMutedChangedListener);
         mutedChangedListenersMap.put(id, remoteIsMutedChangedListener);
     }

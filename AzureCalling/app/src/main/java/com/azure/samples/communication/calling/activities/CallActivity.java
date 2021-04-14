@@ -276,6 +276,8 @@ public class CallActivity extends AppCompatActivity {
                 pv.setVideoStream(remoteVideoStream);
             }
 
+            pv.setIsMuted(remoteParticipant.isMuted());
+
             // update the participantIdIndexPathMap, participantViewList and participantsRenderList
             participantIdIndexPathMap.put(id, indexForNewParticipantViewList++);
             participantViewList.add(pv);
