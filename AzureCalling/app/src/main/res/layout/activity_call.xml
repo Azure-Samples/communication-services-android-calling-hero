@@ -176,6 +176,8 @@
             android:id="@+id/call_hangup_confirm"
             style="@style/FluentButton"
             android:layout_width="wrap_content"
+            android:maxWidth="400dp"
+            android:minWidth="400dp"
             android:layout_height="52dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -183,8 +185,6 @@
             android:background="@drawable/button_filled"
             android:backgroundTint="@color/colorAccent"
             android:gravity="center"
-            android:maxWidth="400dp"
-            android:minWidth="400dp"
             android:text="@string/call_hangup_confirm"
             android:textColor="@android:color/white" />
 
@@ -192,16 +192,15 @@
             android:id="@+id/call_hangup_cancel"
             style="@style/FluentButton"
             android:layout_width="wrap_content"
+            android:maxWidth="400dp"
+            android:minWidth="400dp"
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="23dp"
             android:background="@drawable/button_outlined_grey"
-            android:gravity="center"
-            android:maxWidth="400dp"
-            android:minWidth="400dp"
             android:text="@string/call_hangup_cancel"
+            android:gravity="center"
             android:textColor="@android:color/white" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

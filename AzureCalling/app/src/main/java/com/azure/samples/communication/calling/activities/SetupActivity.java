@@ -124,12 +124,6 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        Log.d(LOG_TAG, "SetupActivity - onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
     protected void onStop() {
         Log.d(LOG_TAG, "SetupActivity - onStop");
         if (rendererView != null) {
@@ -139,6 +133,12 @@ public class SetupActivity extends AppCompatActivity {
 
         onStopAudioPermissionState = this.permissionHelper.getAudioPermissionState(this);
         onStopVideoPermissionState = this.permissionHelper.getVideoPermissionState(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(LOG_TAG, "SetupActivity - onDestroy");
+        super.onDestroy();
     }
 
     private void initializeUI() {
