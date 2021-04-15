@@ -31,6 +31,7 @@ import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.external.calling.RemoteParticipantUpdate;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
@@ -91,6 +92,7 @@ public class CallActivity extends AppCompatActivity {
 
         /* initialize execution control of participant views update */
         initializeDisplayedParticipantsLiveData();
+        initializeRemopeParticipantUpdate();
 
         /* get Join Call Config */
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
@@ -118,6 +120,26 @@ public class CallActivity extends AppCompatActivity {
             scheduleDelayedParticipantViewUpdate();
         };
         callingContext.getDisplayedParticipantsLiveData().observe(this, observerDisplayedRemoteParticipants);
+    }
+
+    private void initializeRemopeParticipantUpdate() {
+        final Observer<RemoteParticipantUpdate> observerRemoteParticipantUpdate = remoteParticipantUpdate -> {
+            final String id = callingContext.getId(remoteParticipantUpdate.getRemoteParticipant());
+            final ParticipantView pv;
+            if (participantIdIndexPathMap.containsKey(id)) {
+                final int prevIndex = participantIdIndexPathMap.get(id);
+                pv = participantViewList.get(prevIndex);
+
+                switch (remoteParticipantUpdate.getUpdateType()) {
+                    case muteStateChanged:
+                        pv.setIsMuted(remoteParticipantUpdate.getRemoteParticipant().isMuted());
+                        break;
+                    default:
+
+                }
+            }
+        };
+        callingContext.getUpdatedRemoteParticipantUpdate().observe(this, observerRemoteParticipantUpdate);
     }
 
     private void scheduleDelayedParticipantViewUpdate() {
@@ -259,10 +281,10 @@ public class CallActivity extends AppCompatActivity {
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
             final RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
             final ParticipantState participantState = remoteParticipant.getState();
-            final String id = callingContext.getId(remoteParticipant);
             if (ParticipantState.DISCONNECTED == participantState) {
                 continue;
             }
+            final String id = callingContext.getId(remoteParticipant);
             final ParticipantView pv;
             if (preParticipantIdIndexPathMap.containsKey(id)) {
                 final int prevIndex = preParticipantIdIndexPathMap.get(id);

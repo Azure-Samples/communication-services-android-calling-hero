@@ -75,6 +75,9 @@ public class CallingContext {
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
     private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
+
+    private final MutableLiveData<RemoteParticipantUpdate> remoteParticipantUpdate;
+
     private final Set<String> displayedRemoteParticipantIds;
 
     private final Map<String, RemoteVideoStreamsUpdatedListener> videoStreamsUpdatedListenersMap;
@@ -92,6 +95,7 @@ public class CallingContext {
         remoteParticipantsMap = new HashMap<>();
         displayedRemoteParticipants = new ArrayList<>();
         displayedParticipantsLiveData = new MutableLiveData<>();
+        remoteParticipantUpdate = new MutableLiveData<>();
         displayedRemoteParticipantIds = new HashSet<>();
         videoStreamsUpdatedListenersMap = new HashMap<>();
         mutedChangedListenersMap = new HashMap<>();
@@ -265,6 +269,10 @@ public class CallingContext {
 
     public MutableLiveData<List<RemoteParticipant>> getDisplayedParticipantsLiveData() {
         return displayedParticipantsLiveData;
+    }
+
+    public MutableLiveData<RemoteParticipantUpdate> getUpdatedRemoteParticipantUpdate() {
+        return remoteParticipantUpdate;
     }
 
     //endregion
@@ -470,7 +478,8 @@ public class CallingContext {
         final String id = getId(remoteParticipant);
         final PropertyChangedListener remoteIsMutedChangedListener = propertyChangedEvent -> {
             Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsMutedChangedListener called", username));
-            displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
+            remoteParticipantUpdate.postValue(new RemoteParticipantUpdate(remoteParticipant,
+                    RemoteParticipantUpdateType.muteStateChanged));
         };
 
         remoteParticipant.addOnIsMutedChangedListener(remoteIsMutedChangedListener);
