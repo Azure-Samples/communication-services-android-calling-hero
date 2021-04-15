@@ -12,11 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.azure.android.communication.calling.CallingCommunicationException;
+import com.azure.android.communication.calling.CreateViewOptions;
 import com.azure.android.communication.calling.LocalVideoStream;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.VideoStreamRenderer;
 import com.azure.android.communication.calling.VideoStreamRendererView;
-import com.azure.android.communication.calling.RenderingOptions;
 import com.azure.android.communication.calling.ScalingMode;
 import com.azure.samples.communication.calling.R;
 
@@ -94,7 +94,7 @@ public class ParticipantView extends RelativeLayout {
 
     private void setVideoRenderer(final VideoStreamRenderer videoRenderer) {
         this.renderer = videoRenderer;
-        this.rendererView = videoRenderer.createView(new RenderingOptions(ScalingMode.CROP));
+        this.rendererView = videoRenderer.createView(new CreateViewOptions(ScalingMode.CROP));
         attachRendererView(rendererView);
     }
 
