@@ -211,7 +211,9 @@ public class CallingContext {
         return callAgentCompletableFuture.thenAccept(agent -> {
             if (joinCallConfig.isCameraOn()) {
                 localVideoStreamCompletableFuture.thenAccept(localVideoStream -> {
-                    final VideoOptions videoOptions = new VideoOptions(localVideoStream);
+                    final LocalVideoStream[] localVideoStreams = new LocalVideoStream[1];
+                    localVideoStreams[0] = localVideoStream;
+                    final VideoOptions videoOptions = new VideoOptions(localVideoStreams);
                     callWithOptions(agent, audioOptions, videoOptions, callLocator);
                 });
             } else {
@@ -233,7 +235,7 @@ public class CallingContext {
         }
 
         return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream ->
-                call.startVideo(localVideoStream).thenApply(nothing -> {
+                call.startVideo(appContext, localVideoStream).thenApply(nothing -> {
                     cameraOn = true;
                     return localVideoStream;
                 }));
@@ -245,7 +247,7 @@ public class CallingContext {
         }
 
         return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream ->
-                call.stopVideo(localVideoStream).thenRun(() -> cameraOn = false));
+                call.stopVideo(appContext, localVideoStream).thenRun(() -> cameraOn = false));
     }
 
     public void pauseVideo() {
@@ -269,7 +271,7 @@ public class CallingContext {
             throw new IllegalStateException("Call can't be null");
         }
 
-        return call.unmute().thenRun(() -> micOn = true);
+        return call.unmute(appContext).thenRun(() -> micOn = true);
     }
 
     public CompletableFuture turnOffAudioAsync() {
@@ -277,7 +279,7 @@ public class CallingContext {
             throw new IllegalStateException("Call can't be null");
         }
 
-        return call.mute().thenRun(() -> micOn = false);
+        return call.mute(appContext).thenRun(() -> micOn = false);
     }
 
     public int getRemoteParticipantCount() {
@@ -312,7 +314,7 @@ public class CallingContext {
     private void createDeviceManager() {
         callAgentCompletableFuture.whenComplete((callAgent, throwable) -> {
             Log.d(LOG_TAG, "Call Agent created");
-            callClient.getDeviceManager().thenAccept(deviceManager -> {
+            callClient.getDeviceManager(appContext).thenAccept(deviceManager -> {
                 deviceManagerCompletableFuture.complete(deviceManager);
             });
         });
@@ -541,7 +543,9 @@ public class CallingContext {
         final String username = remoteParticipant.getDisplayName();
         final String id = getId(remoteParticipant);
         final PropertyChangedListener remoteIsSpeakingChangedListener = propertyChangedEvent -> {
-            if (displayedRemoteParticipantIds.contains(id)) {
+            // skip the participants who is already on the screen and
+            // check if participant is still speaking to reduce unnecessary speaking changes due to noise
+            if (displayedRemoteParticipantIds.contains(id) || !remoteParticipant.isSpeaking()) {
                 return;
             }
             findInactiveSpeakerToSwap(remoteParticipant, id);
