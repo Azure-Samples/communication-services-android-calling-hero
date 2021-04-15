@@ -92,7 +92,7 @@ public class CallActivity extends AppCompatActivity {
 
         /* initialize execution control of participant views update */
         initializeDisplayedParticipantsLiveData();
-        initializeRemopeParticipantUpdate();
+        initializeRemoteParticipantUpdateObserver();
 
         /* get Join Call Config */
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
@@ -122,7 +122,7 @@ public class CallActivity extends AppCompatActivity {
         callingContext.getDisplayedParticipantsLiveData().observe(this, observerDisplayedRemoteParticipants);
     }
 
-    private void initializeRemopeParticipantUpdate() {
+    private void initializeRemoteParticipantUpdateObserver() {
         final Observer<RemoteParticipantUpdate> observerRemoteParticipantUpdate = remoteParticipantUpdate -> {
             final String id = callingContext.getId(remoteParticipantUpdate.getRemoteParticipant());
             final ParticipantView pv;
@@ -135,7 +135,6 @@ public class CallActivity extends AppCompatActivity {
                         pv.setIsMuted(remoteParticipantUpdate.getRemoteParticipant().isMuted());
                         break;
                     default:
-
                 }
             }
         };
