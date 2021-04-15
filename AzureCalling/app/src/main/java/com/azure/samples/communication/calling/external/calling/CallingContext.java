@@ -75,7 +75,6 @@ public class CallingContext {
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
     private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
-
     private final MutableLiveData<RemoteParticipantUpdate> remoteParticipantUpdate;
 
     private final Set<String> displayedRemoteParticipantIds;
