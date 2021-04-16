@@ -32,5 +32,4 @@
 
     <color name="defaultBlack">@android:color/black</color>
     <color name="defaultWhite">@android:color/white</color>
-
 </resources>

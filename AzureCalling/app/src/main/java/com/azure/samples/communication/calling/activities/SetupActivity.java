@@ -25,9 +25,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.azure.android.communication.calling.CreateViewOptions;
 import com.azure.android.communication.calling.VideoStreamRenderer;
 import com.azure.android.communication.calling.VideoStreamRendererView;
-import com.azure.android.communication.calling.RenderingOptions;
 import com.azure.android.communication.calling.ScalingMode;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
@@ -59,8 +59,8 @@ public class SetupActivity extends AppCompatActivity {
     private ToggleButton videoToggleButton;
     private ToggleButton audioToggleButton;
     private Button joinButton;
-    private TextView joinButtonText;
     private TextView setupEnter;
+    private TextView joinButtonText;
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
@@ -199,8 +199,8 @@ public class SetupActivity extends AppCompatActivity {
                 || permissionHelper.getAudioPermissionState(this) != PermissionState.GRANTED) {
             //TODO: Error: "SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length" occurs after clearing text
             joinButton.setEnabled(false);
-            joinButtonText.setEnabled(false);
             joinButton.setClickable(false);
+            joinButtonText.setEnabled(false);
         } else {
             joinButton.setClickable(true);
             joinButton.setEnabled(true);
@@ -278,7 +278,7 @@ public class SetupActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 defaultAvatar.setVisibility(View.GONE);
                 rendererView = new VideoStreamRenderer(localVideoStream, getApplicationContext());
-                previewVideo = rendererView.createView(new RenderingOptions(ScalingMode.CROP));
+                previewVideo = rendererView.createView(new CreateViewOptions(ScalingMode.CROP));
                 setupVideoLayout.addView(previewVideo, 0);
                 videoToggleButton.setChecked(true);
             });

@@ -68,10 +68,10 @@
             style="@style/FluentButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/button_filled"
-            android:backgroundTint="@color/colorAccent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/end_feedback" />
 
         <TextView
             android:id="@+id/end_feedback_text"
@@ -81,7 +81,6 @@
             android:drawablePadding="4dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/end_feedback"
-            android:textColor="@android:color/white"
             app:drawableLeftCompat="@drawable/ic_fluent_edit_24_regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
