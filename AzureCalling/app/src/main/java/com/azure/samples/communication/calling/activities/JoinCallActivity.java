@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -34,7 +33,6 @@ public class JoinCallActivity extends AppCompatActivity {
     private EditText groupCallEditText;
     private EditText teamsMeetingEditText;
     private Button joinButton;
-    private TextView joinButtonMeetingText;
     private RadioButton groupCallRadioButton;
     private RadioButton teamsMeetingRadioButton;
 
@@ -73,7 +71,6 @@ public class JoinCallActivity extends AppCompatActivity {
         teamsMeetingEditText = findViewById(R.id.teams_meeting_text);
 
         joinButton = findViewById(R.id.join_button);
-        joinButtonMeetingText = findViewById(R.id.join_button_text);
 
         groupCallRadioButton = findViewById(R.id.group_call_radio_button);
         teamsMeetingRadioButton = findViewById(R.id.teams_meeting_radio_button);
@@ -86,6 +83,7 @@ public class JoinCallActivity extends AppCompatActivity {
                 groupCallRadioButton.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
             }
         });
+
 
         teamsMeetingEditText.addTextChangedListener(onEditTextChanged());
         teamsMeetingEditText.setOnFocusChangeListener((view, hasFocus) -> {
@@ -137,10 +135,8 @@ public class JoinCallActivity extends AppCompatActivity {
                     // clearing text
                     joinButton.setClickable(false);
                     joinButton.setEnabled(false);
-                    joinButtonMeetingText.setEnabled(false);
                 } else {
                     joinButton.setEnabled(true);
-                    joinButtonMeetingText.setEnabled(true);
                     joinButton.setClickable(true);
                     if (!joinButton.hasOnClickListeners()) {
                         joinButton.setOnClickListener(l -> joinCall());
