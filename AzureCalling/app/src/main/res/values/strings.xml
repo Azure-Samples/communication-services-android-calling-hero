@@ -58,7 +58,7 @@
         <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
     <string name="stop_transcribing"><b>Transcription is being saved. </b>Transcription has stopped.
         <a href="https://support.microsoft.com/en-us/office/record-a-meeting-in-teams-34dfbe7f-b07d-4a27-b4c6-de62f1348c24"><u>Learn More</u></a></string>
-    <string name="start_recording_and_transcribing"><b>Recording and Transcription have started. </b> By joining, you are giving consent for this meeting to be recorded and transcribed.
+    <string name="start_recording_and_transcribing"><b>Recording and transcription have started. </b> By joining, you are giving consent for this meeting to be recorded and transcribed.
         <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
     <string name="stop_recording_while_transcribing"><b>Recording has stopped. </b>You are now only transcribing this meeting.
         <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
