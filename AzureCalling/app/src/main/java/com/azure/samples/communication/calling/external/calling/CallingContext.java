@@ -75,7 +75,6 @@ public class CallingContext {
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
     private final MutableLiveData<List<RemoteParticipant>> displayedParticipantsLiveData;
-    private final MutableLiveData<RemoteParticipantUpdate> remoteParticipantUpdate;
     private final Set<String> displayedRemoteParticipantIds;
 
     private final Map<String, RemoteVideoStreamsUpdatedListener> videoStreamsUpdatedListenersMap;
@@ -93,7 +92,6 @@ public class CallingContext {
         remoteParticipantsMap = new HashMap<>();
         displayedRemoteParticipants = new ArrayList<>();
         displayedParticipantsLiveData = new MutableLiveData<>();
-        remoteParticipantUpdate = new MutableLiveData<>();
         displayedRemoteParticipantIds = new HashSet<>();
         videoStreamsUpdatedListenersMap = new HashMap<>();
         mutedChangedListenersMap = new HashMap<>();
@@ -267,10 +265,6 @@ public class CallingContext {
 
     public MutableLiveData<List<RemoteParticipant>> getDisplayedParticipantsLiveData() {
         return displayedParticipantsLiveData;
-    }
-
-    public MutableLiveData<RemoteParticipantUpdate> getUpdatedRemoteParticipantUpdate() {
-        return remoteParticipantUpdate;
     }
 
     //endregion
@@ -479,8 +473,7 @@ public class CallingContext {
             if (!displayedRemoteParticipantIds.contains(id)) {
                 return;
             }
-            remoteParticipantUpdate.postValue(new RemoteParticipantUpdate(remoteParticipant,
-                    RemoteParticipantUpdateType.muteStateChanged));
+            displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
         };
 
         remoteParticipant.addOnIsMutedChangedListener(remoteIsMutedChangedListener);
