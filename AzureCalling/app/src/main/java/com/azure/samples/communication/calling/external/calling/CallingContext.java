@@ -476,6 +476,9 @@ public class CallingContext {
         final String id = getId(remoteParticipant);
         final PropertyChangedListener remoteIsMutedChangedListener = propertyChangedEvent -> {
             Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsMutedChangedListener called", username));
+            if (!displayedRemoteParticipantIds.contains(id)) {
+                return;
+            }
             remoteParticipantUpdate.postValue(new RemoteParticipantUpdate(remoteParticipant,
                     RemoteParticipantUpdateType.muteStateChanged));
         };
