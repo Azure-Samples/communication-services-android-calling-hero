@@ -41,6 +41,7 @@ import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 
+import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
@@ -79,6 +80,7 @@ public class CallActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
     private ProgressBar callActivityProgressBar;
     private LinearLayout inLobbyWaitingOverlay;
+    private JoinCallConfig joinCallConfig;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -106,7 +108,7 @@ public class CallActivity extends AppCompatActivity {
         initializeTranscriptionStateLiveData();
         
         /* get Join Call Config */
-        final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
+        joinCallConfig = (JoinCallConfig) getIntent()
                 .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
 
         setLayoutComponentState(joinCallConfig.isMicrophoneMuted(), joinCallConfig.isCameraOn(),
@@ -468,7 +470,11 @@ public class CallActivity extends AppCompatActivity {
         final Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, callingContext.getJoinId());
-        sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
+        if (joinCallConfig.getCallType() == JoinCallType.GROUP_CALL) {
+            sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
+        } else if (joinCallConfig.getCallType() == JoinCallType.TEAMS_MEETING) {
+            sendIntent.putExtra(Intent.EXTRA_TITLE, "Meeting Link");
+        }
         sendIntent.setType("text/plain");
         final Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
