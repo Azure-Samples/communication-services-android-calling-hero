@@ -228,6 +228,7 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView = new ParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setIsMuted(!callingContext.getMicOn());
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -463,11 +464,17 @@ public class CallActivity extends AppCompatActivity {
     private void toggleAudio(final boolean toggleOff) {
         if (!toggleOff) {
             callingContext.turnOnAudioAsync().whenComplete((aVoid, throwable) -> {
-                audioImageButton.setSelected(true);
+                runOnUiThread(() -> {
+                    audioImageButton.setSelected(true);
+                    localParticipantView.setIsMuted(false);
+                });
             });
         } else {
             callingContext.turnOffAudioAsync().whenComplete((aVoid, throwable) -> {
-                audioImageButton.setSelected(false);
+                runOnUiThread(() -> {
+                    audioImageButton.setSelected(false);
+                    localParticipantView.setIsMuted(true);
+                });
             });
         }
     }
