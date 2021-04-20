@@ -89,7 +89,7 @@ public class ParticipantView extends RelativeLayout {
 
     public void setIsMuted(final Boolean isMuted) {
         final Drawable drawable = isMuted
-            ? ContextCompat.getDrawable(getContext(), R.drawable.ic_fluent_mic_off_20_filled)
+            ? ContextCompat.getDrawable(getContext(), R.drawable.ic_fluent_mic_off_16_filled)
             : null;
         this.title.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
     }
