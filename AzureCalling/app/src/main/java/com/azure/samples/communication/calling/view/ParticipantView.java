@@ -4,6 +4,7 @@
 package com.azure.samples.communication.calling.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,6 +12,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import com.azure.android.communication.calling.CallingCommunicationException;
 import com.azure.android.communication.calling.CreateViewOptions;
 import com.azure.android.communication.calling.LocalVideoStream;
@@ -82,6 +85,13 @@ public class ParticipantView extends RelativeLayout {
 
     public void setDisplayName(final String displayName) {
         this.title.setText(displayName);
+    }
+
+    public void setIsMuted(final Boolean isMuted) {
+        final Drawable drawable = isMuted
+            ? ContextCompat.getDrawable(getContext(), R.drawable.ic_fluent_mic_off_16_filled)
+            : null;
+        this.title.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
     }
 
     public void setDisplayNameVisible(final boolean isDisplayNameVisible) {

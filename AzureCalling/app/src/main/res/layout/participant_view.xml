@@ -29,9 +29,11 @@
             android:layout_marginBottom="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
             <TextView
                 android:id="@+id/display_name"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:inputType="textNoSuggestions"
                 app:autoSizeTextType="uniform"
@@ -39,12 +41,12 @@
                 android:paddingBottom="3dp"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
-                android:layout_height="wrap_content"
                 android:alpha=".6"
                 android:background="@drawable/button_filled"
                 android:backgroundTint="@android:color/black"
                 android:textColor="@android:color/white"
-                android:gravity="left" />
+                android:drawablePadding="5dp" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
