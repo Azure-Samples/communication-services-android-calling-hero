@@ -60,7 +60,7 @@
             android:name="com.azure.samples.communication.calling.activities.SetupActivity"
             android:exported="true"
             android:label="@string/title_activity_setup"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
             android:screenOrientation="portrait" />
         <activity
