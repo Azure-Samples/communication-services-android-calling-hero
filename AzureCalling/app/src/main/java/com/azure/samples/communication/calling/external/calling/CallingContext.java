@@ -489,13 +489,16 @@ public class CallingContext {
         final String username = remoteParticipant.getDisplayName();
         final String id = getId(remoteParticipant);
         final PropertyChangedListener remoteIsSpeakingChangedListener = propertyChangedEvent -> {
+            Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsSpeakingChangedListener called", username));
+            if (displayedRemoteParticipantIds.contains(id)) {
+                displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
+            }
             // skip the participants who is already on the screen and
             // check if participant is still speaking to reduce unnecessary speaking changes due to noise
             if (displayedRemoteParticipantIds.contains(id) || !remoteParticipant.isSpeaking()) {
                 return;
             }
             findInactiveSpeakerToSwap(remoteParticipant, id);
-            Log.d(LOG_TAG, String.format("Remote Participant %s addOnIsSpeakingChangedListener called", username));
         };
         remoteParticipant.addOnIsSpeakingChangedListener(remoteIsSpeakingChangedListener);
         isSpeakingChangedListenerMap.put(id, remoteIsSpeakingChangedListener);
