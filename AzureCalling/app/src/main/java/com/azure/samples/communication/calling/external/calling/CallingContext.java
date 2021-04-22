@@ -59,6 +59,7 @@ public class CallingContext {
     private String joinId;
     private CallClient callClient;
     private Call call;
+    private AudioManager audioManager;
     private String displayName;
     private CompletableFuture<CommunicationTokenCredential> communicationUserCredentialCompletableFuture;
     private CompletableFuture<CallAgent> callAgentCompletableFuture;
@@ -260,6 +261,18 @@ public class CallingContext {
         return displayedParticipantsLiveData;
     }
 
+    public boolean isAudioSpeakerOn() {
+        return audioManager.isSpeakerphoneOn();
+    }
+
+    public boolean isAudioAndroidOn() {
+        return !audioManager.isSpeakerphoneOn();
+    }
+
+    public void setSpeakerPhoneStatus(final boolean status) {
+        audioManager.setSpeakerphoneOn(status);
+    }
+
     //endregion
     //region Private Methods
 
@@ -298,7 +311,7 @@ public class CallingContext {
     }
 
     private void initializeSpeaker() {
-        final AudioManager audioManager = (AudioManager) appContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) appContext.getSystemService(Context.AUDIO_SERVICE);
         audioManager.setSpeakerphoneOn(true);
     }
 

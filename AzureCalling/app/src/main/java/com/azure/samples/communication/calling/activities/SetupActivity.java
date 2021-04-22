@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -68,6 +69,9 @@ public class SetupActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
     private PermissionState onStopVideoPermissionState;
+    private ConstraintLayout deviceList;
+    private ImageButton checkMarkAudioAndroid;
+    private ImageButton checkMarkAudioSpeaker;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -195,7 +199,53 @@ public class SetupActivity extends AppCompatActivity {
 
         joinButton = findViewById(R.id.setup_button);
         joinButtonText = findViewById(R.id.setup_button_text);
+
+        final ToggleButton deviceOptionsButton = findViewById(R.id.device);
+        deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
+
+        deviceList = findViewById(R.id.audio_device_menu_for_setup);
+
+        final ConstraintLayout audioOutputAndroid = deviceList.findViewById(R.id.audio_output_android);
+        final ConstraintLayout audioOutputSpeaker = deviceList.findViewById(R.id.audio_output_speaker);
+
+        checkMarkAudioAndroid  = deviceList.findViewById(R.id.check_mark_for_audio_android);
+        checkMarkAudioSpeaker = deviceList.findViewById(R.id.check_mark_for_audio_speaker);
+
+        deviceList.setVisibility(View.INVISIBLE);
+
+        audioOutputAndroid.setOnClickListener(l -> {
+            setCheckMarkVisibility(checkMarkAudioSpeaker, false);
+            callingContext.setSpeakerPhoneStatus(false);
+            setCheckMarkVisibility(checkMarkAudioAndroid, true);
+        });
+        audioOutputSpeaker.setOnClickListener(l -> {
+            setCheckMarkVisibility(checkMarkAudioAndroid, false);
+            callingContext.setSpeakerPhoneStatus(true);
+            setCheckMarkVisibility(checkMarkAudioSpeaker, true);
+        });
+
+        setupVideoLayout.setOnTouchListener((v, event) -> {
+            closeAudioDeviceList();
+            return true;
+        });
+
         hidePermissionsWarning();
+    }
+
+    private void setCheckMarkVisibility(final ImageButton checkMark, final boolean isVisible) {
+        checkMark.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void openAudioDeviceList() {
+        checkMarkAudioAndroid.setVisibility(callingContext.isAudioAndroidOn()
+                ? View.VISIBLE : View.INVISIBLE);
+        checkMarkAudioSpeaker.setVisibility(callingContext.isAudioSpeakerOn()
+                ? View.VISIBLE : View.INVISIBLE);
+        deviceList.setVisibility(View.VISIBLE);
+    }
+
+    private void closeAudioDeviceList() {
+        deviceList.setVisibility(View.INVISIBLE);
     }
 
     private void setJoinButtonState() {
