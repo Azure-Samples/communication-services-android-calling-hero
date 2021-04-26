@@ -228,6 +228,7 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView = new ParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setIsMuted(!callingContext.getMicOn());
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -259,10 +260,10 @@ public class CallActivity extends AppCompatActivity {
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
             final RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
             final ParticipantState participantState = remoteParticipant.getState();
-            final String id = callingContext.getId(remoteParticipant);
             if (ParticipantState.DISCONNECTED == participantState) {
                 continue;
             }
+            final String id = callingContext.getId(remoteParticipant);
             final ParticipantView pv;
             if (preParticipantIdIndexPathMap.containsKey(id)) {
                 final int prevIndex = preParticipantIdIndexPathMap.get(id);
@@ -275,6 +276,8 @@ public class CallActivity extends AppCompatActivity {
                 final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             }
+
+            pv.setIsMuted(remoteParticipant.isMuted());
 
             // update the participantIdIndexPathMap, participantViewList and participantsRenderList
             participantIdIndexPathMap.put(id, indexForNewParticipantViewList++);
@@ -461,11 +464,17 @@ public class CallActivity extends AppCompatActivity {
     private void toggleAudio(final boolean toggleOff) {
         if (!toggleOff) {
             callingContext.turnOnAudioAsync().whenComplete((aVoid, throwable) -> {
-                audioImageButton.setSelected(true);
+                runOnUiThread(() -> {
+                    audioImageButton.setSelected(true);
+                    localParticipantView.setIsMuted(false);
+                });
             });
         } else {
             callingContext.turnOffAudioAsync().whenComplete((aVoid, throwable) -> {
-                audioImageButton.setSelected(false);
+                runOnUiThread(() -> {
+                    audioImageButton.setSelected(false);
+                    localParticipantView.setIsMuted(true);
+                });
             });
         }
     }
