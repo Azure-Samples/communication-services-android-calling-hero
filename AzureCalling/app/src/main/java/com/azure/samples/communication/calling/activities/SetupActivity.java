@@ -115,6 +115,10 @@ public class SetupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        if (videoToggleButton.isChecked()) {
+            toggleVideoOn();
+        }
+
         if (isAudioPermissionChangedOnResume() || isVideoPermissionChangedOnResume()) {
             final Intent intent = new Intent(this, IntroActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
