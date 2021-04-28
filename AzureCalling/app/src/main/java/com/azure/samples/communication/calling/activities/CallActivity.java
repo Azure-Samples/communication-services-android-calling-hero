@@ -278,6 +278,7 @@ public class CallActivity extends AppCompatActivity {
             }
 
             pv.setIsMuted(remoteParticipant.isMuted());
+            pv.setIsSpeaking(remoteParticipant.isSpeaking());
 
             // update the participantIdIndexPathMap, participantViewList and participantsRenderList
             participantIdIndexPathMap.put(id, indexForNewParticipantViewList++);

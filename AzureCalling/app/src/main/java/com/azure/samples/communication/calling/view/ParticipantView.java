@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class ParticipantView extends RelativeLayout {
     private final TextView title;
     private final ImageView defaultAvatar;
     private final ConstraintLayout videoContainer;
+    private final FrameLayout activeSpeakerFrame;
 
     public ParticipantView(@NonNull final Context context) {
         super(context);
@@ -40,6 +42,7 @@ public class ParticipantView extends RelativeLayout {
         this.title = findViewById(R.id.display_name);
         this.defaultAvatar = findViewById(R.id.default_avatar);
         this.videoContainer = findViewById(R.id.video_container);
+        this.activeSpeakerFrame = findViewById(R.id.active_speaker_frame);
     }
 
     public void setVideoStream(final RemoteVideoStream remoteVideoStream) {
@@ -92,6 +95,10 @@ public class ParticipantView extends RelativeLayout {
             ? ContextCompat.getDrawable(getContext(), R.drawable.ic_fluent_mic_off_16_filled)
             : null;
         this.title.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+    }
+
+    public void setIsSpeaking(final Boolean isSpeaking) {
+        this.activeSpeakerFrame.setVisibility(isSpeaking ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void setDisplayNameVisible(final boolean isDisplayNameVisible) {

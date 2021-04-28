@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -48,6 +49,14 @@
                 android:drawablePadding="5dp" />
 
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/active_speaker_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/active_speaker_highlight"
+            android:visibility="invisible">
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
