@@ -3,6 +3,7 @@
 
 package com.azure.samples.communication.calling.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -69,7 +72,8 @@ public class SetupActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
     private PermissionState onStopVideoPermissionState;
-    private ConstraintLayout deviceList;
+    private ConstraintLayout listMenuLayer;
+    private ConstraintLayout audioDeviceList;
     private ImageButton checkMarkAudioAndroid;
     private ImageButton checkMarkAudioSpeaker;
 
@@ -201,30 +205,35 @@ public class SetupActivity extends AppCompatActivity {
         joinButtonText = findViewById(R.id.setup_button_text);
 
         final ToggleButton deviceOptionsButton = findViewById(R.id.device);
-        deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
+        deviceOptionsButton.setOnClickListener(l -> {
+            openAudioDeviceList();
+        });
 
-        deviceList = findViewById(R.id.audio_device_menu_for_setup);
+        listMenuLayer = findViewById(R.id.list_menu_layer_for_setup);
 
-        final ConstraintLayout audioOutputAndroid = deviceList.findViewById(R.id.audio_output_android);
-        final ConstraintLayout audioOutputSpeaker = deviceList.findViewById(R.id.audio_output_speaker);
+        audioDeviceList = listMenuLayer.findViewById(R.id.audio_device_list);
+        audioDeviceList.setVisibility(View.INVISIBLE);
 
-        checkMarkAudioAndroid  = deviceList.findViewById(R.id.check_mark_for_audio_android);
-        checkMarkAudioSpeaker = deviceList.findViewById(R.id.check_mark_for_audio_speaker);
+        final ConstraintLayout audioOutputAndroid = listMenuLayer.findViewById(R.id.audio_output_android);
+        final ConstraintLayout audioOutputSpeaker = listMenuLayer.findViewById(R.id.audio_output_speaker);
 
-        deviceList.setVisibility(View.INVISIBLE);
+        checkMarkAudioAndroid  = listMenuLayer.findViewById(R.id.check_mark_for_audio_android);
+        checkMarkAudioSpeaker = listMenuLayer.findViewById(R.id.check_mark_for_audio_speaker);
 
         audioOutputAndroid.setOnClickListener(l -> {
             setCheckMarkVisibility(checkMarkAudioSpeaker, false);
             callingContext.setSpeakerPhoneStatus(false);
             setCheckMarkVisibility(checkMarkAudioAndroid, true);
+            closeAudioDeviceList();
         });
         audioOutputSpeaker.setOnClickListener(l -> {
             setCheckMarkVisibility(checkMarkAudioAndroid, false);
             callingContext.setSpeakerPhoneStatus(true);
             setCheckMarkVisibility(checkMarkAudioSpeaker, true);
+            closeAudioDeviceList();
         });
 
-        setupVideoLayout.setOnTouchListener((v, event) -> {
+        listMenuLayer.setOnTouchListener((v, event) -> {
             closeAudioDeviceList();
             return true;
         });
@@ -241,11 +250,13 @@ public class SetupActivity extends AppCompatActivity {
                 ? View.VISIBLE : View.INVISIBLE);
         checkMarkAudioSpeaker.setVisibility(callingContext.isAudioSpeakerOn()
                 ? View.VISIBLE : View.INVISIBLE);
-        deviceList.setVisibility(View.VISIBLE);
+        listMenuLayer.setVisibility(View.VISIBLE);
+        audioDeviceList.setVisibility(View.VISIBLE);
     }
 
     private void closeAudioDeviceList() {
-        deviceList.setVisibility(View.INVISIBLE);
+        audioDeviceList.setVisibility(View.INVISIBLE);
+        listMenuLayer.setVisibility(View.INVISIBLE);
     }
 
     private void setJoinButtonState() {
@@ -428,5 +439,29 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(final MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            final View v = getCurrentFocus();
+            if (isShouldHideInput(v, ev)) {
+                final InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private boolean isShouldHideInput(final View v, final MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            final int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            final int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left + v.getWidth();
+            return !(event.getX() > left) || !(event.getX() < right)
+                    || !(event.getY() > top) || !(event.getY() < bottom);
+        }
+        return false;
     }
 }

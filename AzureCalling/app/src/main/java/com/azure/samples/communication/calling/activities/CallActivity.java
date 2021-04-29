@@ -70,8 +70,9 @@ public class CallActivity extends AppCompatActivity {
     private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
-    private ConstraintLayout deviceList;
-    private boolean isDeviceListVisible;
+    private ConstraintLayout listMenuLayer;
+    private ConstraintLayout audioDeviceList;
+    private boolean isListMenuLayerVisible;
     private ImageButton checkMarkAudioAndroid;
     private ImageButton checkMarkAudioSpeaker;
 
@@ -100,7 +101,7 @@ public class CallActivity extends AppCompatActivity {
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
                 .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
         setLayoutComponentState(joinCallConfig.isMicrophoneMuted(), joinCallConfig.isCameraOn(),
-                this.callHangUpOverlaid, this.isDeviceListVisible);
+                this.callHangUpOverlaid, this.isListMenuLayerVisible);
 
         // if the app is already in landscape mode, this check will hide status bar
         setStatusBarVisibility();
@@ -148,7 +149,7 @@ public class CallActivity extends AppCompatActivity {
         setupScreenLayout();
         setVideoImageButtonEnabledState();
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
-                this.callHangUpOverlaid, this.isDeviceListVisible);
+                this.callHangUpOverlaid, this.isListMenuLayerVisible);
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
@@ -381,12 +382,12 @@ public class CallActivity extends AppCompatActivity {
 
     private void setLayoutComponentState(
             final boolean isMicrophoneMuted, final boolean isCameraOn,
-            final boolean isCallHangUpOverLaid, final boolean isDeviceListVisible) {
+            final boolean isCallHangUpOverLaid, final boolean isListMenuLayerVisible) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
-        deviceList.setVisibility(isDeviceListVisible ? View.VISIBLE : View.INVISIBLE);
-        if (isDeviceListVisible) {
+        listMenuLayer.setVisibility(isListMenuLayerVisible ? View.VISIBLE : View.INVISIBLE);
+        if (isListMenuLayerVisible) {
             setAudioDeviceListVisible();
         }
     }
@@ -396,17 +397,19 @@ public class CallActivity extends AppCompatActivity {
                 ? View.VISIBLE : View.INVISIBLE);
         checkMarkAudioSpeaker.setVisibility(callingContext.isAudioSpeakerOn()
                 ? View.VISIBLE : View.INVISIBLE);
-        deviceList.setVisibility(View.VISIBLE);
+        audioDeviceList.setVisibility(View.VISIBLE);
+        listMenuLayer.setVisibility(View.VISIBLE);
     }
 
     private void closeAudioDeviceList() {
-        deviceList.setVisibility(View.INVISIBLE);
-        isDeviceListVisible = false;
+        audioDeviceList.setVisibility(View.INVISIBLE);
+        listMenuLayer.setVisibility(View.INVISIBLE);
+        isListMenuLayerVisible = false;
     }
 
     private void openAudioDeviceList() {
         setAudioDeviceListVisible();
-        isDeviceListVisible = true;
+        isListMenuLayerVisible = true;
     }
 
     private void openHangupDialog() {
@@ -563,25 +566,33 @@ public class CallActivity extends AppCompatActivity {
             return false;
         });
 
-        deviceList = findViewById(R.id.audio_device_menu_for_call);
+        listMenuLayer = findViewById(R.id.list_menu_layer_for_call);
+        audioDeviceList = listMenuLayer.findViewById(R.id.audio_device_list);
 
-        final ConstraintLayout audioOutputAndroid = deviceList.findViewById(R.id.audio_output_android);
-        final ConstraintLayout audioOutputSpeaker = deviceList.findViewById(R.id.audio_output_speaker);
+        listMenuLayer.setOnTouchListener((v, event) -> {
+            closeAudioDeviceList();
+            return true;
+        });
+
+        final ConstraintLayout audioOutputAndroid = listMenuLayer.findViewById(R.id.audio_output_android);
+        final ConstraintLayout audioOutputSpeaker = listMenuLayer.findViewById(R.id.audio_output_speaker);
 
         checkMarkAudioAndroid
-                = deviceList.findViewById(R.id.check_mark_for_audio_android);
+                = listMenuLayer.findViewById(R.id.check_mark_for_audio_android);
         checkMarkAudioSpeaker
-                = deviceList.findViewById(R.id.check_mark_for_audio_speaker);
+                = listMenuLayer.findViewById(R.id.check_mark_for_audio_speaker);
 
         audioOutputAndroid.setOnClickListener(l -> {
             setCheckMarkVisibility(checkMarkAudioSpeaker, false);
             callingContext.setSpeakerPhoneStatus(false);
             setCheckMarkVisibility(checkMarkAudioAndroid, true);
+            closeAudioDeviceList();
         });
         audioOutputSpeaker.setOnClickListener(l -> {
             setCheckMarkVisibility(checkMarkAudioAndroid, false);
             callingContext.setSpeakerPhoneStatus(true);
             setCheckMarkVisibility(checkMarkAudioSpeaker, true);
+            closeAudioDeviceList();
         });
 
         callHangupOverlay = findViewById(R.id.call_hangup_overlay);

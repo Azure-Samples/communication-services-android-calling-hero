@@ -165,6 +165,6 @@
 
     </LinearLayout>
 
-    <include android:id="@+id/audio_device_menu_for_call"
-        layout="@layout/audio_device_menu"/>
+    <include android:id="@+id/list_menu_layer_for_call"
+        layout="@layout/menu_layer"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

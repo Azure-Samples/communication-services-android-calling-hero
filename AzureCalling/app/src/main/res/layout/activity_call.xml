@@ -87,18 +87,6 @@
         </ImageButton>
 
         <ImageButton
-            android:id="@+id/call_share"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/call_share"
-            android:src="@drawable/ic_fluent_share_android_24_filled">
-
-        </ImageButton>
-
-        <ImageButton
             android:id="@+id/audio_device_button"
             style="@style/FluentButton"
             android:layout_width="60dp"
@@ -108,6 +96,18 @@
             android:background="@android:color/transparent"
             android:contentDescription="Device Options"
             android:src="@drawable/ic_fluent_speaker_2_28_regular">
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/call_share"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/call_share"
+            android:src="@drawable/ic_fluent_share_android_24_filled">
+
         </ImageButton>
 
         <ImageButton
@@ -167,6 +167,6 @@
             android:gravity="center" />
     </LinearLayout>
 
-    <include android:id="@+id/audio_device_menu_for_call"
-        layout="@layout/audio_device_menu"/>
+    <include android:id="@+id/list_menu_layer_for_call"
+        layout="@layout/menu_layer"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
