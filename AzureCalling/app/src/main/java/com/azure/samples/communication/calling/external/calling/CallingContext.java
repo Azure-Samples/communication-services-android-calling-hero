@@ -105,23 +105,17 @@ public class CallingContext {
     public CompletableFuture<Void> setupAsync() {
         // Initialize CompletableFutures
         setupCompletableFuture = new CompletableFuture<>();
-        communicationUserCredentialCompletableFuture = new CompletableFuture<>();
-        callAgentCompletableFuture = new CompletableFuture<>();
         deviceManagerCompletableFuture = new CompletableFuture<>();
         initializeCameraCompletableFuture = new CompletableFuture<>();
 
         // Define completion code for setup
         createCallClient();
-        createTokenCredential();
-        createCallAgent(null);
         createDeviceManager();
         initializeCamera();
         initializeSpeaker();
 
         // Wait until everything except localVideoStream is ready to define setup ready
         CompletableFuture.allOf(
-                communicationUserCredentialCompletableFuture,
-                callAgentCompletableFuture,
                 deviceManagerCompletableFuture,
                 initializeCameraCompletableFuture).whenComplete((aVoid, throwable) -> {
                     setupCompletableFuture.complete(aVoid);
@@ -166,7 +160,6 @@ public class CallingContext {
      * Join a call
      */
     public CompletableFuture<Void> joinCallAsync(final JoinCallConfig joinCallConfig) {
-        // Recreate Token and Call Agent as a work-around
         communicationUserCredentialCompletableFuture = new CompletableFuture<>();
         callAgentCompletableFuture = new CompletableFuture<>();
         createTokenCredential();
@@ -277,11 +270,8 @@ public class CallingContext {
     }
 
     private void createDeviceManager() {
-        callAgentCompletableFuture.whenComplete((callAgent, throwable) -> {
-            Log.d(LOG_TAG, "Call Agent created");
-            callClient.getDeviceManager(appContext).thenAccept(deviceManager -> {
-                deviceManagerCompletableFuture.complete(deviceManager);
-            });
+        callClient.getDeviceManager(appContext).thenAccept(deviceManager -> {
+            deviceManagerCompletableFuture.complete(deviceManager);
         });
     }
 
@@ -314,18 +304,13 @@ public class CallingContext {
 
     private void createCallAgent(final String userName) {
         communicationUserCredentialCompletableFuture.whenComplete((communicationUserCredential, throwable) -> {
-            final CompletableFuture<CallAgent> completableFuture;
-            if (userName != null) {
-                displayName = userName;
-                final CallAgentOptions options = new CallAgentOptions();
-                options.setDisplayName(userName);
-                completableFuture = callClient.createCallAgent(appContext, communicationUserCredential, options);
-            } else {
-                completableFuture = callClient.createCallAgent(appContext, communicationUserCredential);
-            }
-            completableFuture.whenComplete((callAgent, callAgentThrowable) -> {
-                callAgentCompletableFuture.complete(callAgent);
-            });
+            displayName = userName;
+            final CallAgentOptions options = new CallAgentOptions();
+            options.setDisplayName(userName);
+            callClient.createCallAgent(appContext, communicationUserCredential, options)
+                    .whenComplete((callAgent, callAgentThrowable) -> {
+                        callAgentCompletableFuture.complete(callAgent);
+                    });
         });
     }
 
