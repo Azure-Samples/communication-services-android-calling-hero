@@ -15,6 +15,7 @@
     <color name="textbox_primary">@color/grey500</color>
     <color name="textbox_secondary">@color/grey300</color>
     <color name="audio_device_menu">@android:color/white</color>
+    <color name="menu_separator_line">#E1E1E1</color>
 
     <color name="fluent_default_icon_tint">@android:color/white</color>
     <color name="fluent_default_icon_reverse_tint">@android:color/black</color>
