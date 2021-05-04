@@ -348,6 +348,7 @@ public class SetupActivity extends AppCompatActivity {
         setupMissingText.setText(R.string.setup_missing_video_mic);
         setupVideoButtons.setVisibility(View.GONE);
         setupGradient.setVisibility(View.GONE);
+        defaultAvatar.setVisibility(View.GONE);
     }
 
     private void handleVideoPermissionsDenied() {
@@ -358,6 +359,7 @@ public class SetupActivity extends AppCompatActivity {
         setupMissingText.setText(R.string.setup_missing_video);
         videoToggleButton.setVisibility(View.GONE);
         setupGradient.setVisibility(View.GONE);
+        defaultAvatar.setVisibility(View.GONE);
     }
 
     private void handleAudioPermissionsDenied() {
