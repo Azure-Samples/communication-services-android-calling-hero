@@ -278,6 +278,7 @@ public class CallActivity extends AppCompatActivity {
             }
 
             pv.setIsMuted(remoteParticipant.isMuted());
+            pv.setIsSpeaking(remoteParticipant.isSpeaking());
 
             // update the participantIdIndexPathMap, participantViewList and participantsRenderList
             participantIdIndexPathMap.put(id, indexForNewParticipantViewList++);
@@ -525,9 +526,6 @@ public class CallActivity extends AppCompatActivity {
 
         gridLayout.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                // close hangup dialog if open
-                closeHangupDialog();
-
                 toggleParticipantHeaderNotification();
                 return true;
             }
@@ -535,6 +533,10 @@ public class CallActivity extends AppCompatActivity {
         });
 
         callHangupOverlay = findViewById(R.id.call_hangup_overlay);
+        callHangupOverlay.setOnTouchListener((v, event) -> {
+            closeHangupDialog();
+            return true;
+        });
     }
 
     private void setupGridLayout() {
