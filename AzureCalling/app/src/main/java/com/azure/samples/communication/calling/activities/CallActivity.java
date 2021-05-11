@@ -7,15 +7,19 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import androidx.lifecycle.Observer;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +35,14 @@ import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
+import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 
 import java.util.ArrayList;
@@ -70,11 +76,6 @@ public class CallActivity extends AppCompatActivity {
     private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
-    private ConstraintLayout listMenuLayer;
-    private ConstraintLayout audioDeviceList;
-    private boolean isListMenuLayerVisible;
-    private ImageButton checkMarkAudioAndroid;
-    private ImageButton checkMarkAudioSpeaker;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -101,7 +102,7 @@ public class CallActivity extends AppCompatActivity {
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
                 .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
         setLayoutComponentState(joinCallConfig.isMicrophoneMuted(), joinCallConfig.isCameraOn(),
-                this.callHangUpOverlaid, this.isListMenuLayerVisible);
+                this.callHangUpOverlaid, callingContext.isPopupWindowVisible());
 
         // if the app is already in landscape mode, this check will hide status bar
         setStatusBarVisibility();
@@ -149,7 +150,7 @@ public class CallActivity extends AppCompatActivity {
         setupScreenLayout();
         setVideoImageButtonEnabledState();
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
-                this.callHangUpOverlaid, this.isListMenuLayerVisible);
+                this.callHangUpOverlaid, callingContext.isPopupWindowVisible());
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
@@ -382,34 +383,34 @@ public class CallActivity extends AppCompatActivity {
 
     private void setLayoutComponentState(
             final boolean isMicrophoneMuted, final boolean isCameraOn,
-            final boolean isCallHangUpOverLaid, final boolean isListMenuLayerVisible) {
+            final boolean isCallHangUpOverLaid, final boolean isPopupWindowVisible) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
-        listMenuLayer.setVisibility(isListMenuLayerVisible ? View.VISIBLE : View.INVISIBLE);
-        if (isListMenuLayerVisible) {
+        if (isPopupWindowVisible) {
             setAudioDeviceListVisible();
         }
     }
 
     private void setAudioDeviceListVisible() {
-        checkMarkAudioAndroid.setVisibility(callingContext.isAudioAndroidOn()
-                ? View.VISIBLE : View.INVISIBLE);
-        checkMarkAudioSpeaker.setVisibility(callingContext.isAudioSpeakerOn()
-                ? View.VISIBLE : View.INVISIBLE);
-        audioDeviceList.setVisibility(View.VISIBLE);
-        listMenuLayer.setVisibility(View.VISIBLE);
-    }
+        final AudioSessionManager audioSessionManager
+                = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+        final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
 
-    private void closeAudioDeviceList() {
-        audioDeviceList.setVisibility(View.INVISIBLE);
-        listMenuLayer.setVisibility(View.INVISIBLE);
-        isListMenuLayerVisible = false;
+        final AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow =
+                new AudioDeviceSelectionPopupWindow(this, audioSessionManager, callingContext);
+        audioDeviceSelectionPopupWindow.setContentView(layout);
+        audioDeviceSelectionPopupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
+        audioDeviceSelectionPopupWindow.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
+        audioDeviceSelectionPopupWindow.setFocusable(true);
+        audioDeviceSelectionPopupWindow.setBackgroundDrawable(new ColorDrawable(0x80000000));
+        audioDeviceSelectionPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
     }
 
     private void openAudioDeviceList() {
         setAudioDeviceListVisible();
-        isListMenuLayerVisible = true;
+        callingContext.setPopupWindowVisible(true);
     }
 
     private void openHangupDialog() {
@@ -566,44 +567,11 @@ public class CallActivity extends AppCompatActivity {
             return false;
         });
 
-        listMenuLayer = findViewById(R.id.list_menu_layer_for_call);
-        audioDeviceList = listMenuLayer.findViewById(R.id.audio_device_list);
-
-        listMenuLayer.setOnTouchListener((v, event) -> {
-            closeAudioDeviceList();
-            return true;
-        });
-
-        final ConstraintLayout audioOutputAndroid = listMenuLayer.findViewById(R.id.audio_output_android);
-        final ConstraintLayout audioOutputSpeaker = listMenuLayer.findViewById(R.id.audio_output_speaker);
-
-        checkMarkAudioAndroid
-                = listMenuLayer.findViewById(R.id.check_mark_for_audio_android);
-        checkMarkAudioSpeaker
-                = listMenuLayer.findViewById(R.id.check_mark_for_audio_speaker);
-
-        audioOutputAndroid.setOnClickListener(l -> {
-            setCheckMarkVisibility(checkMarkAudioSpeaker, false);
-            callingContext.setSpeakerPhoneStatus(false);
-            setCheckMarkVisibility(checkMarkAudioAndroid, true);
-            closeAudioDeviceList();
-        });
-        audioOutputSpeaker.setOnClickListener(l -> {
-            setCheckMarkVisibility(checkMarkAudioAndroid, false);
-            callingContext.setSpeakerPhoneStatus(true);
-            setCheckMarkVisibility(checkMarkAudioSpeaker, true);
-            closeAudioDeviceList();
-        });
-
         callHangupOverlay = findViewById(R.id.call_hangup_overlay);
         callHangupOverlay.setOnTouchListener((v, event) -> {
             closeHangupDialog();
             return true;
         });
-    }
-
-    private void setCheckMarkVisibility(final ImageButton checkMark, final boolean isVisible) {
-        checkMark.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void setupGridLayout() {

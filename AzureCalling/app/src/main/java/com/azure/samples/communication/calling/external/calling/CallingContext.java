@@ -4,11 +4,8 @@
 package com.azure.samples.communication.calling.external.calling;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
-
 import com.azure.android.communication.calling.AudioOptions;
 import com.azure.android.communication.calling.Call;
 import com.azure.android.communication.calling.CallAgent;
@@ -59,7 +56,6 @@ public class CallingContext {
     private String joinId;
     private CallClient callClient;
     private Call call;
-    private AudioManager audioManager;
     private String displayName;
     private CompletableFuture<CommunicationTokenCredential> communicationUserCredentialCompletableFuture;
     private CompletableFuture<CallAgent> callAgentCompletableFuture;
@@ -72,6 +68,7 @@ public class CallingContext {
     private boolean cameraOn;
     private boolean micOn;
     private boolean isVideoOnHold = false;
+    private boolean isPopupWindowVisible = false;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
@@ -113,7 +110,6 @@ public class CallingContext {
         createCallClient();
         createDeviceManager();
         initializeCamera();
-        initializeSpeaker();
 
         // Wait until everything except localVideoStream is ready to define setup ready
         CompletableFuture.allOf(
@@ -147,6 +143,14 @@ public class CallingContext {
 
     public boolean getMicOn() {
         return micOn;
+    }
+
+    public boolean isPopupWindowVisible() {
+        return isPopupWindowVisible;
+    }
+
+    public void setPopupWindowVisible(final boolean popupWindowVisible) {
+        isPopupWindowVisible = popupWindowVisible;
     }
 
     public void createCallClient() {
@@ -261,18 +265,6 @@ public class CallingContext {
         return displayedParticipantsLiveData;
     }
 
-    public boolean isAudioSpeakerOn() {
-        return audioManager.isSpeakerphoneOn();
-    }
-
-    public boolean isAudioAndroidOn() {
-        return !audioManager.isSpeakerphoneOn();
-    }
-
-    public void setSpeakerPhoneStatus(final boolean status) {
-        audioManager.setSpeakerphoneOn(status);
-    }
-
     //endregion
     //region Private Methods
 
@@ -308,11 +300,6 @@ public class CallingContext {
                 }
             }
         });
-    }
-
-    private void initializeSpeaker() {
-        audioManager = (AudioManager) appContext.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.setSpeakerphoneOn(true);
     }
 
     private void createCallAgent(final String userName) {

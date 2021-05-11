@@ -5,19 +5,21 @@ package com.azure.samples.communication.calling.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -35,12 +37,15 @@ import com.azure.android.communication.calling.VideoStreamRendererView;
 import com.azure.android.communication.calling.ScalingMode;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioDeviceType;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
+import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 
 import java9.util.concurrent.CompletableFuture;
 
@@ -72,10 +77,7 @@ public class SetupActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
     private PermissionState onStopVideoPermissionState;
-    private ConstraintLayout listMenuLayer;
-    private ConstraintLayout audioDeviceList;
-    private ImageButton checkMarkAudioAndroid;
-    private ImageButton checkMarkAudioSpeaker;
+    private AudioSessionManager audioSessionManager;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -117,6 +119,7 @@ public class SetupActivity extends AppCompatActivity {
                 defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
+        initializeSpeaker();
     }
 
     @Override
@@ -209,54 +212,21 @@ public class SetupActivity extends AppCompatActivity {
             openAudioDeviceList();
         });
 
-        listMenuLayer = findViewById(R.id.list_menu_layer_for_setup);
-
-        audioDeviceList = listMenuLayer.findViewById(R.id.audio_device_list);
-        audioDeviceList.setVisibility(View.INVISIBLE);
-
-        final ConstraintLayout audioOutputAndroid = listMenuLayer.findViewById(R.id.audio_output_android);
-        final ConstraintLayout audioOutputSpeaker = listMenuLayer.findViewById(R.id.audio_output_speaker);
-
-        checkMarkAudioAndroid  = listMenuLayer.findViewById(R.id.check_mark_for_audio_android);
-        checkMarkAudioSpeaker = listMenuLayer.findViewById(R.id.check_mark_for_audio_speaker);
-
-        audioOutputAndroid.setOnClickListener(l -> {
-            setCheckMarkVisibility(checkMarkAudioSpeaker, false);
-            callingContext.setSpeakerPhoneStatus(false);
-            setCheckMarkVisibility(checkMarkAudioAndroid, true);
-            closeAudioDeviceList();
-        });
-        audioOutputSpeaker.setOnClickListener(l -> {
-            setCheckMarkVisibility(checkMarkAudioAndroid, false);
-            callingContext.setSpeakerPhoneStatus(true);
-            setCheckMarkVisibility(checkMarkAudioSpeaker, true);
-            closeAudioDeviceList();
-        });
-
-        listMenuLayer.setOnTouchListener((v, event) -> {
-            closeAudioDeviceList();
-            return true;
-        });
-
         hidePermissionsWarning();
     }
 
-    private void setCheckMarkVisibility(final ImageButton checkMark, final boolean isVisible) {
-        checkMark.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-    }
-
     private void openAudioDeviceList() {
-        checkMarkAudioAndroid.setVisibility(callingContext.isAudioAndroidOn()
-                ? View.VISIBLE : View.INVISIBLE);
-        checkMarkAudioSpeaker.setVisibility(callingContext.isAudioSpeakerOn()
-                ? View.VISIBLE : View.INVISIBLE);
-        listMenuLayer.setVisibility(View.VISIBLE);
-        audioDeviceList.setVisibility(View.VISIBLE);
-    }
+        final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
 
-    private void closeAudioDeviceList() {
-        audioDeviceList.setVisibility(View.INVISIBLE);
-        listMenuLayer.setVisibility(View.INVISIBLE);
+        final AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow =
+                new AudioDeviceSelectionPopupWindow(this, audioSessionManager, callingContext);
+        audioDeviceSelectionPopupWindow.setContentView(layout);
+        audioDeviceSelectionPopupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
+        audioDeviceSelectionPopupWindow.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
+        audioDeviceSelectionPopupWindow.setFocusable(true);
+        audioDeviceSelectionPopupWindow.setBackgroundDrawable(new ColorDrawable(0x80000000));
+        audioDeviceSelectionPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
     }
 
     private void setJoinButtonState() {
@@ -439,6 +409,13 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
+    }
+
+    private void initializeSpeaker() {
+        ((AzureCalling) getApplication()).createAudioSessionManager();
+        audioSessionManager = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+        // By default, turn on the speaker
+        audioSessionManager.switchAudioDeviceType(AudioDeviceType.SPEAKER);
     }
 
     @Override
