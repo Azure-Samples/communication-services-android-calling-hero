@@ -27,4 +27,4 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: ktlint
-        run: ./gradlew ktlintCheck
+        run: ./AzureCalling/gradlew ktlintCheck
