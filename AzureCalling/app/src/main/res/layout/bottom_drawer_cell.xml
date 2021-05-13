@@ -9,9 +9,9 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="11.5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/ic_fluent_speaker_2_24_regular" />
 
     <TextView
@@ -19,25 +19,25 @@
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginStart="72dp"
-        android:layout_marginTop="11.5dp"
         android:layout_marginEnd="40dp"
         android:text="@string/audio_device_android"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageButton
         android:id="@+id/cell_check_mark"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_fluent_checkmark_24_regular"
         android:tint="@color/fluent_default_icon_reverse_tint"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView
         android:layout_width="match_parent"

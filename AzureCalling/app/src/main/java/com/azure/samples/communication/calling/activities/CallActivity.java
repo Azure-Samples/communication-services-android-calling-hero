@@ -72,8 +72,6 @@ public class CallActivity extends AppCompatActivity {
     private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
-    private boolean isPopupWindowVisible = false;
-    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -153,13 +151,6 @@ public class CallActivity extends AppCompatActivity {
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
         }
-        if (isPopupWindowVisible) {
-            setAudioDeviceListVisible();
-        }
-    }
-
-    public void setPopupWindowVisible(final boolean popupWindowVisible) {
-        isPopupWindowVisible = popupWindowVisible;
     }
 
     private void setVideoImageButtonEnabledState() {
@@ -395,18 +386,13 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void setAudioDeviceListVisible() {
-        if (!isPopupWindowVisible) {
-            final AudioSessionManager audioSessionManager
-                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
-            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
-        } else {
-            audioDeviceSelectionPopupWindow.update();
-        }
+        final AudioSessionManager audioSessionManager
+                = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+        new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
     }
 
     private void openAudioDeviceList() {
         setAudioDeviceListVisible();
-        setPopupWindowVisible(true);
     }
 
     private void openHangupDialog() {

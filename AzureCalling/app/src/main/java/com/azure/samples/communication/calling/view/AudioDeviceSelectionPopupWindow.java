@@ -14,7 +14,6 @@ import android.widget.PopupWindow;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.azure.samples.communication.calling.R;
-import com.azure.samples.communication.calling.activities.CallActivity;
 import com.azure.samples.communication.calling.helpers.AudioSelectionAdapter;
 import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 
@@ -51,9 +50,6 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
 
         contentView.findViewById(R.id.overlay).setOnClickListener(v -> {
             dismiss();
-            if (context.getClass() == CallActivity.class) {
-                ((CallActivity) context).setPopupWindowVisible(false);
-            }
         });
     }
 }

@@ -22,6 +22,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
         app:layout_constraintBottom_toTopOf="@id/setup_name_holder">
 
         <ProgressBar
@@ -152,6 +154,7 @@
                 android:drawablePadding="5dp"
                 android:drawableTint="@android:color/white"
                 android:textColor="#FFFFFF"
+                android:focusableInTouchMode="true"
                 android:textOn="@string/setup_device"
                 android:textOff="@string/setup_device"/>
         </LinearLayout>

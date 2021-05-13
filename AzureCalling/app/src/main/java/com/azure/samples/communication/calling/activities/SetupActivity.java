@@ -3,7 +3,7 @@
 
 package com.azure.samples.communication.calling.activities;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -198,6 +197,9 @@ public class SetupActivity extends AppCompatActivity {
                 setupEnter.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
             } else {
                 setupEnter.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+                final InputMethodManager inputMethodManager =
+                        (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
@@ -205,6 +207,11 @@ public class SetupActivity extends AppCompatActivity {
         joinButtonText = findViewById(R.id.setup_button_text);
 
         final ToggleButton deviceOptionsButton = findViewById(R.id.device);
+        deviceOptionsButton.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                openAudioDeviceList();
+            }
+        });
         deviceOptionsButton.setOnClickListener(l -> {
             openAudioDeviceList();
         });
@@ -403,29 +410,5 @@ public class SetupActivity extends AppCompatActivity {
         audioSessionManager = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
         // By default, turn on the speaker
         audioSessionManager.switchAudioDeviceType(AudioDeviceType.SPEAKER);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(final MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            final View v = getCurrentFocus();
-            if (isShouldHideInput(v, ev)) {
-                final InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    private boolean isShouldHideInput(final View v, final MotionEvent event) {
-        if (v != null && (v instanceof EditText)) {
-            final int[] l = {0, 0};
-            v.getLocationInWindow(l);
-            final int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left + v.getWidth();
-            return !(event.getX() > left) || !(event.getX() < right)
-                    || !(event.getY() > top) || !(event.getY() < bottom);
-        }
-        return false;
     }
 }
