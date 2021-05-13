@@ -68,7 +68,6 @@ public class CallingContext {
     private boolean cameraOn;
     private boolean micOn;
     private boolean isVideoOnHold = false;
-    private boolean isPopupWindowVisible = false;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
@@ -143,14 +142,6 @@ public class CallingContext {
 
     public boolean getMicOn() {
         return micOn;
-    }
-
-    public boolean isPopupWindowVisible() {
-        return isPopupWindowVisible;
-    }
-
-    public void setPopupWindowVisible(final boolean popupWindowVisible) {
-        isPopupWindowVisible = popupWindowVisible;
     }
 
     public void createCallClient() {

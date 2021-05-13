@@ -5,15 +5,12 @@ package com.azure.samples.communication.calling.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -216,17 +213,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void openAudioDeviceList() {
-        final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
-
-        final AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow =
-                new AudioDeviceSelectionPopupWindow(this, audioSessionManager, callingContext);
-        audioDeviceSelectionPopupWindow.setContentView(layout);
-        audioDeviceSelectionPopupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        audioDeviceSelectionPopupWindow.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
-        audioDeviceSelectionPopupWindow.setFocusable(true);
-        audioDeviceSelectionPopupWindow.setBackgroundDrawable(new ColorDrawable(0x80000000));
-        audioDeviceSelectionPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+        new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
     }
 
     private void setJoinButtonState() {

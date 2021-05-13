@@ -5,7 +5,7 @@
     android:layout_height="50dp">
 
     <ImageView
-        android:id="@+id/icon_for_audio_device"
+        android:id="@+id/cell_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="18dp"
@@ -15,7 +15,7 @@
         app:srcCompat="@drawable/ic_fluent_speaker_2_24_regular" />
 
     <TextView
-        android:id="@+id/text_for_audio_device"
+        android:id="@+id/cell_text"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginStart="72dp"
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/check_mark_for_audio_device"
+        android:id="@+id/cell_check_mark"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="10dp"

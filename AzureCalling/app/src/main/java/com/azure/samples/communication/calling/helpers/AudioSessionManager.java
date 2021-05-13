@@ -24,10 +24,6 @@ public class AudioSessionManager {
         return AudioDeviceType.ANDROID;
     }
 
-    private void setSpeakerPhoneStatus(final boolean status) {
-        audioManager.setSpeakerphoneOn(status);
-    }
-
     public void switchAudioDeviceType(final AudioDeviceType audioDeviceType) {
         switch (audioDeviceType) {
             case ANDROID:
@@ -39,5 +35,9 @@ public class AudioSessionManager {
             default:
                 throw new RuntimeException("The audio device type is illegal.");
         }
+    }
+
+    private void setSpeakerPhoneStatus(final boolean status) {
+        audioManager.setSpeakerphoneOn(status);
     }
 }

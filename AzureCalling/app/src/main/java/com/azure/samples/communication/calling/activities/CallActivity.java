@@ -7,19 +7,15 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.content.Context;
 import android.content.Intent;
 import androidx.lifecycle.Observer;
 
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +72,8 @@ public class CallActivity extends AppCompatActivity {
     private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
+    private boolean isPopupWindowVisible = false;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -102,7 +100,7 @@ public class CallActivity extends AppCompatActivity {
         final JoinCallConfig joinCallConfig = (JoinCallConfig) getIntent()
                 .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
         setLayoutComponentState(joinCallConfig.isMicrophoneMuted(), joinCallConfig.isCameraOn(),
-                this.callHangUpOverlaid, callingContext.isPopupWindowVisible());
+                this.callHangUpOverlaid);
 
         // if the app is already in landscape mode, this check will hide status bar
         setStatusBarVisibility();
@@ -150,11 +148,18 @@ public class CallActivity extends AppCompatActivity {
         setupScreenLayout();
         setVideoImageButtonEnabledState();
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
-                this.callHangUpOverlaid, callingContext.isPopupWindowVisible());
+                this.callHangUpOverlaid);
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
         }
+        if (isPopupWindowVisible) {
+            setAudioDeviceListVisible();
+        }
+    }
+
+    public void setPopupWindowVisible(final boolean popupWindowVisible) {
+        isPopupWindowVisible = popupWindowVisible;
     }
 
     private void setVideoImageButtonEnabledState() {
@@ -383,34 +388,25 @@ public class CallActivity extends AppCompatActivity {
 
     private void setLayoutComponentState(
             final boolean isMicrophoneMuted, final boolean isCameraOn,
-            final boolean isCallHangUpOverLaid, final boolean isPopupWindowVisible) {
+            final boolean isCallHangUpOverLaid) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
-        if (isPopupWindowVisible) {
-            setAudioDeviceListVisible();
-        }
     }
 
     private void setAudioDeviceListVisible() {
-        final AudioSessionManager audioSessionManager
-                = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
-        final LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
-
-        final AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow =
-                new AudioDeviceSelectionPopupWindow(this, audioSessionManager, callingContext);
-        audioDeviceSelectionPopupWindow.setContentView(layout);
-        audioDeviceSelectionPopupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        audioDeviceSelectionPopupWindow.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
-        audioDeviceSelectionPopupWindow.setFocusable(true);
-        audioDeviceSelectionPopupWindow.setBackgroundDrawable(new ColorDrawable(0x80000000));
-        audioDeviceSelectionPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+        if (!isPopupWindowVisible) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        } else {
+            audioDeviceSelectionPopupWindow.update();
+        }
     }
 
     private void openAudioDeviceList() {
         setAudioDeviceListVisible();
-        callingContext.setPopupWindowVisible(true);
+        setPopupWindowVisible(true);
     }
 
     private void openHangupDialog() {

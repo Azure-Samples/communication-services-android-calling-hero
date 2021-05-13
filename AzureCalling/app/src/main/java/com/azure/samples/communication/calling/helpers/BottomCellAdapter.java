@@ -21,9 +21,8 @@ public class BottomCellAdapter extends RecyclerView.Adapter<BottomCellViewHolder
     private List<BottomCellItem> bottomCellItems;
 
 
-    public BottomCellAdapter(final Context context, final List<BottomCellItem> bottomCellItems) {
+    public BottomCellAdapter(final Context context) {
         this.mInflater = LayoutInflater.from(context);
-        this.bottomCellItems = bottomCellItems;
     }
 
     @NonNull
@@ -42,5 +41,9 @@ public class BottomCellAdapter extends RecyclerView.Adapter<BottomCellViewHolder
     @Override
     public int getItemCount() {
         return bottomCellItems.size();
+    }
+
+    protected void setBottomCellItems(final List<BottomCellItem> bottomCellItems) {
+        this.bottomCellItems = bottomCellItems;
     }
 }

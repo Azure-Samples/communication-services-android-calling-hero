@@ -4,79 +4,56 @@
 package com.azure.samples.communication.calling.view;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.azure.samples.communication.calling.R;
-import com.azure.samples.communication.calling.external.calling.CallingContext;
-import com.azure.samples.communication.calling.helpers.AudioDeviceType;
+import com.azure.samples.communication.calling.activities.CallActivity;
+import com.azure.samples.communication.calling.helpers.AudioSelectionAdapter;
 import com.azure.samples.communication.calling.helpers.AudioSessionManager;
-import com.azure.samples.communication.calling.helpers.BottomCellAdapter;
-import com.azure.samples.communication.calling.helpers.BottomCellItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AudioDeviceSelectionPopupWindow extends PopupWindow {
     private static final String LOG_TAG = AudioDeviceSelectionPopupWindow.class.getSimpleName();
     private Context context;
     private AudioSessionManager audioSessionManager;
-    private CallingContext callingContext;
 
     public AudioDeviceSelectionPopupWindow(final Context context,
-                                           final AudioSessionManager audioSessionManager,
-                                           final CallingContext callingContext) {
+                                           final AudioSessionManager audioSessionManager) {
         super(context);
         this.context = context;
         this.audioSessionManager = audioSessionManager;
-        this.callingContext = callingContext;
+        final LayoutInflater layoutInflater
+                = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
+        this.setContentView(layout);
+        this.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
+        this.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
+        this.setFocusable(true);
+        this.setBackgroundDrawable(new ColorDrawable(0x80000000));
+        this.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
     }
 
     @Override
     public void setContentView(final View contentView) {
         super.setContentView(contentView);
 
-        final AudioDeviceType[] audioDeviceTypes = audioSessionManager.getAudioDeviceTypes();
-        final AudioDeviceType currentAudioDeviceType = audioSessionManager.getCurrentAudioDeviceType();
-        final List<BottomCellItem> bottomCellViewHolders = new ArrayList<>();
-        for (AudioDeviceType audioDeviceType : audioDeviceTypes) {
-            final BottomCellItem bottomCellItem = new BottomCellItem();
-            if (audioDeviceType == AudioDeviceType.ANDROID) {
-                bottomCellItem.setAvatar(ContextCompat.getDrawable(context,
-                        R.drawable.ic_fluent_speaker_2_24_regular));
-                bottomCellItem.setTitle("Android");
-                bottomCellItem.setEnabled(currentAudioDeviceType == audioDeviceType);
-                bottomCellItem.setOnClickAction(() -> setDeviceType(AudioDeviceType.ANDROID));
-            } else if (audioDeviceType == AudioDeviceType.SPEAKER) {
-                bottomCellItem.setAvatar(ContextCompat.getDrawable(context,
-                        R.drawable.ic_fluent_speaker_2_24_filled));
-                bottomCellItem.setTitle("Speaker");
-                bottomCellItem.setEnabled(currentAudioDeviceType == audioDeviceType);
-                bottomCellItem.setOnClickAction(() -> setDeviceType(AudioDeviceType.SPEAKER));
-            }
-            bottomCellItem.setAccessoryImage(ContextCompat.getDrawable(context,
-                    R.drawable.ic_fluent_checkmark_24_regular));
-            bottomCellViewHolders.add(bottomCellItem);
-        }
-
         // Pass audio device data to RecyclerView Adapter
-        final BottomCellAdapter bottomCellAdapter = new BottomCellAdapter(context, bottomCellViewHolders);
-        final RecyclerView audioTable = (RecyclerView) contentView.findViewById(R.id.audio_device_table);
+        final AudioSelectionAdapter bottomCellAdapter = new AudioSelectionAdapter(this, context, audioSessionManager);
+        final RecyclerView audioTable = contentView.findViewById(R.id.audio_device_table);
         audioTable.setAdapter(bottomCellAdapter);
         audioTable.setLayoutManager(new LinearLayoutManager(context));
 
         contentView.findViewById(R.id.overlay).setOnClickListener(v -> {
             dismiss();
-            callingContext.setPopupWindowVisible(false);
+            if (context.getClass() == CallActivity.class) {
+                ((CallActivity) context).setPopupWindowVisible(false);
+            }
         });
-    }
-
-    private void setDeviceType(final AudioDeviceType audioDeviceType) {
-        audioSessionManager.switchAudioDeviceType(audioDeviceType);
-        dismiss();
-        callingContext.setPopupWindowVisible(false);
     }
 }
