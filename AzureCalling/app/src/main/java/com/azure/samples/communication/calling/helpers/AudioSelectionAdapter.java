@@ -21,25 +21,27 @@ public class AudioSelectionAdapter extends BottomCellAdapter {
         final AudioDeviceType currentAudioDeviceType = audioSessionManager.getCurrentAudioDeviceType();
         final List<BottomCellItem> bottomCellItems = new ArrayList<>();
         for (AudioDeviceType audioDeviceType : audioDeviceTypes) {
-            final BottomCellItem bottomCellItem = new BottomCellItem();
             if (audioDeviceType == AudioDeviceType.ANDROID) {
-                bottomCellItem.setAvatar(ContextCompat.getDrawable(context,
-                        R.drawable.ic_fluent_speaker_2_24_regular));
-                bottomCellItem.setTitle("Android");
-                bottomCellItem.setEnabled(currentAudioDeviceType == audioDeviceType);
-                bottomCellItem.setOnClickAction(() -> setDeviceType(AudioDeviceType.ANDROID,
+                final BottomCellItem bottomCellItem = new BottomCellItem(ContextCompat.getDrawable(context,
+                        R.drawable.ic_fluent_speaker_2_24_regular),
+                        "Android",
+                    ContextCompat.getDrawable(context,
+                                R.drawable.ic_fluent_checkmark_24_regular),
+                        currentAudioDeviceType == audioDeviceType,
+                    () -> setDeviceType(AudioDeviceType.ANDROID,
                         audioSessionManager, popupWindow));
+                bottomCellItems.add(bottomCellItem);
             } else if (audioDeviceType == AudioDeviceType.SPEAKER) {
-                bottomCellItem.setAvatar(ContextCompat.getDrawable(context,
-                        R.drawable.ic_fluent_speaker_2_24_filled));
-                bottomCellItem.setTitle("Speaker");
-                bottomCellItem.setEnabled(currentAudioDeviceType == audioDeviceType);
-                bottomCellItem.setOnClickAction(() -> setDeviceType(AudioDeviceType.SPEAKER,
-                        audioSessionManager, popupWindow));
+                final BottomCellItem bottomCellItem = new BottomCellItem(ContextCompat.getDrawable(context,
+                        R.drawable.ic_fluent_speaker_2_24_filled),
+                        "Speaker",
+                    ContextCompat.getDrawable(context,
+                                R.drawable.ic_fluent_checkmark_24_regular),
+                        currentAudioDeviceType == audioDeviceType,
+                    () -> setDeviceType(AudioDeviceType.SPEAKER,
+                                audioSessionManager, popupWindow));
+                bottomCellItems.add(bottomCellItem);
             }
-            bottomCellItem.setAccessoryImage(ContextCompat.getDrawable(context,
-                    R.drawable.ic_fluent_checkmark_24_regular));
-            bottomCellItems.add(bottomCellItem);
         }
         setBottomCellItems(bottomCellItems);
     }
