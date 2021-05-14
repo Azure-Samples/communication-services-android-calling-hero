@@ -141,11 +141,13 @@ public class CallActivity extends AppCompatActivity {
                 hideCallActivityProgressBar();
                 hideInLobbyWaitingOverlay();
                 showParticipantHeaderNotification();
+            } else if (callState == CallState.DISCONNECTED) {
+                if (localParticipantView != null && localParticipantView.getVisibility() == View.VISIBLE) {
+                    showRemovedFromTeamsMeetingAlertDialog();
+                }
             } else if (callState == CallState.NONE) {
                 if (inLobbyWaitingOverlay.getVisibility() == View.VISIBLE) {
                     showMeetingAccessDeniedAlertDialog();
-                } else if (localParticipantView != null && localParticipantView.getVisibility() == View.VISIBLE) {
-                    showRemovedFromTeamsMeetingAlertDialog();
                 }
             }
         };
