@@ -14,6 +14,9 @@
     <color name="text_secondary">@android:color/white</color>
     <color name="textbox_primary">@color/grey400</color>
     <color name="textbox_secondary">@color/grey300</color>
+    <color name="fluent_dismiss_icon_tint">@android:color/white</color>
+    <color name="recording_transcription_notification_bar">@color/grey900</color>
+    <color name="text_color_link_floating_bar">@android:color/white</color>
 
 
 
