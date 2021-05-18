@@ -14,7 +14,8 @@ public class BottomCellItem {
 
     public BottomCellItem() { }
 
-    public BottomCellItem(final Drawable avatar, final String title, final Drawable accessoryImage,
+    public BottomCellItem(final Drawable avatar,
+                          final String title, final Drawable accessoryImage,
                           final Boolean enabled, final Runnable onClickAction) {
         this.avatar = avatar;
         this.title = title;
@@ -62,4 +63,5 @@ public class BottomCellItem {
     public Runnable getOnClickAction() {
         return onClickAction;
     }
+
 }

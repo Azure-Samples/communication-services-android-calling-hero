@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -74,6 +75,7 @@ public class SetupActivity extends AppCompatActivity {
     private PermissionState onStopAudioPermissionState;
     private PermissionState onStopVideoPermissionState;
     private AudioSessionManager audioSessionManager;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -220,7 +222,13 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void openAudioDeviceList() {
-        new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        if (audioDeviceSelectionPopupWindow == null) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        }
+        audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
+                    Gravity.BOTTOM, 0, 0);
     }
 
     private void setJoinButtonState() {

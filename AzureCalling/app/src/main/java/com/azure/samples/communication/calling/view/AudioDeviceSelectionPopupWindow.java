@@ -5,7 +5,6 @@ package com.azure.samples.communication.calling.view;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -35,7 +34,6 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         this.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
         this.setFocusable(true);
         this.setBackgroundDrawable(new ColorDrawable(0x80000000));
-        this.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
     }
 
     @Override
@@ -43,7 +41,8 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         super.setContentView(contentView);
 
         // Pass audio device data to RecyclerView Adapter
-        final AudioSelectionAdapter bottomCellAdapter = new AudioSelectionAdapter(this, context, audioSessionManager);
+        final AudioSelectionAdapter bottomCellAdapter = new AudioSelectionAdapter(
+                context, audioSessionManager, () -> dismiss());
         final RecyclerView audioTable = contentView.findViewById(R.id.audio_device_table);
         audioTable.setAdapter(bottomCellAdapter);
         audioTable.setLayoutManager(new LinearLayoutManager(context));

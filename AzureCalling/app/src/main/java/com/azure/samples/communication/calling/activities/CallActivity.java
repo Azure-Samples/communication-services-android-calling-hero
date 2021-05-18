@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,7 @@ public class CallActivity extends AppCompatActivity {
     private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -385,14 +387,14 @@ public class CallActivity extends AppCompatActivity {
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
     }
 
-    private void setAudioDeviceListVisible() {
-        final AudioSessionManager audioSessionManager
-                = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
-        new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
-    }
-
     private void openAudioDeviceList() {
-        setAudioDeviceListVisible();
+        if (audioDeviceSelectionPopupWindow == null) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        }
+        audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
+                    Gravity.BOTTOM, 0, 0);
     }
 
     private void openHangupDialog() {
