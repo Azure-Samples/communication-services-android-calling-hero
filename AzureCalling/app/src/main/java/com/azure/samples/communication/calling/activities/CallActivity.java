@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
@@ -45,6 +47,7 @@ import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
+import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +84,7 @@ public class CallActivity extends AppCompatActivity {
     private ProgressBar callActivityProgressBar;
     private LinearLayout inLobbyWaitingOverlay;
     private JoinCallConfig joinCallConfig;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -212,6 +216,8 @@ public class CallActivity extends AppCompatActivity {
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
                 callHangUpOverlaid, isInLobbyWaitingOverlaid,
                 isProgressBarVisible);
+        setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
+                this.callHangUpOverlaid);
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
@@ -490,11 +496,22 @@ public class CallActivity extends AppCompatActivity {
             final boolean isMicrophoneMuted, final boolean isCameraOn,
             final boolean isCallHangUpOverLaid, final boolean isInLobbyWaitingOverlaid,
             final boolean isProgressBarVisible) {
+            final boolean isCallHangUpOverLaid) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
         inLobbyWaitingOverlay.setVisibility(isInLobbyWaitingOverlaid ? View.VISIBLE : View.INVISIBLE);
         callActivityProgressBar.setVisibility(isProgressBarVisible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void openAudioDeviceList() {
+        if (audioDeviceSelectionPopupWindow == null) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        }
+        audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
+                    Gravity.BOTTOM, 0, 0);
     }
 
     private void openHangupDialog() {
@@ -642,6 +659,9 @@ public class CallActivity extends AppCompatActivity {
 
         final Button callHangupCancelButton = findViewById(R.id.call_hangup_cancel);
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
+
+        final ImageButton deviceOptionsButton = findViewById(R.id.audio_device_button);
+        deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
 
         infoHeaderView = findViewById(R.id.info_header);
         noticeBannerView = findViewById(R.id.noticeBanner);

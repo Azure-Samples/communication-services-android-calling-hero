@@ -22,6 +22,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
         app:layout_constraintBottom_toTopOf="@id/setup_name_holder">
 
         <ProgressBar
@@ -141,6 +143,21 @@
                 android:textOff="@string/setup_mic_off"
                 android:textOn="@string/setup_mic_on" />
 
+            <ToggleButton
+                android:id="@+id/device"
+                style="@style/FluentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/ic_fluent_speaker_2_28_filled"
+                android:drawablePadding="5dp"
+                android:drawableTint="@android:color/white"
+                android:textColor="#FFFFFF"
+                android:focusableInTouchMode="true"
+                android:textOn="@string/setup_device"
+                android:textOff="@string/setup_device"/>
         </LinearLayout>
 
 
@@ -218,5 +235,4 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,9 +4,7 @@
 package com.azure.samples.communication.calling.external.calling;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.azure.android.communication.calling.CallState;
@@ -122,7 +120,6 @@ public class CallingContext {
         createCallClient();
         createDeviceManager();
         initializeCamera();
-        initializeSpeaker();
 
         // Wait until everything except localVideoStream is ready to define setup ready
         CompletableFuture.allOf(
@@ -330,11 +327,6 @@ public class CallingContext {
                 }
             }
         });
-    }
-
-    private void initializeSpeaker() {
-        final AudioManager audioManager = (AudioManager) appContext.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.setSpeakerphoneOn(true);
     }
 
     private void createCallAgent(final String userName) {
