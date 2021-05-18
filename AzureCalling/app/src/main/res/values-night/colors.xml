@@ -14,7 +14,8 @@
     <color name="text_secondary">@android:color/white</color>
     <color name="textbox_primary">@color/grey400</color>
     <color name="textbox_secondary">@color/grey300</color>
+    <color name="audio_device_menu">@color/grey900</color>
 
-
+    <color name="fluent_default_icon_reverse_tint">@android:color/white</color>
 
 </resources>

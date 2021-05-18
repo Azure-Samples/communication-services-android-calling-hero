@@ -25,11 +25,15 @@
     <string name="setup_video_on">Video is on</string>
     <string name="setup_mic_off">Mic is off</string>
     <string name="setup_mic_on">Mic is on</string>
+    <string name="setup_device">Device</string>
     <string name="setup_missing_video">Your camera is disabled. To enable, please go to Settings to allow access.</string>
     <string name="setup_missing_mic">Your audio is disabled. To enable, please go to Settings to allow access. You must enable audio to start this call.</string>
     <string name="setup_missing_video_mic">Your camera and audio are disabled. To enable, please go to Settings to
         allow access. You must enable audio to start this call.</string>
     <string name="setup_gradient">Setup Gradient</string>
+
+    <string name="audio_device_android">Android</string>
+    <string name="audio_device_speaker">Speaker</string>
 
     <string name="call_hangup_confirm">Leave call</string>
     <string name="call_hangup_cancel">Cancel</string>

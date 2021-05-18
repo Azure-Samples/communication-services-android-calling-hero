@@ -3,6 +3,7 @@
 
 package com.azure.samples.communication.calling.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,12 +34,15 @@ import com.azure.android.communication.calling.VideoStreamRendererView;
 import com.azure.android.communication.calling.ScalingMode;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioDeviceType;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
+import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 
 import java9.util.concurrent.CompletableFuture;
 
@@ -68,6 +74,8 @@ public class SetupActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
     private PermissionState onStopVideoPermissionState;
+    private AudioSessionManager audioSessionManager;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -109,6 +117,7 @@ public class SetupActivity extends AppCompatActivity {
                 defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
+        initializeSpeaker();
     }
 
     @Override
@@ -190,12 +199,36 @@ public class SetupActivity extends AppCompatActivity {
                 setupEnter.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
             } else {
                 setupEnter.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+                final InputMethodManager inputMethodManager =
+                        (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
         joinButton = findViewById(R.id.setup_button);
         joinButtonText = findViewById(R.id.setup_button_text);
+
+        final ToggleButton deviceOptionsButton = findViewById(R.id.device);
+        deviceOptionsButton.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                openAudioDeviceList();
+            }
+        });
+        deviceOptionsButton.setOnClickListener(l -> {
+            openAudioDeviceList();
+        });
+
         hidePermissionsWarning();
+    }
+
+    private void openAudioDeviceList() {
+        if (audioDeviceSelectionPopupWindow == null) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        }
+        audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
+                    Gravity.BOTTOM, 0, 0);
     }
 
     private void setJoinButtonState() {
@@ -378,5 +411,12 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
+    }
+
+    private void initializeSpeaker() {
+        ((AzureCalling) getApplication()).createAudioSessionManager();
+        audioSessionManager = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+        // By default, turn on the speaker
+        audioSessionManager.switchAudioDeviceType(AudioDeviceType.SPEAKER);
     }
 }
