@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +36,8 @@ public class ParticipantView extends RelativeLayout {
     private final ImageView defaultAvatar;
     private final ConstraintLayout videoContainer;
     private final FrameLayout activeSpeakerFrame;
+    private final ImageButton switchCameraButton;
+    private Runnable switchCameraOnClickAction;
 
     public ParticipantView(@NonNull final Context context) {
         super(context);
@@ -43,6 +46,13 @@ public class ParticipantView extends RelativeLayout {
         this.defaultAvatar = findViewById(R.id.default_avatar);
         this.videoContainer = findViewById(R.id.video_container);
         this.activeSpeakerFrame = findViewById(R.id.active_speaker_frame);
+        this.switchCameraButton = findViewById(R.id.participant_switch_camera_button);
+        switchCameraButton.setOnClickListener(l -> {
+            if (switchCameraOnClickAction != null) {
+                switchCameraButton.setEnabled(false);
+                switchCameraOnClickAction.run();
+            }
+        });
     }
 
     public void setVideoStream(final RemoteVideoStream remoteVideoStream) {
@@ -109,6 +119,14 @@ public class ParticipantView extends RelativeLayout {
         defaultAvatar.setVisibility(isDisplayVideo ? INVISIBLE : VISIBLE);
     }
 
+    public void setSwitchCameraButtonDisplayed(final boolean shouldShowButton) {
+        switchCameraButton.setVisibility(shouldShowButton ? VISIBLE : GONE);
+    }
+
+    public void setImageButtonOnClickAction(final Runnable onClickAction) {
+        switchCameraOnClickAction = onClickAction;
+    }
+
     private void setVideoRenderer(final VideoStreamRenderer videoRenderer) {
         this.renderer = videoRenderer;
         this.rendererView = videoRenderer.createView(new CreateViewOptions(ScalingMode.CROP));
@@ -121,6 +139,7 @@ public class ParticipantView extends RelativeLayout {
             this.defaultAvatar.setVisibility(View.GONE);
             detachFromParentView(rendererView);
             this.videoContainer.addView(rendererView, 0);
+            switchCameraButton.setEnabled(true);
         } else {
             this.defaultAvatar.setVisibility(View.VISIBLE);
         }

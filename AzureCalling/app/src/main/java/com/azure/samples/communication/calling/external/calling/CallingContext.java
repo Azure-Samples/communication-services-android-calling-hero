@@ -34,6 +34,7 @@ import com.azure.android.communication.common.CommunicationUserIdentifier;
 import com.azure.android.communication.common.MicrosoftTeamsUserIdentifier;
 import com.azure.android.communication.common.PhoneNumberIdentifier;
 import com.azure.android.communication.common.UnknownIdentifier;
+import com.azure.samples.communication.calling.helpers.CameraType;
 import com.azure.samples.communication.calling.helpers.Constants;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class CallingContext {
     private CallClient callClient;
     private Call call;
     private String displayName;
+    private Map<CameraType, VideoDeviceInfo> availableCameras;
     private CompletableFuture<CommunicationTokenCredential> communicationUserCredentialCompletableFuture;
     private CompletableFuture<CallAgent> callAgentCompletableFuture;
     private CompletableFuture<DeviceManager> deviceManagerCompletableFuture;
@@ -220,6 +222,18 @@ public class CallingContext {
                 call.stopVideo(appContext, localVideoStream).thenRun(() -> cameraOn = false));
     }
 
+    public CompletableFuture switchCameraAsync() {
+        return getLocalVideoStreamCompletableFuture().thenAccept(localVideoStream -> {
+            final VideoDeviceInfo currentCamera = localVideoStream.getSource();
+            localVideoStreamCompletableFuture = new CompletableFuture<>();
+            if (currentCamera.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
+                localVideoStreamCompletableFuture.complete(new LocalVideoStream(getBackCamera(), appContext));
+            } else {
+                localVideoStreamCompletableFuture.complete(new LocalVideoStream(getFrontCamera(), appContext));
+            }
+        });
+    }
+
     public void pauseVideo() {
         if (cameraOn && call != null) {
             turnOffVideoAsync().thenRun(() -> {
@@ -278,23 +292,33 @@ public class CallingContext {
     private void initializeCamera() {
         deviceManagerCompletableFuture.whenComplete((deviceManager, throwable) -> {
             Log.d(LOG_TAG, "Device Manager created");
-
-            List<VideoDeviceInfo> cameras;
-            boolean cameraFound = false;
-            while (!cameraFound) {
-                cameras = deviceManager.getCameras();
-                for (final VideoDeviceInfo camera: cameras) {
-                    final String cameraFacingName = camera.getCameraFacing().name();
-
-                    if (cameraFacingName.equalsIgnoreCase("front")) {
-                        Log.i(LOG_TAG, "Desired Camera selected");
-                        initializeCameraCompletableFuture.complete(camera);
-                        cameraFound = true;
-                        break;
+            availableCameras = new HashMap<>();
+            int camerasFound = 0;
+            while (camerasFound != CameraType.values().length) {
+                camerasFound = 0;
+                final List<VideoDeviceInfo> cameras = deviceManager.getCameras();
+                Log.d(LOG_TAG, "Found cameras: " + cameras.size());
+                for (VideoDeviceInfo camera : cameras) {
+                    if (camera.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
+                        availableCameras.put(CameraType.FRONT, camera);
+                        camerasFound++;
+                    } else if (camera.getCameraFacing().name().equalsIgnoreCase(CameraType.BACK.name())) {
+                        availableCameras.put(CameraType.BACK, camera);
+                        camerasFound++;
                     }
                 }
             }
+            final VideoDeviceInfo initialCamera = getFrontCamera();
+            initializeCameraCompletableFuture.complete(initialCamera);
         });
+    }
+
+    private VideoDeviceInfo getFrontCamera() {
+        return availableCameras.get(CameraType.FRONT);
+    }
+
+    private VideoDeviceInfo getBackCamera() {
+        return availableCameras.get(CameraType.BACK);
     }
 
     private void initializeSpeaker() {

@@ -58,5 +58,23 @@
             android:visibility="invisible">
         </FrameLayout>
 
+        <ImageButton
+            android:id="@+id/participant_switch_camera_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/button_filled"
+            android:backgroundTint="#66000000"
+            android:contentDescription="@string/call_switch_camera_button"
+            android:paddingStart="2dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="2dp"
+            android:paddingBottom="2dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

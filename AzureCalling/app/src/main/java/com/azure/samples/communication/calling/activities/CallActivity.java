@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import java9.util.concurrent.CompletableFuture;
+
 public class CallActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CallActivity.class.getSimpleName();
@@ -228,7 +230,9 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView = new ParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         localParticipantView.setIsMuted(!callingContext.getMicOn());
+        localParticipantView.setImageButtonOnClickAction(this::switchCameraAsync);
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -415,17 +419,17 @@ public class CallActivity extends AppCompatActivity {
                 initialVideoToggleRequest.run();
                 // Video will turn on, or the button will be disabled
             } else {
-                toggleVideoOn();
+                toggleVideoOnAsync();
             }
         } else {
-            toggleVideoOff();
+            toggleVideoOffAsync();
         }
     }
 
     private void onInitialVideoToggleRequest() {
         final PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
         if (videoAccess == PermissionState.GRANTED) {
-            toggleVideoOn();
+            toggleVideoOnAsync();
         } else {
             runOnUiThread(() -> {
                 videoImageButton.setSelected(false);
@@ -434,12 +438,13 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void toggleVideoOn() {
+    private CompletableFuture toggleVideoOnAsync() {
         Log.d(LOG_TAG, "toggleVideo -> on");
-        callingContext.turnOnVideoAsync().whenComplete((localVideoStream, throwable) -> {
+        return callingContext.turnOnVideoAsync().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream(localVideoStream);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
@@ -448,17 +453,24 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
-    private void toggleVideoOff() {
+    private CompletableFuture toggleVideoOffAsync() {
         Log.d(LOG_TAG, "toggleVideo -> off");
-        callingContext.turnOffVideoAsync().whenComplete((aVoid, throwable) -> {
+        return callingContext.turnOffVideoAsync().thenRun(() -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream((LocalVideoStream) null);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
                 videoImageButton.setSelected(false);
             });
+        });
+    }
+
+    private void switchCameraAsync() {
+        toggleVideoOffAsync().thenRun(() -> {
+            callingContext.switchCameraAsync().thenRun(this::toggleVideoOnAsync);
         });
     }
 
@@ -577,6 +589,7 @@ public class CallActivity extends AppCompatActivity {
         localParticipantViewGridIndex = participantViewList.size();
         localParticipantView.setDisplayNameVisible(true);
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
     }
