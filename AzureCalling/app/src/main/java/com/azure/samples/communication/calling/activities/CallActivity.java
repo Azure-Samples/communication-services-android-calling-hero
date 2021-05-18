@@ -36,10 +36,12 @@ import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.helpers.ParticipantInfo;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
 import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
+import com.azure.samples.communication.calling.view.ParticipantListPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 
 import java.util.ArrayList;
@@ -397,6 +399,17 @@ public class CallActivity extends AppCompatActivity {
                     Gravity.BOTTOM, 0, 0);
     }
 
+    private void openParticipantList() {
+        final List<ParticipantInfo> participantInfo = new ArrayList<>();
+        participantInfo.add(new ParticipantInfo(callingContext.getDisplayName(), !callingContext.getMicOn()));
+        callingContext.getRemoteParticipants().stream().forEach(remoteParticipant ->
+                participantInfo.add(new ParticipantInfo(remoteParticipant.getDisplayName(),
+                        remoteParticipant.isMuted())));
+
+
+        new ParticipantListPopupWindow(this, participantInfo);
+    }
+
     private void openHangupDialog() {
         if (!callHangUpOverlaid) {
             callHangUpOverlaid = true;
@@ -550,6 +563,8 @@ public class CallActivity extends AppCompatActivity {
             }
             return false;
         });
+        final ImageButton participantListButton = findViewById(R.id.participant_drawer_button);
+        participantListButton.setOnClickListener(l -> openParticipantList());
 
         callHangupOverlay = findViewById(R.id.call_hangup_overlay);
         callHangupOverlay.setOnTouchListener((v, event) -> {

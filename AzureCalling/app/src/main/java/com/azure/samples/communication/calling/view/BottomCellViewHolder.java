@@ -22,10 +22,14 @@ public class BottomCellViewHolder extends RecyclerView.ViewHolder {
 
     public BottomCellViewHolder(@NonNull final View itemView) {
         super(itemView);
-        avatar = itemView.findViewById(R.id.cell_icon);
-        title = itemView.findViewById(R.id.cell_text);
-        accessoryImage = itemView.findViewById(R.id.cell_check_mark);
-        itemView.setOnClickListener(v -> onClickAction.run());
+        avatar = (ImageView) itemView.findViewById(R.id.cell_icon);
+        title = (TextView) itemView.findViewById(R.id.cell_text);
+        accessoryImage = (ImageView) itemView.findViewById(R.id.cell_check_mark);
+        itemView.setOnClickListener(v -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
     }
 
     public void setCellData(final BottomCellItem bottomCellItem) {

@@ -248,6 +248,14 @@ public class CallingContext {
         return call.mute(appContext).thenRun(() -> micOn = false);
     }
 
+    public List<RemoteParticipant> getRemoteParticipants() {
+        if (call == null) {
+            throw new IllegalStateException("Call can't be null");
+        }
+
+        return call.getRemoteParticipants();
+    }
+
     public int getRemoteParticipantCount() {
         return remoteParticipantsMap.size();
     }
