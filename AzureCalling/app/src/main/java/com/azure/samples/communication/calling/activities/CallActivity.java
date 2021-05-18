@@ -45,8 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
-import java9.util.concurrent.CompletableFuture;
-
 public class CallActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CallActivity.class.getSimpleName();
@@ -419,17 +417,17 @@ public class CallActivity extends AppCompatActivity {
                 initialVideoToggleRequest.run();
                 // Video will turn on, or the button will be disabled
             } else {
-                toggleVideoOnAsync();
+                toggleVideoOn();
             }
         } else {
-            toggleVideoOffAsync();
+            toggleVideoOff();
         }
     }
 
     private void onInitialVideoToggleRequest() {
         final PermissionState videoAccess = permissionHelper.getVideoPermissionState(this);
         if (videoAccess == PermissionState.GRANTED) {
-            toggleVideoOnAsync();
+            toggleVideoOn();
         } else {
             runOnUiThread(() -> {
                 videoImageButton.setSelected(false);
@@ -438,9 +436,9 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private CompletableFuture toggleVideoOnAsync() {
+    private void toggleVideoOn() {
         Log.d(LOG_TAG, "toggleVideo -> on");
-        return callingContext.turnOnVideoAsync().thenAccept(localVideoStream -> {
+        callingContext.turnOnVideoAsync().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream(localVideoStream);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
@@ -453,9 +451,9 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
-    private CompletableFuture toggleVideoOffAsync() {
+    private void toggleVideoOff() {
         Log.d(LOG_TAG, "toggleVideo -> off");
-        return callingContext.turnOffVideoAsync().thenRun(() -> {
+        callingContext.turnOffVideoAsync().thenRun(() -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream((LocalVideoStream) null);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
@@ -469,8 +467,11 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void switchCameraAsync() {
-        toggleVideoOffAsync().thenRun(() -> {
-            callingContext.switchCameraAsync().thenRun(this::toggleVideoOnAsync);
+        callingContext.switchCameraAsync().thenAccept(localVideoStream -> {
+            runOnUiThread(() -> {
+                localParticipantView.setVideoStream((LocalVideoStream) null);
+                localParticipantView.setVideoStream(localVideoStream);
+            });
         });
     }
 
