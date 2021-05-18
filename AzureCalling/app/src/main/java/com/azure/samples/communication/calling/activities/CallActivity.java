@@ -216,8 +216,6 @@ public class CallActivity extends AppCompatActivity {
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
                 callHangUpOverlaid, isInLobbyWaitingOverlaid,
                 isProgressBarVisible);
-        setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
-                this.callHangUpOverlaid);
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
@@ -496,7 +494,6 @@ public class CallActivity extends AppCompatActivity {
             final boolean isMicrophoneMuted, final boolean isCameraOn,
             final boolean isCallHangUpOverLaid, final boolean isInLobbyWaitingOverlaid,
             final boolean isProgressBarVisible) {
-            final boolean isCallHangUpOverLaid) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
