@@ -4,9 +4,12 @@
 package com.azure.samples.communication.calling;
 
 import android.app.Application;
+import android.content.Context;
+import android.media.AudioManager;
 
 import com.azure.samples.communication.calling.external.authentication.AADAuthHandler;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.external.calling.TokenService;
 import com.azure.samples.communication.calling.helpers.AppSettings;
@@ -17,6 +20,7 @@ public class AzureCalling extends Application {
     private AADAuthHandler aadAuthHandler;
     private TokenService tokenService;
     private PermissionHelper permissionHelper;
+    private AudioSessionManager audioSessionManager;
 
     @Override
     public void onCreate() {
@@ -39,6 +43,11 @@ public class AzureCalling extends Application {
             () -> tokenService.getCommunicationTokenAsync().get());
     }
 
+    public void createAudioSessionManager() {
+        this.audioSessionManager = new AudioSessionManager(
+                (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
+    }
+
     public CallingContext getCallingContext() {
         return callingContext;
     }
@@ -53,5 +62,9 @@ public class AzureCalling extends Application {
 
     public PermissionHelper getPermissionHelper() {
         return permissionHelper;
+    }
+
+    public AudioSessionManager getAudioSessionManager() {
+        return audioSessionManager;
     }
 }

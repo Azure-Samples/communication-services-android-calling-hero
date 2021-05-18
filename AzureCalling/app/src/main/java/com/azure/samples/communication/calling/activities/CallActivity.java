@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +32,14 @@ import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
+import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 
 import java.util.ArrayList;
@@ -70,6 +73,7 @@ public class CallActivity extends AppCompatActivity {
     private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -143,7 +147,8 @@ public class CallActivity extends AppCompatActivity {
         setStatusBarVisibility();
         setupScreenLayout();
         setVideoImageButtonEnabledState();
-        setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(), this.callHangUpOverlaid);
+        setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
+                this.callHangUpOverlaid);
         gridLayout.post(() -> loadGridLayoutViews());
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
@@ -375,10 +380,21 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void setLayoutComponentState(
-            final boolean isMicrophoneMuted, final boolean isCameraOn, final boolean isCallHangUpOverLaid) {
+            final boolean isMicrophoneMuted, final boolean isCameraOn,
+            final boolean isCallHangUpOverLaid) {
         audioImageButton.setSelected(!isMicrophoneMuted);
         videoImageButton.setSelected(isCameraOn);
         callHangupOverlay.setVisibility(isCallHangUpOverLaid ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void openAudioDeviceList() {
+        if (audioDeviceSelectionPopupWindow == null) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        }
+        audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
+                    Gravity.BOTTOM, 0, 0);
     }
 
     private void openHangupDialog() {
@@ -519,6 +535,9 @@ public class CallActivity extends AppCompatActivity {
 
         final Button callHangupCancelButton = findViewById(R.id.call_hangup_cancel);
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
+
+        final ImageButton deviceOptionsButton = findViewById(R.id.audio_device_button);
+        deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
 
         infoHeaderView = findViewById(R.id.info_header);
         gridLayout = findViewById(R.id.groupCallTable);
