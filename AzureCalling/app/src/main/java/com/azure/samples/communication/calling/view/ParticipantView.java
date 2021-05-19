@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 
 import com.azure.android.communication.calling.CallingCommunicationException;
@@ -123,6 +124,21 @@ public class ParticipantView extends RelativeLayout {
         switchCameraButton.setVisibility(shouldShowButton ? VISIBLE : GONE);
     }
 
+    public void centerSwitchCameraButton(final boolean shouldCenter) {
+        final ConstraintSet set = new ConstraintSet();
+        final ConstraintLayout layout;
+
+        layout = (ConstraintLayout) findViewById(R.id.video_container);
+        set.clone(layout);
+        if (shouldCenter) {
+            set.connect(switchCameraButton.getId(), ConstraintSet.BOTTOM, layout.getId(), ConstraintSet.BOTTOM,
+                    4);
+        } else {
+            set.clear(switchCameraButton.getId(), ConstraintSet.BOTTOM);
+        }
+        set.applyTo(layout);
+    }
+
     public void setImageButtonOnClickAction(final Runnable onClickAction) {
         switchCameraOnClickAction = onClickAction;
     }
@@ -138,6 +154,7 @@ public class ParticipantView extends RelativeLayout {
         if (rendererView != null) {
             this.defaultAvatar.setVisibility(View.GONE);
             detachFromParentView(rendererView);
+            rendererView.setId(View.generateViewId());
             this.videoContainer.addView(rendererView, 0);
             switchCameraButton.setEnabled(true);
         } else {

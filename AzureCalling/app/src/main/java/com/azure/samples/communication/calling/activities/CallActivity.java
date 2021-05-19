@@ -601,6 +601,7 @@ public class CallActivity extends AppCompatActivity {
         detachFromParentView(localParticipantView);
         localVideoViewContainer.setVisibility(callingContext.getCameraOn() ? View.VISIBLE : View.INVISIBLE);
         localParticipantView.setDisplayNameVisible(false);
+        localParticipantView.centerSwitchCameraButton(false);
         localVideoViewContainer.addView(localParticipantView);
         localVideoViewContainer.bringToFront();
     }
@@ -610,6 +611,7 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView.setDisplayNameVisible(true);
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
         localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
+        localParticipantView.centerSwitchCameraButton(true);
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
     }
