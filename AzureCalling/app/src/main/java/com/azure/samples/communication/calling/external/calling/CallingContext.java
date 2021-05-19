@@ -34,6 +34,7 @@ import com.azure.android.communication.common.UnknownIdentifier;
 import com.azure.samples.communication.calling.helpers.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -250,7 +251,7 @@ public class CallingContext {
 
     public List<RemoteParticipant> getRemoteParticipants() {
         if (call == null) {
-            throw new IllegalStateException("Call can't be null");
+            return Collections.emptyList();
         }
 
         return call.getRemoteParticipants();
