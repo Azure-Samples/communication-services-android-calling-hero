@@ -28,7 +28,7 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         this.audioSessionManager = audioSessionManager;
         final LayoutInflater layoutInflater
                 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
+        final View layout = layoutInflater.inflate(R.layout.buttom_drawer_view, null);
         this.setContentView(layout);
         this.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
         this.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
@@ -43,7 +43,7 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         // Pass audio device data to RecyclerView Adapter
         final AudioSelectionAdapter bottomCellAdapter = new AudioSelectionAdapter(
                 context, audioSessionManager, () -> dismiss());
-        final RecyclerView audioTable = contentView.findViewById(R.id.audio_device_table);
+        final RecyclerView audioTable = contentView.findViewById(R.id.bottom_drawer_table);
         audioTable.setAdapter(bottomCellAdapter);
         audioTable.setLayoutManager(new LinearLayoutManager(context));
 

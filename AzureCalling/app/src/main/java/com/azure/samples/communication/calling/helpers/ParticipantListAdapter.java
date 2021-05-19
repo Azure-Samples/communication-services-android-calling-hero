@@ -4,7 +4,6 @@
 package com.azure.samples.communication.calling.helpers;
 
 import android.content.Context;
-import android.widget.PopupWindow;
 
 import androidx.core.content.ContextCompat;
 
@@ -15,10 +14,11 @@ import java.util.stream.Collectors;
 
 public class ParticipantListAdapter extends BottomCellAdapter {
 
-    public ParticipantListAdapter(final PopupWindow popupWindow,
-                                  final Context context,
-                                  final List<ParticipantInfo> participantInfo) {
+    public ParticipantListAdapter(final Context context) {
         super(context);
+    }
+
+    public void setParticipantItems(final Context context, final List<ParticipantInfo> participantInfo) {
         final List<BottomCellItem> bottomCellItems =
                 participantInfo.stream().map(participantInfo1 -> new BottomCellItem(ContextCompat.getDrawable(context,
                         R.drawable.ic_no_camera_50_64), participantInfo1.getDisplayName(),
@@ -26,5 +26,6 @@ public class ParticipantListAdapter extends BottomCellAdapter {
                         participantInfo1.getIsmuted(), null)).collect(Collectors.toList());
 
         setBottomCellItems(bottomCellItems);
+        super.notifyDataSetChanged();
     }
 }

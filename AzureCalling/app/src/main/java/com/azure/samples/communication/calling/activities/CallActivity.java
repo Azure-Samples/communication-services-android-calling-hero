@@ -76,6 +76,7 @@ public class CallActivity extends AppCompatActivity {
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
     private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
+    private ParticipantListPopupWindow participantListPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -396,7 +397,7 @@ public class CallActivity extends AppCompatActivity {
             audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
         }
         audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
-                    Gravity.BOTTOM, 0, 0);
+                Gravity.BOTTOM, 0, 0);
     }
 
     private void openParticipantList() {
@@ -406,8 +407,13 @@ public class CallActivity extends AppCompatActivity {
                 participantInfo.add(new ParticipantInfo(remoteParticipant.getDisplayName(),
                         remoteParticipant.isMuted())));
 
+        if (participantListPopupWindow == null) {
+            participantListPopupWindow = new ParticipantListPopupWindow(this, participantInfo);
+        } else {
+            participantListPopupWindow.setParticipantInfo(participantInfo);
+        }
 
-        new ParticipantListPopupWindow(this, participantInfo);
+        participantListPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.BOTTOM, 0, 0);
     }
 
     private void openHangupDialog() {

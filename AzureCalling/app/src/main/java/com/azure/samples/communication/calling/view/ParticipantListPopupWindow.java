@@ -5,7 +5,6 @@ package com.azure.samples.communication.calling.view;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -22,21 +21,20 @@ import java.util.List;
 
 public class ParticipantListPopupWindow extends PopupWindow {
     private Context context;
-    private List<ParticipantInfo> participantInfo;
+    private ParticipantListAdapter bottomCellAdapter;
 
     public ParticipantListPopupWindow(final Context context, final List<ParticipantInfo> participantInfo) {
         super(context);
         this.context = context;
-        this.participantInfo = participantInfo;
         final LayoutInflater layoutInflater
                 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = layoutInflater.inflate(R.layout.activity_audio_selection, null);
+        final View layout = layoutInflater.inflate(R.layout.buttom_drawer_view, null);
         this.setContentView(layout);
         this.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
         this.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
         this.setFocusable(true);
         this.setBackgroundDrawable(new ColorDrawable(0x80000000));
-        this.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+        setParticipantInfo(participantInfo);
     }
 
     @Override
@@ -44,13 +42,17 @@ public class ParticipantListPopupWindow extends PopupWindow {
         super.setContentView(contentView);
 
         // Pass audio device data to RecyclerView Adapter
-        final ParticipantListAdapter bottomCellAdapter = new ParticipantListAdapter(this, context, participantInfo);
-        final RecyclerView participantList = contentView.findViewById(R.id.audio_device_table);
+        bottomCellAdapter = new ParticipantListAdapter(context);
+        final RecyclerView participantList = contentView.findViewById(R.id.bottom_drawer_table);
         participantList.setAdapter(bottomCellAdapter);
         participantList.setLayoutManager(new LinearLayoutManager(context));
 
         contentView.findViewById(R.id.overlay).setOnClickListener(v -> {
             dismiss();
         });
+    }
+
+    public void setParticipantInfo(final List<ParticipantInfo> participantInfo) {
+        this.bottomCellAdapter.setParticipantItems(context, participantInfo);
     }
 }
