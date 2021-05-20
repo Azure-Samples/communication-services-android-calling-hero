@@ -17,8 +17,12 @@
     <color name="recording_transcription_notification_bar">@android:color/white</color>
     <color name="text_color_link_floating_bar">@color/grey900</color>
 
-    <color name="fluent_default_icon_tint">@android:color/white</color>
     <color name="fluent_dismiss_icon_tint">@android:color/black</color>
+    <color name="audio_device_menu">@android:color/white</color>
+    <color name="menu_separator_line">#E1E1E1</color>
+
+    <color name="fluent_default_icon_tint">@android:color/white</color>
+    <color name="fluent_default_icon_reverse_tint">@android:color/black</color>
 
     <color name="grey950">#FF141414</color>
     <color name="grey900">#212121</color>
