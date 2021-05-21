@@ -224,14 +224,16 @@ public class CallingContext {
         return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream -> {
             final VideoDeviceInfo currentCamera = localVideoStream.getSource();
             localVideoStreamCompletableFuture = new CompletableFuture<>();
-            final LocalVideoStream newVideoStream;
+            VideoDeviceInfo desiredCamera;
             if (currentCamera.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
-                newVideoStream = new LocalVideoStream(getBackCamera(), appContext);
+                desiredCamera = getBackCamera();
             } else {
-                newVideoStream = new LocalVideoStream(getFrontCamera(), appContext);
+                desiredCamera = getFrontCamera();
             }
-            call.startVideo(appContext, newVideoStream).thenRun(() -> {
-                localVideoStreamCompletableFuture.complete(newVideoStream);
+            localVideoStream.switchSource(desiredCamera).thenRun(() -> {
+                call.startVideo(appContext, localVideoStream).thenRun(() -> {
+                    localVideoStreamCompletableFuture.complete(localVideoStream);
+                });
             });
             return localVideoStreamCompletableFuture;
         });

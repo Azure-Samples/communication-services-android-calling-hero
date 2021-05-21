@@ -485,8 +485,7 @@ public class CallActivity extends AppCompatActivity {
     private void switchCameraAsync() {
         callingContext.switchCameraAsync().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
-                localParticipantView.setVideoStream((LocalVideoStream) null);
-                localParticipantView.setVideoStream(localVideoStream);
+                localParticipantView.setSwitchCameraButtonEnabled(true);
             });
         });
     }

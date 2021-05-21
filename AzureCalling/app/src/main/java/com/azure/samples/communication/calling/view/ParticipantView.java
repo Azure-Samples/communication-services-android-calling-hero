@@ -124,6 +124,10 @@ public class ParticipantView extends RelativeLayout {
         switchCameraButton.setVisibility(shouldShowButton ? VISIBLE : GONE);
     }
 
+    public void setSwitchCameraButtonEnabled(final boolean shouldEnable) {
+        switchCameraButton.setEnabled(shouldEnable);
+    }
+
     public void centerSwitchCameraButton(final boolean shouldCenter) {
         final ConstraintSet set = new ConstraintSet();
         final ConstraintLayout layout;
