@@ -23,6 +23,8 @@ import com.azure.android.communication.calling.PropertyChangedListener;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStreamsUpdatedListener;
 import com.azure.android.communication.calling.VideoDeviceInfo;
+import com.azure.android.communication.calling.VideoDevicesUpdatedEvent;
+import com.azure.android.communication.calling.VideoDevicesUpdatedListener;
 import com.azure.android.communication.calling.VideoOptions;
 import com.azure.android.communication.common.CommunicationIdentifier;
 import com.azure.android.communication.common.CommunicationTokenCredential;
@@ -110,7 +112,7 @@ public class CallingContext {
         // Define completion code for setup
         createCallClient();
         createDeviceManager();
-        initializeCamera();
+        initializeCameras();
 
         // Wait until everything except localVideoStream is ready to define setup ready
         CompletableFuture.allOf(
@@ -290,28 +292,54 @@ public class CallingContext {
         });
     }
 
-    private void initializeCamera() {
+    private void initializeCameras() {
         deviceManagerCompletableFuture.whenComplete((deviceManager, throwable) -> {
             Log.d(LOG_TAG, "Device Manager created");
             availableCameras = new HashMap<>();
-            int camerasFound = 0;
-            while (camerasFound != CameraType.values().length) {
-                camerasFound = 0;
-                final List<VideoDeviceInfo> cameras = deviceManager.getCameras();
-                Log.d(LOG_TAG, "Found cameras: " + cameras.size());
-                for (VideoDeviceInfo camera : cameras) {
-                    if (camera.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
-                        availableCameras.put(CameraType.FRONT, camera);
-                        camerasFound++;
-                    } else if (camera.getCameraFacing().name().equalsIgnoreCase(CameraType.BACK.name())) {
-                        availableCameras.put(CameraType.BACK, camera);
-                        camerasFound++;
-                    }
-                }
-            }
-            final VideoDeviceInfo initialCamera = getFrontCamera();
-            initializeCameraCompletableFuture.complete(initialCamera);
+
+            final List<VideoDeviceInfo> initialCameras = deviceManager.getCameras();
+            addVideoDevices(initialCameras);
+            initializeFrontCameraIfRequired();
+
+            final VideoDevicesUpdatedListener videoDevicesUpdatedListener = videoDevicesUpdatedEvent -> {
+                updateVideoDevices(videoDevicesUpdatedEvent);
+                initializeFrontCameraIfRequired();
+            };
+            deviceManager.addOnCamerasUpdatedListener(videoDevicesUpdatedListener);
         });
+    }
+
+    private void initializeFrontCameraIfRequired() {
+        if (!initializeCameraCompletableFuture.isDone()) {
+            final VideoDeviceInfo initialCamera = getFrontCamera();
+            if (initialCamera != null) {
+                initializeCameraCompletableFuture.complete(initialCamera);
+            }
+        }
+    }
+
+    private void updateVideoDevices(final VideoDevicesUpdatedEvent videoDevicesUpdatedEvent) {
+        removeVideoDevices(videoDevicesUpdatedEvent.getRemovedVideoDevices());
+        addVideoDevices(videoDevicesUpdatedEvent.getAddedVideoDevices());
+    }
+
+    private void removeVideoDevices(final List<VideoDeviceInfo> removedVideoDevices) {
+        Log.d(LOG_TAG, "Removed Cameras: " + removedVideoDevices.size());
+        for (final VideoDeviceInfo removedVideoDevice: removedVideoDevices) {
+            final String cameraFacingName = removedVideoDevice.getCameraFacing().name();
+            availableCameras.remove(cameraFacingName);
+        }
+    }
+
+    private void addVideoDevices(final List<VideoDeviceInfo> addedVideoDevices) {
+        Log.d(LOG_TAG, "Added Cameras: " + addedVideoDevices.size());
+        for (final VideoDeviceInfo addedVideoDevice: addedVideoDevices) {
+            if (addedVideoDevice.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
+                availableCameras.put(CameraType.FRONT, addedVideoDevice);
+            } else if (addedVideoDevice.getCameraFacing().name().equalsIgnoreCase(CameraType.BACK.name())) {
+                availableCameras.put(CameraType.BACK, addedVideoDevice);
+            }
+        }
     }
 
     private VideoDeviceInfo getFrontCamera() {
