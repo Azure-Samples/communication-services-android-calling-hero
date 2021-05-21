@@ -220,11 +220,11 @@ public class CallingContext {
                 call.stopVideo(appContext, localVideoStream).thenRun(() -> cameraOn = false));
     }
 
-    public CompletableFuture<LocalVideoStream> switchCameraAsync() {
-        return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream -> {
+    public CompletableFuture switchCameraAsync() {
+        return getLocalVideoStreamCompletableFuture().thenAccept(localVideoStream -> {
             final VideoDeviceInfo currentCamera = localVideoStream.getSource();
             localVideoStreamCompletableFuture = new CompletableFuture<>();
-            VideoDeviceInfo desiredCamera;
+            final VideoDeviceInfo desiredCamera;
             if (currentCamera.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
                 desiredCamera = getBackCamera();
             } else {
@@ -235,7 +235,6 @@ public class CallingContext {
                     localVideoStreamCompletableFuture.complete(localVideoStream);
                 });
             });
-            return localVideoStreamCompletableFuture;
         });
     }
 
