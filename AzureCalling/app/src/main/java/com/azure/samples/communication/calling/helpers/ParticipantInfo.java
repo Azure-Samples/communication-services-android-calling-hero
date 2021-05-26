@@ -5,18 +5,18 @@ package com.azure.samples.communication.calling.helpers;
 
 public class ParticipantInfo {
     private String displayName;
-    private Boolean ismuted;
+    private Boolean isMuted;
 
-    public ParticipantInfo(final String displayName, final Boolean ismuted) {
+    public ParticipantInfo(final String displayName, final Boolean isMuted) {
         this.displayName = displayName;
-        this.ismuted = ismuted;
+        this.isMuted = isMuted;
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
-    public Boolean getIsmuted() {
-        return ismuted;
+    public Boolean getIsMuted() {
+        return isMuted;
     }
 }

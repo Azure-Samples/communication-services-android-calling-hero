@@ -23,7 +23,7 @@ public class ParticipantListAdapter extends BottomCellAdapter {
                 participantInfo.stream().map(participantInfo1 -> new BottomCellItem(ContextCompat.getDrawable(context,
                         R.drawable.ic_no_camera_50_64), participantInfo1.getDisplayName(),
                         ContextCompat.getDrawable(context, R.drawable.ic_fluent_mic_off_24_filled),
-                        participantInfo1.getIsmuted(), null)).collect(Collectors.toList());
+                        participantInfo1.getIsMuted(), null)).collect(Collectors.toList());
 
         setBottomCellItems(bottomCellItems);
         super.notifyDataSetChanged();
