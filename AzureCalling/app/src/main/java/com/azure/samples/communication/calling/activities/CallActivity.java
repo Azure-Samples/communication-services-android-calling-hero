@@ -315,12 +315,19 @@ public class CallActivity extends AppCompatActivity {
         }
 
         gridLayout.post(() -> {
-            if ((prevParticipantViewList.size() > 1 && participantViewList.size() <= 1)
-                    || (prevParticipantViewList.size() <= 1 && participantViewList.size() > 1)) {
+            final int preSize = prevParticipantViewList.size();
+            final int currSize = participantViewList.size();
+            if (!rangeInDefined(preSize, 0, 1) && rangeInDefined(currSize, 0, 1)
+                || (!rangeInDefined(preSize, 2, 4) && rangeInDefined(currSize, 2, 4))
+                || (!rangeInDefined(preSize, 5, 6)) && rangeInDefined(currSize, 5, 6)) {
                 setupGridLayout();
             }
             updateGridLayoutViews();
         });
+    }
+
+    private boolean rangeInDefined(final int current, final int min, final int max) {
+        return Math.max(min, current) == Math.min(current, max);
     }
 
     private void updateParticipantNotificationCount() {
@@ -581,18 +588,44 @@ public class CallActivity extends AppCompatActivity {
 
     private void setupGridLayout() {
         gridLayout.removeAllViews();
-        if (participantViewList.size() <= 1) {
-            gridLayout.setRowCount(1);
-            gridLayout.setColumnCount(1);
-            gridLayout.addView(createCellForGridLayout(gridLayout.getMeasuredWidth(),
-                    gridLayout.getMeasuredHeight()));
+        final int size = participantViewList.size();
+        final int width;
+        final int height;
+        final int range;
+        final int rowCount;
+        final int colCount;
+        if (size <= 1) {
+            width = gridLayout.getMeasuredWidth();
+            height = gridLayout.getMeasuredHeight();
+            range = 1;
+            rowCount = 1;
+            colCount = 1;
+        } else if (size > 1 && size <= 4) {
+            width = gridLayout.getMeasuredWidth() / 2;
+            height = gridLayout.getMeasuredHeight() / 2;
+            range = 4;
+            rowCount = 2;
+            colCount = 2;
         } else {
-            gridLayout.setRowCount(2);
-            gridLayout.setColumnCount(2);
-            for (int i = 0; i < 4; i++) {
-                gridLayout.addView(createCellForGridLayout(gridLayout.getMeasuredWidth() / 2,
-                        gridLayout.getMeasuredHeight() / 2));
+            final boolean isLandscape = getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            range = 6;
+            if (isLandscape) {
+                width = gridLayout.getMeasuredWidth() / 3;
+                height = gridLayout.getMeasuredHeight() / 2;
+                rowCount = 2;
+                colCount = 3;
+            } else {
+                width = gridLayout.getMeasuredWidth() / 2;
+                height = gridLayout.getMeasuredHeight() / 3;
+                rowCount = 3;
+                colCount = 2;
             }
+        }
+        gridLayout.setRowCount(rowCount);
+        gridLayout.setColumnCount(colCount);
+        for (int i = 0; i < range; i++) {
+            gridLayout.addView(createCellForGridLayout(width, height));
         }
     }
 
