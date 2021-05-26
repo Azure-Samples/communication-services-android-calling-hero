@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.azure.android.communication.calling.CallingCommunicationException;
 import com.azure.android.communication.calling.CreateViewOptions;
 import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.VideoStreamRenderer;
 import com.azure.android.communication.calling.VideoStreamRendererView;
@@ -68,9 +69,15 @@ public class ParticipantView extends RelativeLayout {
             return;
         }
 
+        cleanUpVideoRendering();
+
         try {
             final VideoStreamRenderer videoRenderer = new VideoStreamRenderer(remoteVideoStream, getContext());
-            setVideoRenderer(videoRenderer);
+            if (remoteVideoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                setVideoRenderer(videoRenderer, true);
+            } else {
+                setVideoRenderer(videoRenderer, false);
+            }
             this.videoStreamId = newVideoStreamId;
         } catch (final CallingCommunicationException e) {
             e.printStackTrace();
@@ -145,6 +152,14 @@ public class ParticipantView extends RelativeLayout {
 
     public void setImageButtonOnClickAction(final Runnable onClickAction) {
         switchCameraOnClickAction = onClickAction;
+    }
+
+    private void setVideoRenderer(final VideoStreamRenderer videoRenderer,
+                                  final boolean isScreenSharing) {
+        this.renderer = videoRenderer;
+        this.rendererView = videoRenderer.createView(
+                new CreateViewOptions(isScreenSharing ? ScalingMode.FIT : ScalingMode.CROP));
+        attachRendererView(rendererView);
     }
 
     private void setVideoRenderer(final VideoStreamRenderer videoRenderer) {
