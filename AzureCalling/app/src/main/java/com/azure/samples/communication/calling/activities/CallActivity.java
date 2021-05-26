@@ -45,6 +45,7 @@ import com.azure.samples.communication.calling.view.ParticipantListPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,6 +139,7 @@ public class CallActivity extends AppCompatActivity {
             handler.postDelayed(() -> {
                 updateParticipantViews();
                 updateParticipantNotificationCount();
+                refreshParticipantList();
                 lastViewUpdateTimestamp = System.currentTimeMillis();
                 viewUpdatePending = false;
             }, Math.max(MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES - timeElapsed, 0));
@@ -408,6 +410,13 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void openParticipantList() {
+        if (participantListPopupWindow == null) {
+            participantListPopupWindow = new ParticipantListPopupWindow(this, Collections.emptyList());
+        }
+        participantListPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.BOTTOM, 0, 0);
+    }
+
+    private void refreshParticipantList() {
         final List<ParticipantInfo> participantInfo = new ArrayList<>();
         participantInfo.add(new ParticipantInfo(callingContext.getDisplayName(), !callingContext.getMicOn()));
         callingContext.getRemoteParticipants().stream().forEach(remoteParticipant ->
@@ -416,11 +425,9 @@ public class CallActivity extends AppCompatActivity {
 
         if (participantListPopupWindow == null) {
             participantListPopupWindow = new ParticipantListPopupWindow(this, participantInfo);
-        } else {
-            participantListPopupWindow.setParticipantInfo(participantInfo);
         }
 
-        participantListPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.BOTTOM, 0, 0);
+        participantListPopupWindow.setParticipantInfo(participantInfo);
     }
 
     private void openHangupDialog() {
