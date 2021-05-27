@@ -261,14 +261,16 @@ public class CallActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         Log.d(LOG_TAG, "CallActivity onStop");
-        callingContext.pauseVideo();
+        callingContext.pauseVideo().thenRun(() -> runOnUiThread(() ->
+                localParticipantView.setVideoStream((LocalVideoStream) null)));
         super.onStop();
     }
 
     @Override
     public void onResume() {
         Log.d(LOG_TAG, "CallActivity onResume");
-        callingContext.resumeVideo();
+        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
+                localParticipantView.setVideoStream(localVideoStream)));
         super.onResume();
     }
 

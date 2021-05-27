@@ -237,23 +237,28 @@ public class CallingContext {
         }
 
         return getLocalVideoStreamCompletableFuture().thenCompose(localVideoStream ->
-                call.stopVideo(appContext, localVideoStream).thenRun(() -> cameraOn = false));
+                call.stopVideo(appContext, localVideoStream).thenRun(() -> {
+                    cameraOn = false;
+                }));
     }
 
-    public void pauseVideo() {
+    public CompletableFuture pauseVideo() {
         if (cameraOn && call != null) {
-            turnOffVideoAsync().thenRun(() -> {
+            return turnOffVideoAsync().thenRun(() -> {
                 isVideoOnHold = true;
             });
         }
+        return CompletableFuture.completedFuture(null);
     }
 
-    public void resumeVideo() {
+    public CompletableFuture<LocalVideoStream> resumeVideo() {
         if (isVideoOnHold && call != null) {
-            turnOnVideoAsync().thenRun(() -> {
+            return turnOnVideoAsync().thenApply(localVideoStream -> {
                 isVideoOnHold = false;
+                return localVideoStream;
             });
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     public CompletableFuture turnOnAudioAsync() {
