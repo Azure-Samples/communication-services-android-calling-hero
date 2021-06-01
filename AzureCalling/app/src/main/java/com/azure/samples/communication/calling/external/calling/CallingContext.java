@@ -39,6 +39,7 @@ import com.azure.samples.communication.calling.helpers.CameraType;
 import com.azure.samples.communication.calling.helpers.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -271,6 +272,14 @@ public class CallingContext {
         }
 
         return call.mute(appContext).thenRun(() -> micOn = false);
+    }
+
+    public List<RemoteParticipant> getRemoteParticipants() {
+        if (call == null) {
+            return Collections.emptyList();
+        }
+
+        return call.getRemoteParticipants();
     }
 
     public int getRemoteParticipantCount() {

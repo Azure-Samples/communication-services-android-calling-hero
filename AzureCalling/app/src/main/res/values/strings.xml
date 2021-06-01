@@ -48,5 +48,6 @@
     <string name="end_feedback">Provide feedback</string>
     <string name="end_feedbackUrl">https://aka.ms/ACS-CallingSample-Android-Issues</string>
     <string name="end_return">Return to home screen</string>
+    <string name="open_participant_list">Open Participant List</string>
     <string name="call_switch_camera_button">Switch Camera Button</string>
 </resources>
