@@ -429,6 +429,7 @@ public class CallActivity extends AppCompatActivity {
         if (participantListPopupWindow == null) {
             participantListPopupWindow = new ParticipantListPopupWindow(this, Collections.emptyList());
         }
+        refreshParticipantList();
         participantListPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.BOTTOM, 0, 0);
     }
 

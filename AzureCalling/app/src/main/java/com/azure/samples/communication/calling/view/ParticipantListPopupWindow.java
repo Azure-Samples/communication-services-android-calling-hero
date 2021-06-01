@@ -41,7 +41,6 @@ public class ParticipantListPopupWindow extends PopupWindow {
     public void setContentView(final View contentView) {
         super.setContentView(contentView);
 
-        // Pass audio device data to RecyclerView Adapter
         bottomCellAdapter = new ParticipantListAdapter(context);
         final RecyclerView participantList = contentView.findViewById(R.id.bottom_drawer_table);
         participantList.setAdapter(bottomCellAdapter);
