@@ -236,7 +236,9 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView = new ParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         localParticipantView.setIsMuted(!callingContext.getMicOn());
+        localParticipantView.setImageButtonOnClickAction(this::switchCameraAsync);
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -478,10 +480,11 @@ public class CallActivity extends AppCompatActivity {
 
     private void toggleVideoOn() {
         Log.d(LOG_TAG, "toggleVideo -> on");
-        callingContext.turnOnVideoAsync().whenComplete((localVideoStream, throwable) -> {
+        callingContext.turnOnVideoAsync().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream(localVideoStream);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
@@ -492,14 +495,23 @@ public class CallActivity extends AppCompatActivity {
 
     private void toggleVideoOff() {
         Log.d(LOG_TAG, "toggleVideo -> off");
-        callingContext.turnOffVideoAsync().whenComplete((aVoid, throwable) -> {
+        callingContext.turnOffVideoAsync().thenRun(() -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream((LocalVideoStream) null);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
                 videoImageButton.setSelected(false);
+            });
+        });
+    }
+
+    private void switchCameraAsync() {
+        callingContext.switchCameraAsync().thenRun(() -> {
+            runOnUiThread(() -> {
+                localParticipantView.setSwitchCameraButtonEnabled(true);
             });
         });
     }
@@ -642,6 +654,7 @@ public class CallActivity extends AppCompatActivity {
         detachFromParentView(localParticipantView);
         localVideoViewContainer.setVisibility(callingContext.getCameraOn() ? View.VISIBLE : View.INVISIBLE);
         localParticipantView.setDisplayNameVisible(false);
+        localParticipantView.centerSwitchCameraButton(false);
         localVideoViewContainer.addView(localParticipantView);
         localVideoViewContainer.bringToFront();
     }
@@ -650,6 +663,8 @@ public class CallActivity extends AppCompatActivity {
         localParticipantViewGridIndex = participantViewList.size();
         localParticipantView.setDisplayNameVisible(true);
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
+        localParticipantView.centerSwitchCameraButton(true);
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
     }
