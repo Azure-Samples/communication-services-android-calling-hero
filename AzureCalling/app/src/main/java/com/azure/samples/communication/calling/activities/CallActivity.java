@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantState;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
@@ -50,6 +51,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 public class CallActivity extends AppCompatActivity {
 
@@ -238,7 +241,9 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView = new ParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         localParticipantView.setIsMuted(!callingContext.getMicOn());
+        localParticipantView.setImageButtonOnClickAction(this::switchCameraAsync);
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -264,8 +269,7 @@ public class CallActivity extends AppCompatActivity {
         participantViewList = new ArrayList<>();
         participantIdIndexPathMap = new HashMap<>();
 
-        final List<RemoteParticipant> displayedRemoteParticipants =
-                callingContext.getDisplayedParticipantsLiveData().getValue();
+        final List<RemoteParticipant> displayedRemoteParticipants = getRemoteParticipantsToDisplay();
         int indexForNewParticipantViewList = 0;
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
             final RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
@@ -278,12 +282,12 @@ public class CallActivity extends AppCompatActivity {
             if (preParticipantIdIndexPathMap.containsKey(id)) {
                 final int prevIndex = preParticipantIdIndexPathMap.get(id);
                 pv = prevParticipantViewList.get(prevIndex);
-                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                final RemoteVideoStream remoteVideoStream = getVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             } else {
                 pv = new ParticipantView(this);
                 pv.setDisplayName(remoteParticipant.getDisplayName());
-                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                final RemoteVideoStream remoteVideoStream = getVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             }
 
@@ -326,6 +330,17 @@ public class CallActivity extends AppCompatActivity {
             }
             updateGridLayoutViews();
         });
+    }
+
+    private List<RemoteParticipant> getRemoteParticipantsToDisplay() {
+        final RemoteParticipant currentScreenSharingParticipant =
+                callingContext.getCurrentScreenSharingParticipant();
+        if (currentScreenSharingParticipant == null) {
+            return callingContext.getDisplayedParticipantsLiveData().getValue();
+        }
+        final List<RemoteParticipant> remoteParticipantList = new ArrayList<>();
+        remoteParticipantList.add(currentScreenSharingParticipant);
+        return remoteParticipantList;
     }
 
     private boolean rangeInDefined(final int current, final int min, final int max) {
@@ -388,6 +403,7 @@ public class CallActivity extends AppCompatActivity {
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
         sendIntent.setType("text/plain");
         final Intent shareIntent = Intent.createChooser(sendIntent, null);
+        shareIntent.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(shareIntent);
     }
 
@@ -485,10 +501,11 @@ public class CallActivity extends AppCompatActivity {
 
     private void toggleVideoOn() {
         Log.d(LOG_TAG, "toggleVideo -> on");
-        callingContext.turnOnVideoAsync().whenComplete((localVideoStream, throwable) -> {
+        callingContext.turnOnVideoAsync().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream(localVideoStream);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
@@ -499,14 +516,23 @@ public class CallActivity extends AppCompatActivity {
 
     private void toggleVideoOff() {
         Log.d(LOG_TAG, "toggleVideo -> off");
-        callingContext.turnOffVideoAsync().whenComplete((aVoid, throwable) -> {
+        callingContext.turnOffVideoAsync().thenRun(() -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream((LocalVideoStream) null);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
                 videoImageButton.setSelected(false);
+            });
+        });
+    }
+
+    private void switchCameraAsync() {
+        callingContext.switchCameraAsync().thenRun(() -> {
+            runOnUiThread(() -> {
+                localParticipantView.setSwitchCameraButtonEnabled(true);
             });
         });
     }
@@ -535,9 +561,16 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private RemoteVideoStream getFirstVideoStream(final RemoteParticipant remoteParticipant) {
-        if (remoteParticipant.getVideoStreams().size() > 0) {
-            return remoteParticipant.getVideoStreams().get(0);
+    private RemoteVideoStream getVideoStream(final RemoteParticipant remoteParticipant) {
+        final List<RemoteVideoStream> remoteVideoStreams = remoteParticipant.getVideoStreams();
+        if (callingContext.getCurrentScreenSharingParticipant() != null) {
+            for (final RemoteVideoStream videoStream : remoteVideoStreams) {
+                if (videoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                    return videoStream;
+                }
+            }
+        } else if (remoteVideoStreams.size() > 0) {
+            return remoteVideoStreams.get(0);
         }
         return null;
     }
@@ -649,6 +682,7 @@ public class CallActivity extends AppCompatActivity {
         detachFromParentView(localParticipantView);
         localVideoViewContainer.setVisibility(callingContext.getCameraOn() ? View.VISIBLE : View.INVISIBLE);
         localParticipantView.setDisplayNameVisible(false);
+        localParticipantView.centerSwitchCameraButton(false);
         localVideoViewContainer.addView(localParticipantView);
         localVideoViewContainer.bringToFront();
     }
@@ -657,6 +691,8 @@ public class CallActivity extends AppCompatActivity {
         localParticipantViewGridIndex = participantViewList.size();
         localParticipantView.setDisplayNameVisible(true);
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
+        localParticipantView.centerSwitchCameraButton(true);
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
     }
