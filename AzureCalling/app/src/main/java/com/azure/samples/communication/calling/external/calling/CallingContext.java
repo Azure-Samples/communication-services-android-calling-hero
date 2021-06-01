@@ -18,9 +18,11 @@ import com.azure.android.communication.calling.HangUpOptions;
 import com.azure.android.communication.calling.JoinCallOptions;
 import com.azure.android.communication.calling.JoinMeetingLocator;
 import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantsUpdatedEvent;
 import com.azure.android.communication.calling.PropertyChangedListener;
 import com.azure.android.communication.calling.RemoteParticipant;
+import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.RemoteVideoStreamsUpdatedListener;
 import com.azure.android.communication.calling.VideoDeviceInfo;
 import com.azure.android.communication.calling.VideoDevicesUpdatedEvent;
@@ -72,6 +74,7 @@ public class CallingContext {
     private boolean cameraOn;
     private boolean micOn;
     private boolean isVideoOnHold = false;
+    private RemoteParticipant currentScreenSharingParticipant = null;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
@@ -274,6 +277,10 @@ public class CallingContext {
         return remoteParticipantsMap.size();
     }
 
+    public RemoteParticipant getCurrentScreenSharingParticipant() {
+        return currentScreenSharingParticipant;
+    }
+
     public MutableLiveData<List<RemoteParticipant>> getDisplayedParticipantsLiveData() {
         return displayedParticipantsLiveData;
     }
@@ -433,6 +440,10 @@ public class CallingContext {
             unbindOnParticipantStateChangedListener(removedParticipant);
 
             remoteParticipantsMap.remove(removedParticipantId);
+            if (currentScreenSharingParticipant != null
+                    && removedParticipantId.equals(getId(currentScreenSharingParticipant))) {
+                currentScreenSharingParticipant = null;
+            }
 
             if (displayedRemoteParticipantIds.contains(removedParticipantId)) {
                 int indexTobeRmovedForDisplayedRemoteParticipants = -1;
@@ -486,11 +497,29 @@ public class CallingContext {
             if (!displayedRemoteParticipantIds.contains(id)) {
                 return;
             }
+            if (isSharingScreen(remoteParticipant)) {
+                currentScreenSharingParticipant = remoteParticipant;
+            } else {
+                if (currentScreenSharingParticipant != null
+                        && id.equals(getId(currentScreenSharingParticipant))) {
+                    currentScreenSharingParticipant = null;
+                }
+            }
             displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
             Log.d(LOG_TAG, String.format("Remote Participant %s addOnRemoteVideoStreamsUpdatedListener", username));
         };
         remoteParticipant.addOnVideoStreamsUpdatedListener(remoteVideoStreamsUpdatedListener);
         videoStreamsUpdatedListenersMap.put(id, remoteVideoStreamsUpdatedListener);
+    }
+
+    private boolean isSharingScreen(final RemoteParticipant remoteParticipant) {
+        final List<RemoteVideoStream> remoteVideoStreams = remoteParticipant.getVideoStreams();
+        for (final RemoteVideoStream remoteVideoStream : remoteVideoStreams) {
+            if (remoteVideoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void unbindOnVideoStreamsUpdatedListener(final RemoteParticipant remoteParticipant) {
