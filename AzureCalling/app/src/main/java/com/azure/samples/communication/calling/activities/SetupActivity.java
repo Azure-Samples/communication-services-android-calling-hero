@@ -76,6 +76,7 @@ public class SetupActivity extends AppCompatActivity {
     private PermissionState onStopVideoPermissionState;
     private AudioSessionManager audioSessionManager;
     private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
+    private CompletableFuture<Void> setupCompletableFuture;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -104,7 +105,7 @@ public class SetupActivity extends AppCompatActivity {
         handleAllPermissions();
 
         callingContext = ((AzureCalling) getApplication()).getCallingContext();
-        final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
+        setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
         callType = (JoinCallType) intent.getSerializableExtra(Constants.CALL_TYPE);
@@ -151,6 +152,9 @@ public class SetupActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(LOG_TAG, "SetupActivity - onDestroy");
+        if (!setupCompletableFuture.isDone()) {
+            setupCompletableFuture.cancel(true);
+        }
         super.onDestroy();
     }
 

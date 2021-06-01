@@ -8,11 +8,13 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 
 import com.azure.android.communication.calling.CallingCommunicationException;
@@ -35,6 +37,8 @@ public class ParticipantView extends RelativeLayout {
     private final ImageView defaultAvatar;
     private final ConstraintLayout videoContainer;
     private final FrameLayout activeSpeakerFrame;
+    private final ImageButton switchCameraButton;
+    private Runnable switchCameraOnClickAction;
 
     public ParticipantView(@NonNull final Context context) {
         super(context);
@@ -43,6 +47,13 @@ public class ParticipantView extends RelativeLayout {
         this.defaultAvatar = findViewById(R.id.default_avatar);
         this.videoContainer = findViewById(R.id.video_container);
         this.activeSpeakerFrame = findViewById(R.id.active_speaker_frame);
+        this.switchCameraButton = findViewById(R.id.participant_switch_camera_button);
+        switchCameraButton.setOnClickListener(l -> {
+            if (switchCameraOnClickAction != null) {
+                switchCameraButton.setEnabled(false);
+                switchCameraOnClickAction.run();
+            }
+        });
     }
 
     public void setVideoStream(final RemoteVideoStream remoteVideoStream) {
@@ -109,6 +120,33 @@ public class ParticipantView extends RelativeLayout {
         defaultAvatar.setVisibility(isDisplayVideo ? INVISIBLE : VISIBLE);
     }
 
+    public void setSwitchCameraButtonDisplayed(final boolean shouldShowButton) {
+        switchCameraButton.setVisibility(shouldShowButton ? VISIBLE : GONE);
+    }
+
+    public void setSwitchCameraButtonEnabled(final boolean shouldEnable) {
+        switchCameraButton.setEnabled(shouldEnable);
+    }
+
+    public void centerSwitchCameraButton(final boolean shouldCenter) {
+        final ConstraintSet set = new ConstraintSet();
+        final ConstraintLayout layout;
+
+        layout = (ConstraintLayout) findViewById(R.id.video_container);
+        set.clone(layout);
+        if (shouldCenter) {
+            set.connect(switchCameraButton.getId(), ConstraintSet.BOTTOM, layout.getId(), ConstraintSet.BOTTOM,
+                    4);
+        } else {
+            set.clear(switchCameraButton.getId(), ConstraintSet.BOTTOM);
+        }
+        set.applyTo(layout);
+    }
+
+    public void setImageButtonOnClickAction(final Runnable onClickAction) {
+        switchCameraOnClickAction = onClickAction;
+    }
+
     private void setVideoRenderer(final VideoStreamRenderer videoRenderer) {
         this.renderer = videoRenderer;
         this.rendererView = videoRenderer.createView(new CreateViewOptions(ScalingMode.CROP));
@@ -120,7 +158,9 @@ public class ParticipantView extends RelativeLayout {
         if (rendererView != null) {
             this.defaultAvatar.setVisibility(View.GONE);
             detachFromParentView(rendererView);
+            rendererView.setId(View.generateViewId());
             this.videoContainer.addView(rendererView, 0);
+            switchCameraButton.setEnabled(true);
         } else {
             this.defaultAvatar.setVisibility(View.VISIBLE);
         }
