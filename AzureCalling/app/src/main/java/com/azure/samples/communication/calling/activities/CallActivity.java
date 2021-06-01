@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantState;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
@@ -266,8 +267,7 @@ public class CallActivity extends AppCompatActivity {
         participantViewList = new ArrayList<>();
         participantIdIndexPathMap = new HashMap<>();
 
-        final List<RemoteParticipant> displayedRemoteParticipants =
-                callingContext.getDisplayedParticipantsLiveData().getValue();
+        final List<RemoteParticipant> displayedRemoteParticipants = getRemoteParticipantsToDisplay();
         int indexForNewParticipantViewList = 0;
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
             final RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
@@ -280,12 +280,12 @@ public class CallActivity extends AppCompatActivity {
             if (preParticipantIdIndexPathMap.containsKey(id)) {
                 final int prevIndex = preParticipantIdIndexPathMap.get(id);
                 pv = prevParticipantViewList.get(prevIndex);
-                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                final RemoteVideoStream remoteVideoStream = getVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             } else {
                 pv = new ParticipantView(this);
                 pv.setDisplayName(remoteParticipant.getDisplayName());
-                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                final RemoteVideoStream remoteVideoStream = getVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             }
 
@@ -328,6 +328,17 @@ public class CallActivity extends AppCompatActivity {
             }
             updateGridLayoutViews();
         });
+    }
+
+    private List<RemoteParticipant> getRemoteParticipantsToDisplay() {
+        final RemoteParticipant currentScreenSharingParticipant =
+                callingContext.getCurrentScreenSharingParticipant();
+        if (currentScreenSharingParticipant == null) {
+            return callingContext.getDisplayedParticipantsLiveData().getValue();
+        }
+        final List<RemoteParticipant> remoteParticipantList = new ArrayList<>();
+        remoteParticipantList.add(currentScreenSharingParticipant);
+        return remoteParticipantList;
     }
 
     private boolean rangeInDefined(final int current, final int min, final int max) {
@@ -543,9 +554,16 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private RemoteVideoStream getFirstVideoStream(final RemoteParticipant remoteParticipant) {
-        if (remoteParticipant.getVideoStreams().size() > 0) {
-            return remoteParticipant.getVideoStreams().get(0);
+    private RemoteVideoStream getVideoStream(final RemoteParticipant remoteParticipant) {
+        final List<RemoteVideoStream> remoteVideoStreams = remoteParticipant.getVideoStreams();
+        if (callingContext.getCurrentScreenSharingParticipant() != null) {
+            for (final RemoteVideoStream videoStream : remoteVideoStreams) {
+                if (videoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                    return videoStream;
+                }
+            }
+        } else if (remoteVideoStreams.size() > 0) {
+            return remoteVideoStreams.get(0);
         }
         return null;
     }
