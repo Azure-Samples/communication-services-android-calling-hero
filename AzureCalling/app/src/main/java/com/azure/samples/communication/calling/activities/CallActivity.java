@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class CallActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CallActivity.class.getSimpleName();
@@ -385,6 +387,7 @@ public class CallActivity extends AppCompatActivity {
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Group Call ID");
         sendIntent.setType("text/plain");
         final Intent shareIntent = Intent.createChooser(sendIntent, null);
+        shareIntent.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(shareIntent);
     }
 
