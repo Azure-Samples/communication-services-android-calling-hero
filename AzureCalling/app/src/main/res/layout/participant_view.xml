@@ -68,7 +68,7 @@
             android:layout_marginBottom="4dp"
             android:background="@drawable/button_filled"
             android:backgroundTint="#66000000"
-            android:contentDescription="@string/call_switch_camera_button"
+            android:contentDescription="@string/switch_camera_button"
             android:paddingStart="2dp"
             android:paddingTop="2dp"
             android:paddingEnd="2dp"

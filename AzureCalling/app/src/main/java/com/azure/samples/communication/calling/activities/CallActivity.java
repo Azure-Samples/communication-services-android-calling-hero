@@ -42,6 +42,7 @@ import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
 import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
+import com.azure.samples.communication.calling.view.LocalParticipantView;
 import com.azure.samples.communication.calling.view.ParticipantListPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 
@@ -71,7 +72,7 @@ public class CallActivity extends AppCompatActivity {
     private Integer localParticipantViewGridIndex;
     private Map<String, Integer> participantIdIndexPathMap;
     private List<ParticipantView> participantViewList;
-    private ParticipantView localParticipantView;
+    private LocalParticipantView localParticipantView;
     private ConstraintLayout localVideoViewContainer;
     private volatile boolean viewUpdatePending = false;
     private volatile long lastViewUpdateTimestamp = 0;
@@ -236,12 +237,12 @@ public class CallActivity extends AppCompatActivity {
 
     private void initParticipantViews() {
         // load local participant's view
-        localParticipantView = new ParticipantView(this);
+        localParticipantView = new LocalParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
         localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         localParticipantView.setIsMuted(!callingContext.getMicOn());
-        localParticipantView.setImageButtonOnClickAction(this::switchCameraAsync);
+        localParticipantView.setSwitchCameraButtonOnClickAction(this::switchCamera);
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -522,11 +523,9 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
-    private void switchCameraAsync() {
+    private void switchCamera() {
         callingContext.switchCameraAsync().thenRun(() -> {
-            runOnUiThread(() -> {
-                localParticipantView.setSwitchCameraButtonEnabled(true);
-            });
+            runOnUiThread(() -> localParticipantView.setSwitchCameraButtonEnabled(true));
         });
     }
 
