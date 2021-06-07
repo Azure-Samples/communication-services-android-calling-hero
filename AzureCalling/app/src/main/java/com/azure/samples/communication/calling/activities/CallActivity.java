@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.azure.android.communication.calling.CallState;
 import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantState;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
@@ -44,16 +45,21 @@ import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 
 import com.azure.samples.communication.calling.helpers.JoinCallType;
+import com.azure.samples.communication.calling.helpers.ParticipantInfo;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.helpers.InCallService;
 import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
+import com.azure.samples.communication.calling.view.ParticipantListPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 public class CallActivity extends AppCompatActivity {
 
@@ -85,6 +91,7 @@ public class CallActivity extends AppCompatActivity {
     private LinearLayout inLobbyWaitingOverlay;
     private JoinCallConfig joinCallConfig;
     private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
+    private ParticipantListPopupWindow participantListPopupWindow;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -161,7 +168,6 @@ public class CallActivity extends AppCompatActivity {
     private void initializeRecordingStateLiveData() {
         final Observer<Boolean> observerRecordingState = recordingState -> {
             showNoticeBanner(NoticeBannerType.RECORDING);
-            showNoticeBanner();
         };
         callingContext.getRecordingStateLiveData().observe(this, observerRecordingState);
     }
@@ -169,7 +175,6 @@ public class CallActivity extends AppCompatActivity {
     private void initializeTranscriptionStateLiveData() {
         final Observer<Boolean> observerTranscriptionState = transcriptionState -> {
             showNoticeBanner(NoticeBannerType.TRANSCRIPTION);
-            showNoticeBanner();
         };
         callingContext.getTranscriptionStateLiveData().observe(this, observerTranscriptionState);
     }
@@ -192,6 +197,7 @@ public class CallActivity extends AppCompatActivity {
             handler.postDelayed(() -> {
                 updateParticipantViews();
                 updateParticipantNotificationCount();
+                refreshParticipantList();
                 lastViewUpdateTimestamp = System.currentTimeMillis();
                 viewUpdatePending = false;
             }, Math.max(MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES - timeElapsed, 0));
@@ -211,7 +217,6 @@ public class CallActivity extends AppCompatActivity {
         setVideoImageButtonEnabledState();
         if (isFloatingHeaderAreaVisible) {
             setNoticeBannerText(textForFloatingHeader);
-            showNoticeBanner();
         }
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
                 callHangUpOverlaid, isInLobbyWaitingOverlaid,
@@ -302,7 +307,9 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView = new ParticipantView(this);
         localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         localParticipantView.setIsMuted(!callingContext.getMicOn());
+        localParticipantView.setImageButtonOnClickAction(this::switchCameraAsync);
 
         if (callingContext.getCameraOn()) {
             callingContext.getLocalVideoStreamCompletableFuture().thenAccept((localVideoStream -> {
@@ -328,8 +335,7 @@ public class CallActivity extends AppCompatActivity {
         participantViewList = new ArrayList<>();
         participantIdIndexPathMap = new HashMap<>();
 
-        final List<RemoteParticipant> displayedRemoteParticipants =
-                callingContext.getDisplayedParticipantsLiveData().getValue();
+        final List<RemoteParticipant> displayedRemoteParticipants = getRemoteParticipantsToDisplay();
         int indexForNewParticipantViewList = 0;
         for (int i = 0; i < displayedRemoteParticipants.size(); i++) {
             final RemoteParticipant remoteParticipant = displayedRemoteParticipants.get(i);
@@ -342,12 +348,12 @@ public class CallActivity extends AppCompatActivity {
             if (preParticipantIdIndexPathMap.containsKey(id)) {
                 final int prevIndex = preParticipantIdIndexPathMap.get(id);
                 pv = prevParticipantViewList.get(prevIndex);
-                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                final RemoteVideoStream remoteVideoStream = getVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             } else {
                 pv = new ParticipantView(this);
                 pv.setDisplayName(remoteParticipant.getDisplayName());
-                final RemoteVideoStream remoteVideoStream = getFirstVideoStream(remoteParticipant);
+                final RemoteVideoStream remoteVideoStream = getVideoStream(remoteParticipant);
                 pv.setVideoStream(remoteVideoStream);
             }
 
@@ -381,8 +387,11 @@ public class CallActivity extends AppCompatActivity {
         }
 
         gridLayout.post(() -> {
-            if ((prevParticipantViewList.size() > 1 && participantViewList.size() <= 1)
-                    || (prevParticipantViewList.size() <= 1 && participantViewList.size() > 1)) {
+            final int preSize = prevParticipantViewList.size();
+            final int currSize = participantViewList.size();
+            if (!rangeInDefined(preSize, 0, 1) && rangeInDefined(currSize, 0, 1)
+                || (!rangeInDefined(preSize, 2, 4) && rangeInDefined(currSize, 2, 4))
+                || (!rangeInDefined(preSize, 5, 6)) && rangeInDefined(currSize, 5, 6)) {
                 setupGridLayout();
             }
             updateGridLayoutViews();
@@ -417,9 +426,19 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void showNoticeBanner() {
-        noticeBannerView.setVisibility(View.VISIBLE);
-        noticeBannerView.bringToFront();
+    private List<RemoteParticipant> getRemoteParticipantsToDisplay() {
+        final RemoteParticipant currentScreenSharingParticipant =
+                callingContext.getCurrentScreenSharingParticipant();
+        if (currentScreenSharingParticipant == null) {
+            return callingContext.getDisplayedParticipantsLiveData().getValue();
+        }
+        final List<RemoteParticipant> remoteParticipantList = new ArrayList<>();
+        remoteParticipantList.add(currentScreenSharingParticipant);
+        return remoteParticipantList;
+    }
+
+    private boolean rangeInDefined(final int current, final int min, final int max) {
+        return Math.max(min, current) == Math.min(current, max);
     }
 
     private void updateParticipantNotificationCount() {
@@ -489,6 +508,7 @@ public class CallActivity extends AppCompatActivity {
         }
         sendIntent.setType("text/plain");
         final Intent shareIntent = Intent.createChooser(sendIntent, null);
+        shareIntent.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(shareIntent);
     }
 
@@ -510,7 +530,29 @@ public class CallActivity extends AppCompatActivity {
             audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
         }
         audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
-                    Gravity.BOTTOM, 0, 0);
+                Gravity.BOTTOM, 0, 0);
+    }
+
+    private void openParticipantList() {
+        if (participantListPopupWindow == null) {
+            participantListPopupWindow = new ParticipantListPopupWindow(this, Collections.emptyList());
+        }
+        refreshParticipantList();
+        participantListPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.BOTTOM, 0, 0);
+    }
+
+    private void refreshParticipantList() {
+        final List<ParticipantInfo> participantInfo = new ArrayList<>();
+        participantInfo.add(new ParticipantInfo(callingContext.getDisplayName(), !callingContext.getMicOn()));
+        callingContext.getRemoteParticipants().stream().forEach(remoteParticipant ->
+                participantInfo.add(new ParticipantInfo(remoteParticipant.getDisplayName(),
+                        remoteParticipant.isMuted())));
+
+        if (participantListPopupWindow == null) {
+            participantListPopupWindow = new ParticipantListPopupWindow(this, participantInfo);
+        }
+
+        participantListPopupWindow.setParticipantInfo(participantInfo);
     }
 
     private void openHangupDialog() {
@@ -570,10 +612,11 @@ public class CallActivity extends AppCompatActivity {
 
     private void toggleVideoOn() {
         Log.d(LOG_TAG, "toggleVideo -> on");
-        callingContext.turnOnVideoAsync().whenComplete((localVideoStream, throwable) -> {
+        callingContext.turnOnVideoAsync().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream(localVideoStream);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
@@ -584,14 +627,23 @@ public class CallActivity extends AppCompatActivity {
 
     private void toggleVideoOff() {
         Log.d(LOG_TAG, "toggleVideo -> off");
-        callingContext.turnOffVideoAsync().whenComplete((aVoid, throwable) -> {
+        callingContext.turnOffVideoAsync().thenRun(() -> {
             runOnUiThread(() -> {
                 localParticipantView.setVideoStream((LocalVideoStream) null);
                 localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+                localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
                 localVideoViewContainer.setVisibility(
                         (localParticipantViewGridIndex == null && !callingContext.getCameraOn())
                                 ? View.INVISIBLE : View.VISIBLE);
                 videoImageButton.setSelected(false);
+            });
+        });
+    }
+
+    private void switchCameraAsync() {
+        callingContext.switchCameraAsync().thenRun(() -> {
+            runOnUiThread(() -> {
+                localParticipantView.setSwitchCameraButtonEnabled(true);
             });
         });
     }
@@ -620,9 +672,16 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private RemoteVideoStream getFirstVideoStream(final RemoteParticipant remoteParticipant) {
-        if (remoteParticipant.getVideoStreams().size() > 0) {
-            return remoteParticipant.getVideoStreams().get(0);
+    private RemoteVideoStream getVideoStream(final RemoteParticipant remoteParticipant) {
+        final List<RemoteVideoStream> remoteVideoStreams = remoteParticipant.getVideoStreams();
+        if (callingContext.getCurrentScreenSharingParticipant() != null) {
+            for (final RemoteVideoStream videoStream : remoteVideoStreams) {
+                if (videoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                    return videoStream;
+                }
+            }
+        } else if (remoteVideoStreams.size() > 0) {
+            return remoteVideoStreams.get(0);
         }
         return null;
     }
@@ -677,6 +736,8 @@ public class CallActivity extends AppCompatActivity {
             }
             return false;
         });
+        final ImageButton participantListButton = findViewById(R.id.participant_drawer_button);
+        participantListButton.setOnClickListener(l -> openParticipantList());
 
         closeButtonForRecordingNotification.setOnClickListener(v -> {
             noticeBannerView.setVisibility(View.GONE);
@@ -691,18 +752,44 @@ public class CallActivity extends AppCompatActivity {
 
     private void setupGridLayout() {
         gridLayout.removeAllViews();
-        if (participantViewList.size() <= 1) {
-            gridLayout.setRowCount(1);
-            gridLayout.setColumnCount(1);
-            gridLayout.addView(createCellForGridLayout(gridLayout.getMeasuredWidth(),
-                    gridLayout.getMeasuredHeight()));
+        final int size = participantViewList.size();
+        final int width;
+        final int height;
+        final int range;
+        final int rowCount;
+        final int colCount;
+        if (size <= 1) {
+            width = gridLayout.getMeasuredWidth();
+            height = gridLayout.getMeasuredHeight();
+            range = 1;
+            rowCount = 1;
+            colCount = 1;
+        } else if (size > 1 && size <= 4) {
+            width = gridLayout.getMeasuredWidth() / 2;
+            height = gridLayout.getMeasuredHeight() / 2;
+            range = 4;
+            rowCount = 2;
+            colCount = 2;
         } else {
-            gridLayout.setRowCount(2);
-            gridLayout.setColumnCount(2);
-            for (int i = 0; i < 4; i++) {
-                gridLayout.addView(createCellForGridLayout(gridLayout.getMeasuredWidth() / 2,
-                        gridLayout.getMeasuredHeight() / 2));
+            final boolean isLandscape = getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            range = 6;
+            if (isLandscape) {
+                width = gridLayout.getMeasuredWidth() / 3;
+                height = gridLayout.getMeasuredHeight() / 2;
+                rowCount = 2;
+                colCount = 3;
+            } else {
+                width = gridLayout.getMeasuredWidth() / 2;
+                height = gridLayout.getMeasuredHeight() / 3;
+                rowCount = 3;
+                colCount = 2;
             }
+        }
+        gridLayout.setRowCount(rowCount);
+        gridLayout.setColumnCount(colCount);
+        for (int i = 0; i < range; i++) {
+            gridLayout.addView(createCellForGridLayout(width, height));
         }
     }
 
@@ -719,6 +806,7 @@ public class CallActivity extends AppCompatActivity {
         detachFromParentView(localParticipantView);
         localVideoViewContainer.setVisibility(callingContext.getCameraOn() ? View.VISIBLE : View.INVISIBLE);
         localParticipantView.setDisplayNameVisible(false);
+        localParticipantView.centerSwitchCameraButton(false);
         localVideoViewContainer.addView(localParticipantView);
         localVideoViewContainer.bringToFront();
     }
@@ -727,6 +815,8 @@ public class CallActivity extends AppCompatActivity {
         localParticipantViewGridIndex = participantViewList.size();
         localParticipantView.setDisplayNameVisible(true);
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
+        localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
+        localParticipantView.centerSwitchCameraButton(true);
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
     }

@@ -12,20 +12,20 @@ import android.widget.PopupWindow;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.azure.samples.communication.calling.R;
-import com.azure.samples.communication.calling.helpers.AudioSelectionAdapter;
-import com.azure.samples.communication.calling.helpers.AudioSessionManager;
+import com.azure.samples.communication.calling.helpers.ParticipantInfo;
+import com.azure.samples.communication.calling.helpers.ParticipantListAdapter;
 
-public class AudioDeviceSelectionPopupWindow extends PopupWindow {
-    private static final String LOG_TAG = AudioDeviceSelectionPopupWindow.class.getSimpleName();
+import java.util.List;
+
+public class ParticipantListPopupWindow extends PopupWindow {
     private Context context;
-    private AudioSessionManager audioSessionManager;
+    private ParticipantListAdapter bottomCellAdapter;
 
-    public AudioDeviceSelectionPopupWindow(final Context context,
-                                           final AudioSessionManager audioSessionManager) {
+    public ParticipantListPopupWindow(final Context context, final List<ParticipantInfo> participantInfo) {
         super(context);
         this.context = context;
-        this.audioSessionManager = audioSessionManager;
         final LayoutInflater layoutInflater
                 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = layoutInflater.inflate(R.layout.buttom_drawer_view, null);
@@ -34,21 +34,24 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         this.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
         this.setFocusable(true);
         this.setBackgroundDrawable(new ColorDrawable(0x80000000));
+        setParticipantInfo(participantInfo);
     }
 
     @Override
     public void setContentView(final View contentView) {
         super.setContentView(contentView);
 
-        // Pass audio device data to RecyclerView Adapter
-        final AudioSelectionAdapter bottomCellAdapter = new AudioSelectionAdapter(
-                context, audioSessionManager, () -> dismiss());
-        final RecyclerView audioTable = contentView.findViewById(R.id.bottom_drawer_table);
-        audioTable.setAdapter(bottomCellAdapter);
-        audioTable.setLayoutManager(new LinearLayoutManager(context));
+        bottomCellAdapter = new ParticipantListAdapter(context);
+        final RecyclerView participantList = contentView.findViewById(R.id.bottom_drawer_table);
+        participantList.setAdapter(bottomCellAdapter);
+        participantList.setLayoutManager(new LinearLayoutManager(context));
 
         contentView.findViewById(R.id.overlay).setOnClickListener(v -> {
             dismiss();
         });
+    }
+
+    public void setParticipantInfo(final List<ParticipantInfo> participantInfo) {
+        this.bottomCellAdapter.setParticipantItems(context, participantInfo);
     }
 }
