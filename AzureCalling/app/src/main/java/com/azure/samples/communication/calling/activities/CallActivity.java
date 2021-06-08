@@ -65,7 +65,7 @@ public class CallActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CallActivity.class.getSimpleName();
 
-    private static final int MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES = 2500;
+    private static final int MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES = 500;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private CallingContext callingContext;
     private PermissionHelper permissionHelper;
@@ -84,7 +84,7 @@ public class CallActivity extends AppCompatActivity {
     private ParticipantView localParticipantView;
     private ConstraintLayout localVideoViewContainer;
     private volatile boolean viewUpdatePending = false;
-    private volatile long lastViewUpdateTimestamp = 0;
+    private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
     private ProgressBar callActivityProgressBar;
@@ -192,15 +192,12 @@ public class CallActivity extends AppCompatActivity {
                 return;
             }
             viewUpdatePending = true;
-            final long now = System.currentTimeMillis();
-            final long timeElapsed = now - lastViewUpdateTimestamp;
             handler.postDelayed(() -> {
+                viewUpdatePending = false;
                 updateParticipantViews();
                 updateParticipantNotificationCount();
                 refreshParticipantList();
-                lastViewUpdateTimestamp = System.currentTimeMillis();
-                viewUpdatePending = false;
-            }, Math.max(MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES - timeElapsed, 0));
+            }, MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES);
         });
     }
 
