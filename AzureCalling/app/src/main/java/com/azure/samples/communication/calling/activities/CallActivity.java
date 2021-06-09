@@ -534,6 +534,8 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void endCall() {
+        callingContext.getCallStateLiveData().removeObservers(this);
+        callingContext.getDisplayedParticipantsLiveData().removeObservers(this);
         if (localParticipantView != null) {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
