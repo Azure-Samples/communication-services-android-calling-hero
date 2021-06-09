@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -70,6 +71,7 @@ public class SetupActivity extends AppCompatActivity {
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
+    private ImageButton switchCameraButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
@@ -222,6 +224,9 @@ public class SetupActivity extends AppCompatActivity {
             openAudioDeviceList();
         });
 
+        this.switchCameraButton = findViewById(R.id.setup_switch_camera_button);
+        switchCameraButton.setOnClickListener(l -> switchCamera());
+
         hidePermissionsWarning();
     }
 
@@ -318,6 +323,7 @@ public class SetupActivity extends AppCompatActivity {
         callingContext.getLocalVideoStreamCompletableFuture().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 defaultAvatar.setVisibility(View.GONE);
+                switchCameraButton.setVisibility(View.VISIBLE);
                 rendererView = new VideoStreamRenderer(localVideoStream, getApplicationContext());
                 previewVideo = rendererView.createView(new CreateViewOptions(ScalingMode.CROP));
                 setupVideoLayout.addView(previewVideo, 0);
@@ -335,6 +341,12 @@ public class SetupActivity extends AppCompatActivity {
         previewVideo = null;
         videoToggleButton.setChecked(false);
         defaultAvatar.setVisibility(View.VISIBLE);
+        switchCameraButton.setVisibility(View.GONE);
+    }
+
+    private void switchCamera() {
+        switchCameraButton.setEnabled(false);
+        callingContext.switchCameraAsync().thenRun(() -> runOnUiThread(() -> switchCameraButton.setEnabled(true)));
     }
 
     private void handleButtonStates() {
