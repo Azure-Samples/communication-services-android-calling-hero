@@ -69,5 +69,5 @@
     <string name="stop_transcribing_while_recording"><b>Transcription has stopped. </b>You are now only recording this meeting.
         <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
     <string name="open_participant_list">Open Participant List</string>
-    <string name="call_switch_camera_button">Switch Camera Button</string>
+    <string name="switch_camera_button">Switch Camera Button</string>
 </resources>
