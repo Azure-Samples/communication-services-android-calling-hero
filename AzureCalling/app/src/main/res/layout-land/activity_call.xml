@@ -31,13 +31,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <include layout="@layout/participant_header_notification"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <include layout="@layout/participant_header_notification"/>
-            <include layout="@layout/floating_header_area" />
 
             <GridLayout
                 android:layout_width="match_parent"
@@ -46,6 +45,8 @@
                 android:clickable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <include layout="@layout/floating_header_area" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/yourCameraHolder"

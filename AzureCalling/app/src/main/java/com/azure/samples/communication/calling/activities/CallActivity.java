@@ -169,6 +169,7 @@ public class CallActivity extends AppCompatActivity {
     private void initializeRecordingStateLiveData() {
         final Observer<Boolean> observerRecordingState = recordingState -> {
             showNoticeBanner(NoticeBannerType.RECORDING);
+            showNoticeBanner();
         };
         callingContext.getRecordingStateLiveData().observe(this, observerRecordingState);
     }
@@ -176,6 +177,7 @@ public class CallActivity extends AppCompatActivity {
     private void initializeTranscriptionStateLiveData() {
         final Observer<Boolean> observerTranscriptionState = transcriptionState -> {
             showNoticeBanner(NoticeBannerType.TRANSCRIPTION);
+            showNoticeBanner();
         };
         callingContext.getTranscriptionStateLiveData().observe(this, observerTranscriptionState);
     }
@@ -215,6 +217,7 @@ public class CallActivity extends AppCompatActivity {
         setVideoImageButtonEnabledState();
         if (isFloatingHeaderAreaVisible) {
             setNoticeBannerText(textForFloatingHeader);
+            showNoticeBanner();
         }
         setLayoutComponentState(!callingContext.getMicOn(), callingContext.getCameraOn(),
                 callHangUpOverlaid, isInLobbyWaitingOverlaid,
@@ -394,6 +397,11 @@ public class CallActivity extends AppCompatActivity {
             }
             updateGridLayoutViews();
         });
+    }
+
+    private void showNoticeBanner() {
+        noticeBannerView.setVisibility(View.VISIBLE);
+        noticeBannerView.bringToFront();
     }
 
     private void showNoticeBanner(final NoticeBannerType noticeBannerType) {
