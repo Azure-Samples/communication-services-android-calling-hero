@@ -133,12 +133,6 @@ public class CallActivity extends AppCompatActivity {
                     showInLobbyWaitingOverlay();
                 }
                 audioImageButton.setEnabled(true);
-
-                initParticipantViews();
-                if (joinCallConfig.getCallType() == JoinCallType.TEAMS_MEETING) {
-                    hideCallActivityProgressBar();
-                    showInLobbyWaitingOverlay();
-                }
             });
         });
     }
