@@ -129,8 +129,6 @@ public class CallActivity extends AppCompatActivity {
                 initializeCallNotification();
 
                 audioImageButton.setEnabled(true);
-                
-                initParticipantViews();
             });
         });
     }
@@ -144,6 +142,7 @@ public class CallActivity extends AppCompatActivity {
             } else if (callState == CallState.CONNECTED) {
                 hideCallActivityProgressBar();
                 hideInLobbyWaitingOverlay();
+                initParticipantViews();
                 showParticipantHeaderNotification();
             } else if (callState == CallState.DISCONNECTED) {
                 if (localParticipantView != null && localParticipantView.getVisibility() == View.VISIBLE) {
