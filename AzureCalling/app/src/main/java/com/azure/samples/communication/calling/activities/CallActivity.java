@@ -462,6 +462,14 @@ public class CallActivity extends AppCompatActivity {
 
     private void hangup() {
         Log.d(LOG_TAG, "Hangup button clicked!");
+        endCall();
+        final Intent intent = new Intent(this, EndActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void endCall() {
+        callingContext.getDisplayedParticipantsLiveData().removeObservers(this);
         if (localParticipantView != null) {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
@@ -469,9 +477,6 @@ public class CallActivity extends AppCompatActivity {
         stopService(inCallServiceIntent);
         callHangupConfirmButton.setEnabled(false);
         callingContext.hangupAsync();
-        final Intent intent = new Intent(this, EndActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private void toggleVideo(final boolean isSelected) {
