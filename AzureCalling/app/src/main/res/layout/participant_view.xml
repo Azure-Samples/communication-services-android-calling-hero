@@ -24,6 +24,7 @@
             android:src="@drawable/ic_no_camera_50_64"
             android:visibility="gone" />
         <LinearLayout
+            android:id="@+id/display_name_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
@@ -35,18 +36,18 @@
                 android:id="@+id/display_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:inputType="textNoSuggestions"
-                app:autoSizeTextType="uniform"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
                 android:alpha=".6"
                 android:background="@drawable/button_filled"
                 android:backgroundTint="@android:color/black"
+                android:drawablePadding="5dp"
+                android:inputType="textNoSuggestions"
+                android:maxLines="1"
+                android:paddingLeft="4dp"
+                android:paddingTop="3dp"
+                android:paddingRight="4dp"
+                android:paddingBottom="3dp"
                 android:textColor="@android:color/white"
-                android:drawablePadding="5dp" />
+                app:autoSizeTextType="uniform" />
 
         </LinearLayout>
 
@@ -57,6 +58,26 @@
             android:background="@drawable/active_speaker_highlight"
             android:visibility="invisible">
         </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/participant_switch_camera_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/button_filled"
+            android:backgroundTint="#66000000"
+            android:contentDescription="@string/switch_camera_button"
+            android:paddingStart="2dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="2dp"
+            android:paddingBottom="2dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
