@@ -30,6 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <include layout="@layout/floating_header_area"/>
         <include layout="@layout/participant_header_notification"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +46,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <include layout="@layout/floating_header_area" />
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/yourCameraHolder"
