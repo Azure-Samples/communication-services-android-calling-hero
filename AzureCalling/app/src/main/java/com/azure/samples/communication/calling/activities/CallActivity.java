@@ -128,11 +128,11 @@ public class CallActivity extends AppCompatActivity {
                 /* initialize in-call notification icon */
                 initializeCallNotification();
                 audioImageButton.setEnabled(true);
-                initParticipantViews();
+                hideCallActivityProgressBar();
                 if (joinCallConfig.getCallType() == JoinCallType.TEAMS_MEETING) {
-                    hideCallActivityProgressBar();
                     showInLobbyWaitingOverlay();
                 }
+                initParticipantViews();
             });
         });
     }
