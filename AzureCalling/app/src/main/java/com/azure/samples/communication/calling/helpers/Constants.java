@@ -9,7 +9,7 @@ package com.azure.samples.communication.calling.helpers;
 public class Constants {
 
     /* The constant values for the limit number of participant views */
-    public static final int DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT = 3;
+    public static final int DISPLAYED_REMOTE_PARTICIPANT_SIZE_LIMIT = 5;
 
     /* The key for the meeting name */
     public static final String JOIN_ID = "JOIN_ID";

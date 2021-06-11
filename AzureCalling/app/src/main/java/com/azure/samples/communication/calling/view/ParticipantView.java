@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.azure.android.communication.calling.CallingCommunicationException;
 import com.azure.android.communication.calling.CreateViewOptions;
-import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.VideoStreamRenderer;
 import com.azure.android.communication.calling.VideoStreamRendererView;
@@ -26,9 +26,9 @@ import com.azure.samples.communication.calling.R;
 
 public class ParticipantView extends RelativeLayout {
     // participant view properties
+    protected String videoStreamId;
     private VideoStreamRenderer renderer;
     private VideoStreamRendererView rendererView;
-    private String videoStreamId;
 
     // layout properties
     private final TextView title;
@@ -57,29 +57,15 @@ public class ParticipantView extends RelativeLayout {
             return;
         }
 
+        cleanUpVideoRendering();
+
         try {
             final VideoStreamRenderer videoRenderer = new VideoStreamRenderer(remoteVideoStream, getContext());
-            setVideoRenderer(videoRenderer);
-            this.videoStreamId = newVideoStreamId;
-        } catch (final CallingCommunicationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setVideoStream(final LocalVideoStream localVideoStream) {
-        if (localVideoStream == null) {
-            cleanUpVideoRendering();
-            return;
-        }
-
-        final String newVideoStreamId = "LocalVideoStream:" + localVideoStream.getSource().getId();
-        if (newVideoStreamId.equals(videoStreamId)) {
-            return;
-        }
-
-        try {
-            final VideoStreamRenderer videoRenderer = new VideoStreamRenderer(localVideoStream, getContext());
-            setVideoRenderer(videoRenderer);
+            if (remoteVideoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                setVideoRenderer(videoRenderer, true);
+            } else {
+                setVideoRenderer(videoRenderer, false);
+            }
             this.videoStreamId = newVideoStreamId;
         } catch (final CallingCommunicationException e) {
             e.printStackTrace();
@@ -109,7 +95,15 @@ public class ParticipantView extends RelativeLayout {
         defaultAvatar.setVisibility(isDisplayVideo ? INVISIBLE : VISIBLE);
     }
 
-    private void setVideoRenderer(final VideoStreamRenderer videoRenderer) {
+    protected void setVideoRenderer(final VideoStreamRenderer videoRenderer,
+                                  final boolean isScreenSharing) {
+        this.renderer = videoRenderer;
+        this.rendererView = videoRenderer.createView(
+                new CreateViewOptions(isScreenSharing ? ScalingMode.FIT : ScalingMode.CROP));
+        attachRendererView(rendererView);
+    }
+
+    protected void setVideoRenderer(final VideoStreamRenderer videoRenderer) {
         this.renderer = videoRenderer;
         this.rendererView = videoRenderer.createView(new CreateViewOptions(ScalingMode.CROP));
         attachRendererView(rendererView);
@@ -120,6 +114,7 @@ public class ParticipantView extends RelativeLayout {
         if (rendererView != null) {
             this.defaultAvatar.setVisibility(View.GONE);
             detachFromParentView(rendererView);
+            rendererView.setId(View.generateViewId());
             this.videoContainer.addView(rendererView, 0);
         } else {
             this.defaultAvatar.setVisibility(View.VISIBLE);

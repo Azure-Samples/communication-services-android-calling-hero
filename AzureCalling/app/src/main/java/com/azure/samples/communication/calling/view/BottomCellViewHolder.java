@@ -25,7 +25,11 @@ public class BottomCellViewHolder extends RecyclerView.ViewHolder {
         avatar = itemView.findViewById(R.id.cell_icon);
         title = itemView.findViewById(R.id.cell_text);
         accessoryImage = itemView.findViewById(R.id.cell_check_mark);
-        itemView.setOnClickListener(v -> onClickAction.run());
+        itemView.setOnClickListener(v -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
     }
 
     public void setCellData(final BottomCellItem bottomCellItem) {
