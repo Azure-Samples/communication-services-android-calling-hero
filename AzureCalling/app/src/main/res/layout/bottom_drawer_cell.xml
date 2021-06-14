@@ -47,5 +47,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/menu_separator_line"
         android:layout_marginTop="47.5dp"
-        android:layout_marginStart="72dp"/>
+        android:layout_marginStart="72dp"
+        android:layout_marginEnd="10dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
