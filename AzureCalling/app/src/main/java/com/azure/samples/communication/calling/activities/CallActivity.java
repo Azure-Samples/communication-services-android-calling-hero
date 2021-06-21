@@ -118,7 +118,7 @@ public class CallActivity extends AppCompatActivity {
         initializeCallStateLiveData();
         initializeRecordingStateLiveData();
         initializeTranscriptionStateLiveData();
-        
+
         /* get Join Call Config */
         joinCallConfig = (JoinCallConfig) getIntent()
                 .getSerializableExtra(Constants.JOIN_CALL_CONFIG);
@@ -137,7 +137,7 @@ public class CallActivity extends AppCompatActivity {
                 initializeCallNotification();
 
                 audioImageButton.setEnabled(true);
-                
+
                 initParticipantViews();
             });
         });
@@ -748,7 +748,7 @@ public class CallActivity extends AppCompatActivity {
         closeButtonForRecordingNotification.setOnClickListener(v -> {
             noticeBannerView.setVisibility(View.GONE);
         });
-        
+
         callHangupOverlay = findViewById(R.id.call_hangup_overlay);
         callHangupOverlay.setOnTouchListener((v, event) -> {
             closeHangupDialog();
