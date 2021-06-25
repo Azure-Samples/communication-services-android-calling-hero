@@ -573,16 +573,13 @@ public class CallingContext {
         final String username = remoteParticipant.getDisplayName();
         final String id = getId(remoteParticipant);
         final RemoteVideoStreamsUpdatedListener remoteVideoStreamsUpdatedListener = remoteVideoStreamsEvent -> {
-            if (!displayedRemoteParticipantIds.contains(id)) {
-                return;
-            }
             if (isSharingScreen(remoteParticipant)) {
                 currentScreenSharingParticipant = remoteParticipant;
-            } else {
-                if (currentScreenSharingParticipant != null
+            } else if (currentScreenSharingParticipant != null
                         && id.equals(getId(currentScreenSharingParticipant))) {
-                    currentScreenSharingParticipant = null;
-                }
+                currentScreenSharingParticipant = null;
+            } else if (!displayedRemoteParticipantIds.contains(id)) {
+                return;
             }
             displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
             Log.d(LOG_TAG, String.format("Remote Participant %s addOnRemoteVideoStreamsUpdatedListener", username));
