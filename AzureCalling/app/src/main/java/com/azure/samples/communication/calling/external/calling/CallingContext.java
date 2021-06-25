@@ -190,10 +190,19 @@ public class CallingContext {
                     final LocalVideoStream[] localVideoStreams = new LocalVideoStream[1];
                     localVideoStreams[0] = localVideoStream;
                     final VideoOptions videoOptions = new VideoOptions(localVideoStreams);
-                    callWithOptions(agent, audioOptions, videoOptions, callLocator);
+                    try {
+                        callWithOptions(agent, audioOptions, videoOptions, callLocator);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
                 });
             } else {
-                callWithOptions(agent, audioOptions, null, callLocator);
+                try {
+                    callWithOptions(agent, audioOptions, null, callLocator);
+                } catch (Exception e) {
+                    throw e;
+                }
             }
         });
     }
@@ -401,7 +410,11 @@ public class CallingContext {
         final JoinCallOptions joinCallOptions = new JoinCallOptions();
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
-        call = agent.join(appContext, groupCallLocator, joinCallOptions);
+        try {
+            call = agent.join(appContext, groupCallLocator, joinCallOptions);
+        } catch (Exception e) {
+            throw e;
+        }
         Log.d(LOG_TAG, "Call ID: " + joinId);
 
         call.addOnStateChangedListener(propertyChangedEvent -> {
