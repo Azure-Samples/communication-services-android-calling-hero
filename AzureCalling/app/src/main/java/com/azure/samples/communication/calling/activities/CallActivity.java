@@ -141,7 +141,6 @@ public class CallActivity extends AppCompatActivity {
         final Observer<CallState> observerCallState = callState -> {
             Log.d(LOG_TAG, "CallActivity initializeCallStateLiveData: " + callState.toString());
             if (callState == CallState.CONNECTED) {
-                hideCallActivityProgressBar();
                 hideInLobbyWaitingOverlay();
                 showParticipantHeaderNotification();
             } else if (callState == CallState.DISCONNECTED) {
