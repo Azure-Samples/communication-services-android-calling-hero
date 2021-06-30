@@ -19,13 +19,17 @@ import com.azure.android.communication.calling.GroupCallLocator;
 import com.azure.android.communication.calling.HangUpOptions;
 import com.azure.android.communication.calling.JoinCallOptions;
 import com.azure.android.communication.calling.LocalVideoStream;
+import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantsUpdatedEvent;
 import com.azure.android.communication.calling.PropertyChangedEvent;
 import com.azure.android.communication.calling.PropertyChangedListener;
 import com.azure.android.communication.calling.RemoteParticipant;
+import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.RemoteVideoStreamsUpdatedListener;
 import com.azure.android.communication.calling.TeamsMeetingLinkLocator;
 import com.azure.android.communication.calling.VideoDeviceInfo;
+import com.azure.android.communication.calling.VideoDevicesUpdatedEvent;
+import com.azure.android.communication.calling.VideoDevicesUpdatedListener;
 import com.azure.android.communication.calling.VideoOptions;
 import com.azure.android.communication.common.CommunicationIdentifier;
 import com.azure.android.communication.common.CommunicationTokenCredential;
@@ -34,9 +38,11 @@ import com.azure.android.communication.common.CommunicationUserIdentifier;
 import com.azure.android.communication.common.MicrosoftTeamsUserIdentifier;
 import com.azure.android.communication.common.PhoneNumberIdentifier;
 import com.azure.android.communication.common.UnknownIdentifier;
+import com.azure.samples.communication.calling.helpers.CameraType;
 import com.azure.samples.communication.calling.helpers.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +66,7 @@ public class CallingContext {
     private CallClient callClient;
     private Call call;
     private String displayName;
+    private Map<CameraType, VideoDeviceInfo> availableCameras;
     private CompletableFuture<CommunicationTokenCredential> communicationUserCredentialCompletableFuture;
     private CompletableFuture<CallAgent> callAgentCompletableFuture;
     private CompletableFuture<DeviceManager> deviceManagerCompletableFuture;
@@ -73,6 +80,7 @@ public class CallingContext {
     private boolean isVideoOnHold = false;
     private boolean isRecordingActive = false;
     private boolean isTranscriptionActive = false;
+    private RemoteParticipant currentScreenSharingParticipant = null;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
@@ -119,7 +127,7 @@ public class CallingContext {
         // Define completion code for setup
         createCallClient();
         createDeviceManager();
-        initializeCamera();
+        initializeCameras();
 
         // Wait until everything except localVideoStream is ready to define setup ready
         CompletableFuture.allOf(
@@ -242,6 +250,28 @@ public class CallingContext {
                 }));
     }
 
+    public CompletableFuture switchCameraAsync() {
+        return getLocalVideoStreamCompletableFuture().thenAccept(localVideoStream -> {
+            final VideoDeviceInfo currentCamera = localVideoStream.getSource();
+            localVideoStreamCompletableFuture = new CompletableFuture<>();
+            final VideoDeviceInfo desiredCamera;
+            if (currentCamera.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
+                desiredCamera = getBackCamera();
+            } else {
+                desiredCamera = getFrontCamera();
+            }
+            localVideoStream.switchSource(desiredCamera).thenRun(() -> {
+                if (call != null) {
+                    call.startVideo(appContext, localVideoStream).thenRun(() -> {
+                        localVideoStreamCompletableFuture.complete(localVideoStream);
+                    });
+                } else {
+                    localVideoStreamCompletableFuture.complete(localVideoStream);
+                }
+            });
+        });
+    }
+
     public CompletableFuture pauseVideo() {
         if (cameraOn && call != null) {
             return turnOffVideoAsync().thenRun(() -> {
@@ -277,8 +307,20 @@ public class CallingContext {
         return call.mute(appContext).thenRun(() -> micOn = false);
     }
 
+    public List<RemoteParticipant> getRemoteParticipants() {
+        if (call == null) {
+            return Collections.emptyList();
+        }
+
+        return call.getRemoteParticipants();
+    }
+
     public int getRemoteParticipantCount() {
         return remoteParticipantsMap.size();
+    }
+
+    public RemoteParticipant getCurrentScreenSharingParticipant() {
+        return currentScreenSharingParticipant;
     }
 
     public MutableLiveData<List<RemoteParticipant>> getDisplayedParticipantsLiveData() {
@@ -312,26 +354,62 @@ public class CallingContext {
         });
     }
 
-    private void initializeCamera() {
+    private void initializeCameras() {
         deviceManagerCompletableFuture.whenComplete((deviceManager, throwable) -> {
             Log.d(LOG_TAG, "Device Manager created");
+            availableCameras = new HashMap<>();
 
-            List<VideoDeviceInfo> cameras;
-            boolean cameraFound = false;
-            while (!cameraFound) {
-                cameras = deviceManager.getCameras();
-                for (final VideoDeviceInfo camera: cameras) {
-                    final String cameraFacingName = camera.getCameraFacing().name();
+            final List<VideoDeviceInfo> initialCameras = deviceManager.getCameras();
+            addVideoDevices(initialCameras);
+            initializeFrontCameraIfRequired();
 
-                    if (cameraFacingName.equalsIgnoreCase("front")) {
-                        Log.i(LOG_TAG, "Desired Camera selected");
-                        initializeCameraCompletableFuture.complete(camera);
-                        cameraFound = true;
-                        break;
-                    }
-                }
-            }
+            final VideoDevicesUpdatedListener videoDevicesUpdatedListener = videoDevicesUpdatedEvent -> {
+                updateVideoDevices(videoDevicesUpdatedEvent);
+                initializeFrontCameraIfRequired();
+            };
+            deviceManager.addOnCamerasUpdatedListener(videoDevicesUpdatedListener);
         });
+    }
+
+    private void initializeFrontCameraIfRequired() {
+        if (!initializeCameraCompletableFuture.isDone()) {
+            final VideoDeviceInfo initialCamera = getFrontCamera();
+            if (initialCamera != null) {
+                initializeCameraCompletableFuture.complete(initialCamera);
+            }
+        }
+    }
+
+    private void updateVideoDevices(final VideoDevicesUpdatedEvent videoDevicesUpdatedEvent) {
+        removeVideoDevices(videoDevicesUpdatedEvent.getRemovedVideoDevices());
+        addVideoDevices(videoDevicesUpdatedEvent.getAddedVideoDevices());
+    }
+
+    private void removeVideoDevices(final List<VideoDeviceInfo> removedVideoDevices) {
+        Log.d(LOG_TAG, "Removed Cameras: " + removedVideoDevices.size());
+        for (final VideoDeviceInfo removedVideoDevice: removedVideoDevices) {
+            final String cameraFacingName = removedVideoDevice.getCameraFacing().name();
+            availableCameras.remove(cameraFacingName);
+        }
+    }
+
+    private void addVideoDevices(final List<VideoDeviceInfo> addedVideoDevices) {
+        Log.d(LOG_TAG, "Added Cameras: " + addedVideoDevices.size());
+        for (final VideoDeviceInfo addedVideoDevice: addedVideoDevices) {
+            if (addedVideoDevice.getCameraFacing().name().equalsIgnoreCase(CameraType.FRONT.name())) {
+                availableCameras.put(CameraType.FRONT, addedVideoDevice);
+            } else if (addedVideoDevice.getCameraFacing().name().equalsIgnoreCase(CameraType.BACK.name())) {
+                availableCameras.put(CameraType.BACK, addedVideoDevice);
+            }
+        }
+    }
+
+    private VideoDeviceInfo getFrontCamera() {
+        return availableCameras.get(CameraType.FRONT);
+    }
+
+    private VideoDeviceInfo getBackCamera() {
+        return availableCameras.get(CameraType.BACK);
     }
 
     private void createCallAgent(final String userName) {
@@ -441,6 +519,10 @@ public class CallingContext {
             unbindOnParticipantStateChangedListener(removedParticipant);
 
             remoteParticipantsMap.remove(removedParticipantId);
+            if (currentScreenSharingParticipant != null
+                    && removedParticipantId.equals(getId(currentScreenSharingParticipant))) {
+                currentScreenSharingParticipant = null;
+            }
 
             if (displayedRemoteParticipantIds.contains(removedParticipantId)) {
                 int indexTobeRmovedForDisplayedRemoteParticipants = -1;
@@ -491,7 +573,12 @@ public class CallingContext {
         final String username = remoteParticipant.getDisplayName();
         final String id = getId(remoteParticipant);
         final RemoteVideoStreamsUpdatedListener remoteVideoStreamsUpdatedListener = remoteVideoStreamsEvent -> {
-            if (!displayedRemoteParticipantIds.contains(id)) {
+            if (isSharingScreen(remoteParticipant)) {
+                currentScreenSharingParticipant = remoteParticipant;
+            } else if (currentScreenSharingParticipant != null
+                        && id.equals(getId(currentScreenSharingParticipant))) {
+                currentScreenSharingParticipant = null;
+            } else if (!displayedRemoteParticipantIds.contains(id)) {
                 return;
             }
             displayedParticipantsLiveData.postValue(displayedRemoteParticipants);
@@ -499,6 +586,16 @@ public class CallingContext {
         };
         remoteParticipant.addOnVideoStreamsUpdatedListener(remoteVideoStreamsUpdatedListener);
         videoStreamsUpdatedListenersMap.put(id, remoteVideoStreamsUpdatedListener);
+    }
+
+    private boolean isSharingScreen(final RemoteParticipant remoteParticipant) {
+        final List<RemoteVideoStream> remoteVideoStreams = remoteParticipant.getVideoStreams();
+        for (final RemoteVideoStream remoteVideoStream : remoteVideoStreams) {
+            if (remoteVideoStream.getMediaStreamType() == MediaStreamType.SCREEN_SHARING) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void unbindOnVideoStreamsUpdatedListener(final RemoteParticipant remoteParticipant) {
