@@ -410,11 +410,7 @@ public class CallingContext {
         final JoinCallOptions joinCallOptions = new JoinCallOptions();
         joinCallOptions.setVideoOptions(videoOptions);
         joinCallOptions.setAudioOptions(audioOptions);
-        try {
-            call = agent.join(appContext, groupCallLocator, joinCallOptions);
-        } catch (Exception e) {
-            throw e;
-        }
+        call = agent.join(appContext, groupCallLocator, joinCallOptions);
         Log.d(LOG_TAG, "Call ID: " + joinId);
 
         call.addOnStateChangedListener(propertyChangedEvent -> {
