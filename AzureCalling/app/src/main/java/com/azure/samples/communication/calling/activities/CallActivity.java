@@ -135,9 +135,11 @@ public class CallActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 /* initialize in-call notification icon */
                 initializeCallNotification();
-
                 audioImageButton.setEnabled(true);
-
+                hideCallActivityProgressBar();
+                if (joinCallConfig.getCallType() == JoinCallType.TEAMS_MEETING) {
+                    showInLobbyWaitingOverlay();
+                }
                 initParticipantViews();
             });
         });
@@ -146,11 +148,7 @@ public class CallActivity extends AppCompatActivity {
     private void initializeCallStateLiveData() {
         final Observer<CallState> observerCallState = callState -> {
             Log.d(LOG_TAG, "CallActivity initializeCallStateLiveData: " + callState.toString());
-            if (callState == CallState.IN_LOBBY) {
-                hideCallActivityProgressBar();
-                showInLobbyWaitingOverlay();
-            } else if (callState == CallState.CONNECTED) {
-                hideCallActivityProgressBar();
+            if (callState == CallState.CONNECTED) {
                 hideInLobbyWaitingOverlay();
                 showParticipantHeaderNotification();
             } else if (callState == CallState.DISCONNECTED) {
