@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@id/setup_name_holder">
 
         <ImageButton
-            android:id="@+id/setup_switch_camera_button"
+            android:id="@+id/setup_switch_camera_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="4dp"
@@ -42,7 +42,20 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular"/>
+            app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular">
+
+        </ImageButton>
+
+        <Button
+            android:id="@+id/setup_switch_camera_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/setup_switch_camera_image"
+            app:layout_constraintStart_toStartOf="@id/setup_switch_camera_image"
+            app:layout_constraintBottom_toBottomOf="@id/setup_switch_camera_image"
+            app:layout_constraintEnd_toEndOf="@id/setup_switch_camera_image"/>
 
         <ProgressBar
             android:id="@+id/setup_progress_bar"
