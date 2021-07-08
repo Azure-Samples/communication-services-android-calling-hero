@@ -75,20 +75,8 @@ public class LocalParticipantView extends ParticipantView {
         if (shouldCenter) {
             set.connect(switchCameraImage.getId(), ConstraintSet.BOTTOM, layout.getId(), ConstraintSet.BOTTOM,
                     4);
-            set.connect(switchCameraButton.getId(), ConstraintSet.BOTTOM, switchCameraImage.getId(),
-                    ConstraintSet.BOTTOM);
-            set.connect(switchCameraButton.getId(), ConstraintSet.TOP, switchCameraImage.getId(), ConstraintSet.TOP);
-            set.connect(switchCameraButton.getId(), ConstraintSet.START, switchCameraImage.getId(),
-                    ConstraintSet.START);
-            set.connect(switchCameraButton.getId(), ConstraintSet.END, switchCameraImage.getId(), ConstraintSet.END);
         } else {
             set.clear(switchCameraImage.getId(), ConstraintSet.BOTTOM);
-            set.connect(switchCameraButton.getId(), ConstraintSet.BOTTOM, switchCameraImage.getId(),
-                    ConstraintSet.BOTTOM);
-            set.connect(switchCameraButton.getId(), ConstraintSet.TOP, switchCameraImage.getId(), ConstraintSet.TOP);
-            set.connect(switchCameraButton.getId(), ConstraintSet.START, switchCameraImage.getId(),
-                    ConstraintSet.START);
-            set.connect(switchCameraButton.getId(), ConstraintSet.END, switchCameraImage.getId(), ConstraintSet.END);
         }
         set.applyTo(layout);
     }
