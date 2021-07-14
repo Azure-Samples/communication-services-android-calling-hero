@@ -190,19 +190,10 @@ public class CallingContext {
                     final LocalVideoStream[] localVideoStreams = new LocalVideoStream[1];
                     localVideoStreams[0] = localVideoStream;
                     final VideoOptions videoOptions = new VideoOptions(localVideoStreams);
-                    try {
-                        callWithOptions(agent, audioOptions, videoOptions, callLocator);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw e;
-                    }
+                    callWithOptions(agent, audioOptions, videoOptions, callLocator);
                 });
             } else {
-                try {
-                    callWithOptions(agent, audioOptions, null, callLocator);
-                } catch (Exception e) {
-                    throw e;
-                }
+                callWithOptions(agent, audioOptions, null, callLocator);
             }
         });
     }
