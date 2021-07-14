@@ -246,13 +246,7 @@ public class CallingContext {
                 desiredCamera = getFrontCamera();
             }
             localVideoStream.switchSource(desiredCamera).thenRun(() -> {
-                if (call != null) {
-                    call.startVideo(appContext, localVideoStream).thenRun(() -> {
-                        localVideoStreamCompletableFuture.complete(localVideoStream);
-                    });
-                } else {
-                    localVideoStreamCompletableFuture.complete(localVideoStream);
-                }
+                localVideoStreamCompletableFuture.complete(localVideoStream);
             });
         });
     }
