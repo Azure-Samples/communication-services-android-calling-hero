@@ -4,8 +4,6 @@
 package com.azure.samples.communication.calling.view;
 
 import android.content.Context;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,15 +17,13 @@ import com.azure.samples.communication.calling.R;
 
 public class LocalParticipantView extends ParticipantView {
     // layout properties
-    private final ImageButton switchCameraImage;
-    private final Button switchCameraButton;
+    private final ConstraintLayout switchCameraButton;
     private Runnable switchCameraOnClickAction;
 
     public LocalParticipantView(@NonNull final Context context) {
         super(context);
 
         this.switchCameraButton = findViewById(R.id.participant_switch_camera_button);
-        this.switchCameraImage = findViewById(R.id.participant_switch_camera_image);
         switchCameraButton.setOnClickListener(l -> {
             if (switchCameraOnClickAction != null) {
                 switchCameraButton.setEnabled(false);
@@ -58,12 +54,10 @@ public class LocalParticipantView extends ParticipantView {
 
     public void setSwitchCameraButtonDisplayed(final boolean shouldShowButton) {
         switchCameraButton.setVisibility(shouldShowButton ? VISIBLE : GONE);
-        switchCameraImage.setVisibility(shouldShowButton ? VISIBLE : GONE);
     }
 
     public void setSwitchCameraButtonEnabled(final boolean shouldEnable) {
         switchCameraButton.setEnabled(shouldEnable);
-        switchCameraImage.setEnabled(shouldEnable);
     }
 
     public void centerSwitchCameraButton(final boolean shouldCenter) {
@@ -73,10 +67,10 @@ public class LocalParticipantView extends ParticipantView {
         layout = (ConstraintLayout) findViewById(R.id.video_container);
         set.clone(layout);
         if (shouldCenter) {
-            set.connect(switchCameraImage.getId(), ConstraintSet.BOTTOM, layout.getId(), ConstraintSet.BOTTOM,
+            set.connect(switchCameraButton.getId(), ConstraintSet.BOTTOM, layout.getId(), ConstraintSet.BOTTOM,
                     4);
         } else {
-            set.clear(switchCameraImage.getId(), ConstraintSet.BOTTOM);
+            set.clear(switchCameraButton.getId(), ConstraintSet.BOTTOM);
         }
         set.applyTo(layout);
     }

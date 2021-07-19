@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -71,8 +70,7 @@ public class SetupActivity extends AppCompatActivity {
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
-    private Button switchCameraButton;
-    private ImageButton switchCameraImage;
+    private ConstraintLayout switchCameraButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
@@ -226,7 +224,6 @@ public class SetupActivity extends AppCompatActivity {
         });
 
         this.switchCameraButton = findViewById(R.id.setup_switch_camera_button);
-        this.switchCameraImage = findViewById(R.id.setup_switch_camera_image);
         switchCameraButton.setOnClickListener(l -> switchCamera());
 
         hidePermissionsWarning();
@@ -326,7 +323,6 @@ public class SetupActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 defaultAvatar.setVisibility(View.GONE);
                 switchCameraButton.setVisibility(View.VISIBLE);
-                switchCameraImage.setVisibility(View.VISIBLE);
                 rendererView = new VideoStreamRenderer(localVideoStream, getApplicationContext());
                 previewVideo = rendererView.createView(new CreateViewOptions(ScalingMode.CROP));
                 setupVideoLayout.addView(previewVideo, 0);
@@ -345,7 +341,6 @@ public class SetupActivity extends AppCompatActivity {
         videoToggleButton.setChecked(false);
         defaultAvatar.setVisibility(View.VISIBLE);
         switchCameraButton.setVisibility(View.GONE);
-        switchCameraImage.setVisibility(View.GONE);
     }
 
     private void switchCamera() {
