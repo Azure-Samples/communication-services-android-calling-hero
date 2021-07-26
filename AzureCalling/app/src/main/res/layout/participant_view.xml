@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="parent"
             >
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/participant_switch_camera_image"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -89,7 +89,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular">
 
-            </androidx.appcompat.widget.AppCompatImageView>
+            </ImageView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
