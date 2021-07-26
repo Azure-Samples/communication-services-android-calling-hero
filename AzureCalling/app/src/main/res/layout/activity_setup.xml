@@ -31,13 +31,13 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@android:color/transparent"
-            android:visibility="gone"
             android:clickable="true"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            >
+            tools:visibility="visible">
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/setup_switch_camera_image"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -50,14 +50,13 @@
                 android:paddingTop="2dp"
                 android:paddingEnd="2dp"
                 android:paddingBottom="2dp"
-                android:clickable="false"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular">
 
-            </ImageButton>
+            </androidx.appcompat.widget.AppCompatImageView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar
