@@ -4,7 +4,6 @@
 package com.azure.samples.communication.calling.view;
 
 import android.content.Context;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -18,7 +17,7 @@ import com.azure.samples.communication.calling.R;
 
 public class LocalParticipantView extends ParticipantView {
     // layout properties
-    private final ImageButton switchCameraButton;
+    private final ConstraintLayout switchCameraButton;
     private Runnable switchCameraOnClickAction;
 
     public LocalParticipantView(@NonNull final Context context) {
