@@ -26,23 +26,38 @@
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@id/setup_name_holder">
 
-        <ImageButton
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/setup_switch_camera_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/button_filled"
-            android:backgroundTint="#99000000"
-            android:contentDescription="@string/switch_camera_button"
-            android:paddingStart="2dp"
-            android:paddingTop="2dp"
-            android:paddingEnd="2dp"
-            android:paddingBottom="2dp"
-            android:visibility="gone"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular"/>
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/setup_switch_camera_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/button_filled"
+                android:backgroundTint="#99000000"
+                android:contentDescription="@string/switch_camera_button"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular">
+
+            </ImageView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar
             android:id="@+id/setup_progress_bar"

@@ -131,8 +131,11 @@ public class CallActivity extends AppCompatActivity {
         // if the app is already in landscape mode, this check will hide status bar
         setStatusBarVisibility();
 
-        callingContext.joinCallAsync(joinCallConfig).thenRun(() -> {
+        callingContext.joinCallAsync(joinCallConfig).whenComplete((aVoid, throwable) -> {
             runOnUiThread(() -> {
+                if (throwable != null) {
+                    showCouldNotJoinAlertDialog(throwable.getMessage());
+                }
                 /* initialize in-call notification icon */
                 initializeCallNotification();
                 audioImageButton.setEnabled(true);
@@ -823,6 +826,16 @@ public class CallActivity extends AppCompatActivity {
         localParticipantView.centerSwitchCameraButton(true);
         participantViewList.add(localParticipantView);
         localVideoViewContainer.setVisibility(View.INVISIBLE);
+    }
+
+    private void showCouldNotJoinAlertDialog(final String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Sorry, we could not join the meeting due to the following error: " + message)
+                .setCancelable(false)
+                .setPositiveButton("Dismiss", (dialog, result) -> {
+                    finish();
+                });
+        builder.create().show();
     }
 
     private void updateGridLayoutViews() {

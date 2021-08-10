@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -71,7 +70,7 @@ public class SetupActivity extends AppCompatActivity {
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
-    private ImageButton switchCameraButton;
+    private ConstraintLayout switchCameraButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
