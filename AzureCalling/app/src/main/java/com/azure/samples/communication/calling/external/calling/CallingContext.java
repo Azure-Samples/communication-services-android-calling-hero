@@ -228,6 +228,7 @@ public class CallingContext {
         call.removeOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
         call.removeOnStateChangedListener(this::onStateChanged);
         recordingFeature.removeOnIsRecordingActiveChangedListener(this::onRecordingChanged);
+        transcriptionFeature.removeOnIsTranscriptionActiveChangedListener(this::onTranscriptionChanged);
 
         return call.hangUp(new HangUpOptions());
     }
