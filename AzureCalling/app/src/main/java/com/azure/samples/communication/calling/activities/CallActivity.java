@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.core.content.ContextCompat;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import java.util.function.Consumer;
 
 public class CallActivity extends AppCompatActivity {
@@ -88,10 +91,10 @@ public class CallActivity extends AppCompatActivity {
     private final Consumer<AudioDeviceType> audioDeviceTypeConsumer = new Consumer<AudioDeviceType>() {
         @Override
         public void accept(final AudioDeviceType audioDeviceType) {
-            deviceOptionsButton.setImageDrawable(ContextCompat.getDrawable(CallActivity.this,
+            final Drawable audioDevice = ContextCompat.getDrawable(CallActivity.this,
                     audioDeviceType == AudioDeviceType.ANDROID
-                            ? R.drawable.ic_fluent_speaker_2_28_filled : R.drawable.ic_fluent_speaker_2_28_regular));
-
+                            ? R.drawable.ic_fluent_speaker_2_28_filled : R.drawable.ic_fluent_speaker_2_28_regular);
+            deviceOptionsButton.setImageDrawable(audioDevice);
         }
     };
 

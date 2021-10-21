@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,26 +22,15 @@ import java.util.function.Consumer;
 
 public class AudioDeviceSelectionPopupWindow extends PopupWindow {
     private static final String LOG_TAG = AudioDeviceSelectionPopupWindow.class.getSimpleName();
-    private Context context;
-    private AudioSessionManager audioSessionManager;
-    private Consumer<AudioDeviceType> audioDevice;
+    private final Context context;
+    private final AudioSessionManager audioSessionManager;
+    private final Consumer<AudioDeviceType> audioDevice;
 
     public AudioDeviceSelectionPopupWindow(final Context context,
                                            final AudioSessionManager audioSessionManager,
                                            final Consumer<AudioDeviceType> audioDevice) {
         super(context);
         this.audioDevice = audioDevice;
-        initPopupWindow(context, audioSessionManager);
-    }
-
-    public AudioDeviceSelectionPopupWindow(final Context context,
-                                           final AudioSessionManager audioSessionManager) {
-        super(context);
-        initPopupWindow(context, audioSessionManager);
-    }
-
-    private void initPopupWindow(final Context context,
-                                 final AudioSessionManager audioSessionManager) {
         this.context = context;
         this.audioSessionManager = audioSessionManager;
         final LayoutInflater layoutInflater
@@ -52,7 +40,7 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
         setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
         setFocusable(true);
-        setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, R.color.grey700))); //0x80000000));
+        setBackgroundDrawable(new ColorDrawable(0x80000000));
     }
 
     @Override
@@ -61,7 +49,7 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
 
         // Pass audio device data to RecyclerView Adapter
         final AudioSelectionAdapter bottomCellAdapter = new AudioSelectionAdapter(
-                context, audioSessionManager, audioDevice, this::dismiss);
+                context, audioSessionManager, this::processSelection);
         final RecyclerView audioTable = contentView.findViewById(R.id.bottom_drawer_table);
         audioTable.setAdapter(bottomCellAdapter);
         audioTable.setLayoutManager(new LinearLayoutManager(context));
@@ -69,5 +57,10 @@ public class AudioDeviceSelectionPopupWindow extends PopupWindow {
         contentView.findViewById(R.id.overlay).setOnClickListener(v -> {
             dismiss();
         });
+    }
+
+    private void processSelection() {
+        audioDevice.accept(audioSessionManager.getCurrentAudioDeviceType());
+        dismiss();
     }
 }

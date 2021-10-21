@@ -5,6 +5,7 @@ package com.azure.samples.communication.calling.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -44,6 +45,8 @@ import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
 import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 
+import java.util.function.Consumer;
+
 import java9.util.concurrent.CompletableFuture;
 
 public class SetupActivity extends AppCompatActivity {
@@ -78,6 +81,17 @@ public class SetupActivity extends AppCompatActivity {
     private AudioSessionManager audioSessionManager;
     private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
     private CompletableFuture<Void> setupCompletableFuture;
+    private ToggleButton deviceOptionsButton;
+
+    private final Consumer<AudioDeviceType> audioDeviceTypeConsumer = new Consumer<AudioDeviceType>() {
+        @Override
+        public void accept(final AudioDeviceType audioDeviceType) {
+            final Drawable drawableTop = ContextCompat.getDrawable(SetupActivity.this,
+                    audioDeviceType == AudioDeviceType.ANDROID
+                            ? R.drawable.ic_fluent_speaker_2_28_regular : R.drawable.ic_fluent_speaker_2_28_filled);
+            deviceOptionsButton.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -213,7 +227,7 @@ public class SetupActivity extends AppCompatActivity {
         joinButton = findViewById(R.id.setup_button);
         joinButtonText = findViewById(R.id.setup_button_text);
 
-        final ToggleButton deviceOptionsButton = findViewById(R.id.device);
+        deviceOptionsButton = findViewById(R.id.device);
         deviceOptionsButton.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus) {
                 openAudioDeviceList();
@@ -233,7 +247,8 @@ public class SetupActivity extends AppCompatActivity {
         if (audioDeviceSelectionPopupWindow == null) {
             final AudioSessionManager audioSessionManager
                     = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
-            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+            audioDeviceSelectionPopupWindow =
+                    new AudioDeviceSelectionPopupWindow(this, audioSessionManager, audioDeviceTypeConsumer);
         }
         audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
                     Gravity.BOTTOM, 0, 0);

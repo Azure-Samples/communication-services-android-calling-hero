@@ -3,33 +3,19 @@
 
 package com.azure.samples.communication.calling.helpers;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-
 import androidx.core.content.ContextCompat;
-
 import com.azure.samples.communication.calling.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class AudioSelectionAdapter extends BottomCellAdapter {
 
     private Map<AudioDeviceType, BottomCellItem> bottomCellItemState;
-    private Consumer<AudioDeviceType> audioDevice;
-
     public AudioSelectionAdapter(final Context context,
-                                 final AudioSessionManager audioSessionManager,
-                                 final Consumer<AudioDeviceType> audioDevice,
-                                 final Runnable onSelect) {
-        this(context, audioSessionManager, onSelect);
-        this.audioDevice = audioDevice;
-    }
-
-    private AudioSelectionAdapter(final Context context,
                                  final AudioSessionManager audioSessionManager,
                                  final Runnable onSelect) {
         super(context);
@@ -67,7 +53,6 @@ public class AudioSelectionAdapter extends BottomCellAdapter {
         setBottomCellItems(bottomCellItems);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private void setDeviceType(final AudioDeviceType audioDeviceType,
                                final AudioSessionManager audioSessionManager,
                                final Runnable onSelect) {
@@ -81,9 +66,6 @@ public class AudioSelectionAdapter extends BottomCellAdapter {
             }
         }
         super.notifyDataSetChanged();
-        if (audioDevice != null) {
-            audioDevice.accept(audioDeviceType);
-        }
         onSelect.run();
     }
 }
