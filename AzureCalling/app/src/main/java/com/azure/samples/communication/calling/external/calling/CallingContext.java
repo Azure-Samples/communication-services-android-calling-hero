@@ -23,10 +23,12 @@ import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantsUpdatedEvent;
 import com.azure.android.communication.calling.PropertyChangedEvent;
 import com.azure.android.communication.calling.PropertyChangedListener;
+import com.azure.android.communication.calling.RecordingFeature;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.RemoteVideoStreamsUpdatedListener;
 import com.azure.android.communication.calling.TeamsMeetingLinkLocator;
+import com.azure.android.communication.calling.TranscriptionFeature;
 import com.azure.android.communication.calling.VideoDeviceInfo;
 import com.azure.android.communication.calling.VideoDevicesUpdatedEvent;
 import com.azure.android.communication.calling.VideoDevicesUpdatedListener;
@@ -81,6 +83,8 @@ public class CallingContext {
     private boolean isRecordingActive = false;
     private boolean isTranscriptionActive = false;
     private RemoteParticipant currentScreenSharingParticipant = null;
+    private RecordingFeature recordingFeature = null;
+    private TranscriptionFeature transcriptionFeature = null;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
@@ -220,10 +224,12 @@ public class CallingContext {
         });
     }
 
-    public CompletableFuture hangupAsync() {
+    public CompletableFuture<Void> hangupAsync() {
         call.removeOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
         call.removeOnStateChangedListener(this::onStateChanged);
-        call.removeOnIsRecordingActiveChangedListener(this::onRecordingChanged);
+        recordingFeature.removeOnIsRecordingActiveChangedListener(this::onRecordingChanged);
+        transcriptionFeature.removeOnIsTranscriptionActiveChangedListener(this::onTranscriptionChanged);
+
         return call.hangUp(new HangUpOptions());
     }
 
@@ -445,8 +451,14 @@ public class CallingContext {
             }
         });
         call.addOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
-        call.addOnIsRecordingActiveChangedListener(this::onRecordingChanged);
-        call.addOnIsTranscriptionActiveChangedListener(this::onTranscriptionChanged);
+        try {
+            recordingFeature = call.api(RecordingFeature.class);
+            recordingFeature.addOnIsRecordingActiveChangedListener(this::onRecordingChanged);
+            transcriptionFeature = call.api(TranscriptionFeature.class);
+            transcriptionFeature.addOnIsTranscriptionActiveChangedListener(this::onTranscriptionChanged);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Unknown api", ex);
+        }
 
         cameraOn = (videoOptions != null);
         micOn = !audioOptions.isMuted();
@@ -457,7 +469,7 @@ public class CallingContext {
     }
 
     private void onRecordingChanged(final PropertyChangedEvent propertyChangedEvent) {
-        final boolean newRecordingActive = call.isRecordingActive();
+        final boolean newRecordingActive = recordingFeature.isRecordingActive();
         if (newRecordingActive != isRecordingActive) {
             isRecordingActive = newRecordingActive;
             recordingStateLiveData.postValue(isRecordingActive);
@@ -465,7 +477,7 @@ public class CallingContext {
     }
 
     private void onTranscriptionChanged(final PropertyChangedEvent propertyChangedEvent) {
-        final boolean newTranscriptionActive = call.isTranscriptionActive();
+        final boolean newTranscriptionActive = transcriptionFeature.isTranscriptionActive();
         if (newTranscriptionActive != isTranscriptionActive) {
             isTranscriptionActive = newTranscriptionActive;
             transcriptionStateLiveData.postValue(isTranscriptionActive);
