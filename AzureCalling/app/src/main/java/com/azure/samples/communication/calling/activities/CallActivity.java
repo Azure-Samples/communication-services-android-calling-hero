@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import androidx.lifecycle.Observer;
+import androidx.core.content.ContextCompat;
 
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -34,6 +35,7 @@ import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioDeviceType;
 import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
@@ -53,8 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+import java.util.function.Consumer;
 
 public class CallActivity extends AppCompatActivity {
 
@@ -82,6 +83,17 @@ public class CallActivity extends AppCompatActivity {
     private Runnable initialVideoToggleRequest;
     private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
     private ParticipantListPopupWindow participantListPopupWindow;
+    private ImageButton deviceOptionsButton;
+
+    private final Consumer<AudioDeviceType> audioDeviceTypeConsumer = new Consumer<AudioDeviceType>() {
+        @Override
+        public void accept(final AudioDeviceType audioDeviceType) {
+            deviceOptionsButton.setImageDrawable(ContextCompat.getDrawable(CallActivity.this,
+                    audioDeviceType == AudioDeviceType.ANDROID
+                            ? R.drawable.ic_fluent_speaker_2_28_filled : R.drawable.ic_fluent_speaker_2_28_regular));
+
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -422,7 +434,8 @@ public class CallActivity extends AppCompatActivity {
         if (audioDeviceSelectionPopupWindow == null) {
             final AudioSessionManager audioSessionManager
                     = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
-            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+            audioDeviceSelectionPopupWindow =
+                    new AudioDeviceSelectionPopupWindow(this, audioSessionManager, audioDeviceTypeConsumer);
         }
         audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
                 Gravity.BOTTOM, 0, 0);
@@ -609,7 +622,7 @@ public class CallActivity extends AppCompatActivity {
         final Button callHangupCancelButton = findViewById(R.id.call_hangup_cancel);
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
-        final ImageButton deviceOptionsButton = findViewById(R.id.audio_device_button);
+        deviceOptionsButton = findViewById(R.id.audio_device_button);
         deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
 
         infoHeaderView = findViewById(R.id.info_header);
