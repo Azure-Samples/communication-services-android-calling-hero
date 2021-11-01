@@ -21,10 +21,10 @@
     <string name="setup_missing_cd">Missing placeholder</string>
     <string name="setup_missing_text">Missing placeholder</string>
     <string name="setup_missing_button">Go to Settings</string>
-    <string name="setup_video_off">Video is off</string>
-    <string name="setup_video_on">Video is on</string>
-    <string name="setup_mic_off">Mic is off</string>
-    <string name="setup_mic_on">Mic is on</string>
+    <string name="setup_video_off">Video off</string>
+    <string name="setup_video_on">Video on</string>
+    <string name="setup_mic_off">Mic off</string>
+    <string name="setup_mic_on">Mic on</string>
     <string name="setup_device">Device</string>
     <string name="setup_missing_video">Your camera is disabled. To enable, please go to Settings to allow access.</string>
     <string name="setup_missing_mic">Your audio is disabled. To enable, please go to Settings to allow access. You must enable audio to start this call.</string>
@@ -50,4 +50,5 @@
     <string name="end_return">Return to home screen</string>
     <string name="open_participant_list">Open Participant List</string>
     <string name="switch_camera_button">Switch Camera Button</string>
+    <string name="device_options">Device Options</string>
 </resources>
