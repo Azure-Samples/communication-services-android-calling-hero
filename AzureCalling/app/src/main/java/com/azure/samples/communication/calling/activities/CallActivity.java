@@ -197,6 +197,8 @@ public class CallActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         Log.d(LOG_TAG, "CallActivity onPause");
+        callingContext.pauseVideo().thenRun(() -> runOnUiThread(() ->
+                localParticipantView.setVideoStream((LocalVideoStream) null)));
         super.onPause();
     }
 
