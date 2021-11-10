@@ -21,6 +21,8 @@ import com.azure.samples.communication.calling.helpers.AppSettings;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.helpers.JoinCallType;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
+
 public class IntroActivity extends AppCompatActivity {
     private static final String LOG_TAG = IntroActivity.class.getSimpleName();
 
@@ -33,6 +35,16 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isTaskRoot()
+                && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
+                && getIntent().getAction() != null
+                && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+
+            finish();
+            return;
+        }
+        
         setContentView(R.layout.activity_intro);
 
         // Get a support ActionBar corresponding to this toolbar
@@ -118,6 +130,7 @@ public class IntroActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Setup new meeting button clicked!");
         ((AzureCalling) getApplication()).createCallingContext();
         final Intent intent = new Intent(this, SetupActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Constants.CALL_TYPE, JoinCallType.GROUP_CALL);
         startActivity(intent);
     }
@@ -126,6 +139,7 @@ public class IntroActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Join call button clicked!");
         ((AzureCalling) getApplication()).createCallingContext();
         final Intent intent = new Intent(this, JoinCallActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

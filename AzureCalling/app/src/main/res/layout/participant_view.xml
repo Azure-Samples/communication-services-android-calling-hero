@@ -24,6 +24,7 @@
             android:src="@drawable/ic_no_camera_50_64"
             android:visibility="gone" />
         <LinearLayout
+            android:id="@+id/display_name_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
@@ -35,18 +36,18 @@
                 android:id="@+id/display_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:inputType="textNoSuggestions"
-                app:autoSizeTextType="uniform"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
                 android:alpha=".6"
                 android:background="@drawable/button_filled"
                 android:backgroundTint="@android:color/black"
+                android:drawablePadding="5dp"
+                android:inputType="textNoSuggestions"
+                android:maxLines="1"
+                android:paddingLeft="4dp"
+                android:paddingTop="3dp"
+                android:paddingRight="4dp"
+                android:paddingBottom="3dp"
                 android:textColor="@android:color/white"
-                android:drawablePadding="5dp" />
+                app:autoSizeTextType="uniform" />
 
         </LinearLayout>
 
@@ -57,6 +58,39 @@
             android:background="@drawable/active_speaker_highlight"
             android:visibility="invisible">
         </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/participant_switch_camera_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <ImageView
+                android:id="@+id/participant_switch_camera_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/button_filled"
+                android:backgroundTint="#99000000"
+                android:contentDescription="@string/switch_camera_button"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_fluent_camera_switch_24_regular">
+
+            </ImageView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

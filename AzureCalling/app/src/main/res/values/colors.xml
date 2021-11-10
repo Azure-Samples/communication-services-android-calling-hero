@@ -14,10 +14,14 @@
     <color name="text_secondary">@color/grey700</color>
     <color name="textbox_primary">@color/grey500</color>
     <color name="textbox_secondary">@color/grey300</color>
+    <color name="audio_device_menu">@android:color/white</color>
+    <color name="menu_separator_line">#E1E1E1</color>
 
     <color name="fluent_default_icon_tint">@android:color/white</color>
+    <color name="fluent_default_icon_reverse_tint">@android:color/black</color>
 
     <color name="grey950">#FF141414</color>
+    <color name="grey900">#212121</color>
     <color name="grey700">#FF303030</color>
     <color name="grey500">#FF6E6E6E</color>
     <color name="grey400">#FF919191</color>

@@ -3,6 +3,7 @@
 
 package com.azure.samples.communication.calling.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,12 +34,15 @@ import com.azure.android.communication.calling.VideoStreamRendererView;
 import com.azure.android.communication.calling.ScalingMode;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.helpers.AudioDeviceType;
+import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
 import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.helpers.JoinCallType;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
+import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 
 import java9.util.concurrent.CompletableFuture;
 
@@ -64,10 +70,14 @@ public class SetupActivity extends AppCompatActivity {
     private VideoStreamRenderer rendererView;
     private VideoStreamRendererView previewVideo;
     private Button setupMissingButton;
+    private ConstraintLayout switchCameraButton;
     private Runnable initialAudioPermissionRequest;
     private Runnable initialVideoToggleRequest;
     private PermissionState onStopAudioPermissionState;
     private PermissionState onStopVideoPermissionState;
+    private AudioSessionManager audioSessionManager;
+    private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
+    private CompletableFuture<Void> setupCompletableFuture;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -96,7 +106,7 @@ public class SetupActivity extends AppCompatActivity {
         handleAllPermissions();
 
         callingContext = ((AzureCalling) getApplication()).getCallingContext();
-        final CompletableFuture<Void> setupCompletableFuture = callingContext.setupAsync();
+        setupCompletableFuture = callingContext.setupAsync();
 
         final Intent intent = getIntent();
         callType = (JoinCallType) intent.getSerializableExtra(Constants.CALL_TYPE);
@@ -109,6 +119,7 @@ public class SetupActivity extends AppCompatActivity {
                 defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
+        initializeSpeaker();
     }
 
     @Override
@@ -142,6 +153,9 @@ public class SetupActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(LOG_TAG, "SetupActivity - onDestroy");
+        if (!setupCompletableFuture.isDone()) {
+            setupCompletableFuture.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -190,12 +204,39 @@ public class SetupActivity extends AppCompatActivity {
                 setupEnter.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
             } else {
                 setupEnter.setTextColor(ContextCompat.getColor(this, R.color.textbox_secondary));
+                final InputMethodManager inputMethodManager =
+                        (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
         joinButton = findViewById(R.id.setup_button);
         joinButtonText = findViewById(R.id.setup_button_text);
+
+        final ToggleButton deviceOptionsButton = findViewById(R.id.device);
+        deviceOptionsButton.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                openAudioDeviceList();
+            }
+        });
+        deviceOptionsButton.setOnClickListener(l -> {
+            openAudioDeviceList();
+        });
+
+        this.switchCameraButton = findViewById(R.id.setup_switch_camera_button);
+        switchCameraButton.setOnClickListener(l -> switchCamera());
+
         hidePermissionsWarning();
+    }
+
+    private void openAudioDeviceList() {
+        if (audioDeviceSelectionPopupWindow == null) {
+            final AudioSessionManager audioSessionManager
+                    = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+        }
+        audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
+                    Gravity.BOTTOM, 0, 0);
     }
 
     private void setJoinButtonState() {
@@ -281,6 +322,7 @@ public class SetupActivity extends AppCompatActivity {
         callingContext.getLocalVideoStreamCompletableFuture().thenAccept(localVideoStream -> {
             runOnUiThread(() -> {
                 defaultAvatar.setVisibility(View.GONE);
+                switchCameraButton.setVisibility(View.VISIBLE);
                 rendererView = new VideoStreamRenderer(localVideoStream, getApplicationContext());
                 previewVideo = rendererView.createView(new CreateViewOptions(ScalingMode.CROP));
                 setupVideoLayout.addView(previewVideo, 0);
@@ -298,6 +340,12 @@ public class SetupActivity extends AppCompatActivity {
         previewVideo = null;
         videoToggleButton.setChecked(false);
         defaultAvatar.setVisibility(View.VISIBLE);
+        switchCameraButton.setVisibility(View.GONE);
+    }
+
+    private void switchCamera() {
+        switchCameraButton.setEnabled(false);
+        callingContext.switchCameraAsync().thenRun(() -> runOnUiThread(() -> switchCameraButton.setEnabled(true)));
     }
 
     private void handleButtonStates() {
@@ -352,6 +400,7 @@ public class SetupActivity extends AppCompatActivity {
         setupMissingText.setText(R.string.setup_missing_video_mic);
         setupVideoButtons.setVisibility(View.GONE);
         setupGradient.setVisibility(View.GONE);
+        defaultAvatar.setVisibility(View.GONE);
     }
 
     private void handleVideoPermissionsDenied() {
@@ -362,6 +411,7 @@ public class SetupActivity extends AppCompatActivity {
         setupMissingText.setText(R.string.setup_missing_video);
         videoToggleButton.setVisibility(View.GONE);
         setupGradient.setVisibility(View.GONE);
+        defaultAvatar.setVisibility(View.GONE);
     }
 
     private void handleAudioPermissionsDenied() {
@@ -376,5 +426,12 @@ public class SetupActivity extends AppCompatActivity {
 
     private void hidePermissionsWarning() {
         setupMissingLayout.setVisibility(View.GONE);
+    }
+
+    private void initializeSpeaker() {
+        ((AzureCalling) getApplication()).createAudioSessionManager();
+        audioSessionManager = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
+        // By default, turn on the speaker
+        audioSessionManager.switchAudioDeviceType(AudioDeviceType.SPEAKER);
     }
 }
