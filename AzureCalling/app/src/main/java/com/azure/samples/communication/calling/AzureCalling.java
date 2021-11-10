@@ -4,8 +4,11 @@
 package com.azure.samples.communication.calling;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Build;
 
 import com.azure.samples.communication.calling.external.authentication.AADAuthHandler;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
@@ -15,6 +18,9 @@ import com.azure.samples.communication.calling.external.calling.TokenService;
 import com.azure.samples.communication.calling.helpers.AppSettings;
 
 public class AzureCalling extends Application {
+
+    public static final String IN_CALL_CHANNEL_ID = "IN_CALL";
+
     private AppSettings appSettings;
     private CallingContext callingContext;
     private AADAuthHandler aadAuthHandler;
@@ -26,7 +32,7 @@ public class AzureCalling extends Application {
     public void onCreate() {
         super.onCreate();
         initializeDependencies();
-
+        createInCallNotificationChannel();
     }
 
     private void initializeDependencies() {
@@ -66,5 +72,20 @@ public class AzureCalling extends Application {
 
     public AudioSessionManager getAudioSessionManager() {
         return audioSessionManager;
+    }
+
+    private void createInCallNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final CharSequence name = "AzureCalling Call Status";
+            final String description = "Provides a notification for on-going calls";
+            final int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            final NotificationChannel channel = new NotificationChannel(IN_CALL_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            channel.setSound(null, null);
+            final NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
