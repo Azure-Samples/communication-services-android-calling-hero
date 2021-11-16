@@ -28,19 +28,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:layout_marginBottom="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
                 android:id="@+id/display_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:alpha=".6"
                 android:background="@drawable/button_filled"
                 android:backgroundTint="@android:color/black"
                 android:drawablePadding="5dp"
-                android:inputType="textNoSuggestions"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingLeft="4dp"
                 android:paddingTop="3dp"
