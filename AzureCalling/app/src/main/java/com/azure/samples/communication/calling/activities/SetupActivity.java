@@ -90,6 +90,7 @@ public class SetupActivity extends AppCompatActivity {
                     audioDeviceType == AudioDeviceType.ANDROID
                             ? R.drawable.ic_fluent_speaker_2_28_regular : R.drawable.ic_fluent_speaker_2_28_filled);
             deviceOptionsButton.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
+            deviceOptionsButton.setText(audioDeviceType.getAudioDeviceText());
         }
     };
 
