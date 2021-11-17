@@ -64,7 +64,6 @@ public class CallActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private CallingContext callingContext;
     private PermissionHelper permissionHelper;
-    private Intent inCallServiceIntent;
     private GridLayout gridLayout;
     private ImageButton videoImageButton;
     private ImageButton audioImageButton;
@@ -225,11 +224,15 @@ public class CallActivity extends AppCompatActivity {
             detachFromParentView(localParticipantView);
         }
 
+        if (isFinishing()) {
+            hangup();
+        }
+
         super.onDestroy();
     }
 
     private void initializeCallNotification() {
-        inCallServiceIntent = new Intent(this, InCallService.class);
+        final Intent inCallServiceIntent = new Intent(this, InCallService.class);
         startService(inCallServiceIntent);
     }
 
@@ -472,6 +475,7 @@ public class CallActivity extends AppCompatActivity {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
         }
+        final Intent inCallServiceIntent = new Intent(this, InCallService.class);
         stopService(inCallServiceIntent);
         callHangupConfirmButton.setEnabled(false);
         callingContext.hangupAsync();
