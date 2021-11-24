@@ -194,9 +194,11 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause() {
-        Log.d(LOG_TAG, "CallActivity onPause");
-        super.onPause();
+    protected void onStart() {
+        Log.d(LOG_TAG, "CallActivity onStart");
+        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
+                localParticipantView.setVideoStream(localVideoStream)));
+        super.onStart();
     }
 
     @Override
@@ -205,14 +207,6 @@ public class CallActivity extends AppCompatActivity {
         callingContext.pauseVideo().thenRun(() -> runOnUiThread(() ->
                 localParticipantView.setVideoStream((LocalVideoStream) null)));
         super.onStop();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(LOG_TAG, "CallActivity onResume");
-        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
-                localParticipantView.setVideoStream(localVideoStream)));
-        super.onResume();
     }
 
     @Override
