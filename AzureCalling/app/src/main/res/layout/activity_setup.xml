@@ -97,19 +97,22 @@
                 android:id="@+id/setup_missing_image"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="45dp"
-                android:layout_marginBottom="45dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 android:contentDescription="@string/setup_missing_cd"
                 app:srcCompat="@drawable/ic_fluent_warning_24_filled"
                 app:tint="@color/warnings" />
 
             <TextView
                 android:id="@+id/setup_missing_text"
-                android:layout_width="219dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="35dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:lineSpacingExtra="8sp"
+                android:lineSpacingExtra="8dp"
+                android:textSize="13sp"
                 android:text="@string/setup_missing_text"
                 android:textColor="#B3B0AD" />
 

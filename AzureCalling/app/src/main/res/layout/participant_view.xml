@@ -11,7 +11,6 @@
         android:layout_height="match_parent"
         android:background="#D2D0CE"
         >
-
         <ImageView
             android:id="@+id/default_avatar"
             android:layout_width="wrap_content"
@@ -23,6 +22,7 @@
             android:contentDescription="DEFAULT_AVATAR"
             android:src="@drawable/ic_no_camera_50_64"
             android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/display_name_container"
             android:layout_width="match_parent"

@@ -116,7 +116,6 @@ public class SetupActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 videoToggleButton.setEnabled(true);
                 setupProgressBar.setVisibility(View.GONE);
-                defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
         initializeSpeaker();
@@ -425,6 +424,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void hidePermissionsWarning() {
+        defaultAvatar.setVisibility(View.VISIBLE);
         setupMissingLayout.setVisibility(View.GONE);
     }
 
