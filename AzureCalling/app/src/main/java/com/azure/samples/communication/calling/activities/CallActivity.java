@@ -69,7 +69,6 @@ public class CallActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private CallingContext callingContext;
     private PermissionHelper permissionHelper;
-    private Intent inCallServiceIntent;
     private GridLayout gridLayout;
     private ImageButton videoImageButton;
     private ImageButton audioImageButton;
@@ -229,9 +228,11 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause() {
-        Log.d(LOG_TAG, "CallActivity onPause");
-        super.onPause();
+    protected void onStart() {
+        Log.d(LOG_TAG, "CallActivity onStart");
+        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
+                localParticipantView.setVideoStream(localVideoStream)));
+        super.onStart();
     }
 
     @Override
@@ -240,14 +241,6 @@ public class CallActivity extends AppCompatActivity {
         callingContext.pauseVideo().thenRun(() -> runOnUiThread(() ->
                 localParticipantView.setVideoStream((LocalVideoStream) null)));
         super.onStop();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(LOG_TAG, "CallActivity onResume");
-        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
-                localParticipantView.setVideoStream(localVideoStream)));
-        super.onResume();
     }
 
     @Override
@@ -265,11 +258,15 @@ public class CallActivity extends AppCompatActivity {
             detachFromParentView(localParticipantView);
         }
 
+        if (isFinishing()) {
+            hangup();
+        }
+
         super.onDestroy();
     }
 
     private void initializeCallNotification() {
-        inCallServiceIntent = new Intent(this, InCallService.class);
+        final Intent inCallServiceIntent = new Intent(this, InCallService.class);
         startService(inCallServiceIntent);
     }
 
@@ -513,6 +510,7 @@ public class CallActivity extends AppCompatActivity {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
         }
+        final Intent inCallServiceIntent = new Intent(this, InCallService.class);
         stopService(inCallServiceIntent);
         callHangupConfirmButton.setEnabled(false);
         callingContext.hangupAsync();
