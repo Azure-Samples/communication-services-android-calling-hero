@@ -92,7 +92,7 @@ public class CallActivity extends AppCompatActivity {
         @Override
         public void accept(final AudioDeviceType audioDeviceType) {
             final int drawableId = audioDeviceType == AudioDeviceType.ANDROID
-                    ? R.drawable.ic_fluent_speaker_2_28_filled : R.drawable.ic_fluent_speaker_2_28_regular;
+                    ? R.drawable.ic_fluent_speaker_2_28_regular : R.drawable.ic_fluent_speaker_2_28_filled;
             setDrawable(deviceOptionsButton, drawableId);
         }
     };
