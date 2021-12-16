@@ -52,7 +52,7 @@
         <activity
             android:name="com.azure.samples.communication.calling.activities.CallActivity"
             android:exported="true"
-            android:configChanges="screenSize|screenLayout"
+            android:configChanges="orientation|screenSize|screenLayout"
             android:parentActivityName="com.azure.samples.communication.calling.activities.SetupActivity"
             android:screenOrientation="sensor"
             android:launchMode="singleTask"/>
