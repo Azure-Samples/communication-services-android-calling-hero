@@ -28,7 +28,7 @@ public class AudioSelectionAdapter extends BottomCellAdapter {
                 final BottomCellItem bottomCellItem = new BottomCellItem(
                         ContextCompat.getDrawable(context,
                         R.drawable.ic_fluent_speaker_2_24_regular),
-                        "Android",
+                        context.getString(audioDeviceType.getAudioDeviceText()),
                     ContextCompat.getDrawable(context,
                                 R.drawable.ic_fluent_checkmark_24_regular),
                         currentAudioDeviceType == audioDeviceType,
@@ -40,7 +40,7 @@ public class AudioSelectionAdapter extends BottomCellAdapter {
                 final BottomCellItem bottomCellItem = new BottomCellItem(
                         ContextCompat.getDrawable(context,
                         R.drawable.ic_fluent_speaker_2_24_filled),
-                        "Speaker",
+                        context.getString(audioDeviceType.getAudioDeviceText()),
                     ContextCompat.getDrawable(context,
                                 R.drawable.ic_fluent_checkmark_24_regular),
                         currentAudioDeviceType == audioDeviceType,
