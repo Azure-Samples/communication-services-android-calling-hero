@@ -92,7 +92,7 @@ public class CallActivity extends AppCompatActivity {
         @Override
         public void accept(final AudioDeviceType audioDeviceType) {
             final int drawableId = audioDeviceType == AudioDeviceType.ANDROID
-                    ? R.drawable.ic_fluent_speaker_2_28_regular : R.drawable.ic_fluent_speaker_2_28_filled;
+                    ? R.drawable.ic_fluent_speaker_2_24_regular : R.drawable.ic_fluent_speaker_2_24_filled;
             setDrawable(deviceOptionsButton, drawableId);
         }
     };
@@ -643,7 +643,7 @@ public class CallActivity extends AppCompatActivity {
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
         deviceOptionsButton = findViewById(R.id.audio_device_button);
-        deviceOptionsButton.setTag(R.drawable.ic_fluent_speaker_2_28_regular);
+        deviceOptionsButton.setTag(R.drawable.ic_fluent_speaker_2_24_regular);
         deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
 
         infoHeaderView = findViewById(R.id.info_header);
