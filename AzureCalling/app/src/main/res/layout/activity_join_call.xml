@@ -1,42 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".activities.JoinCallActivity">
 
     <LinearLayout
+        android:id="@+id/call_options_layout"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/join_enter"
-            android:layout_width="match_parent"
+        <RadioButton
+            android:id="@+id/group_call_radio_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/join_enter"
-            android:textColor="@color/textbox_secondary" />
+            android:layout_marginTop="10dp"
+            android:button="@drawable/toggle_selector_radio_button"
+            android:checked="true"
+            android:fontFamily="sans-serif-medium"
+            android:paddingLeft="10dp"
+            android:textColor="@color/textbox_secondary"
+            android:text="@string/join_enter" />
 
         <EditText
-            android:id="@+id/join_meeting"
+            android:id="@+id/group_call_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:autofillHints="Meeting ID"
-            android:ems="10"
             android:ellipsize="end"
+            android:ems="10"
             android:hint="@string/join_join_hint"
             android:inputType="textNoSuggestions"
             android:singleLine="true"
             android:textColorHint="@color/textbox_secondary" />
+
+        <RelativeLayout
+            android:id="@+id/teams_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/teams_meeting_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/toggle_selector_radio_button"
+                android:checked="false"
+                android:fontFamily="sans-serif-medium"
+                android:paddingLeft="10dp"
+                android:textColor="@color/textbox_secondary"
+                android:text="@string/join_teams_enter" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/teams_meeting_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:autofillHints="Teams Meeting ID"
+            android:ellipsize="end"
+            android:ems="10"
+            android:hint="@string/join_teams_meeting_hint"
+            android:inputType="textNoSuggestions"
+            android:singleLine="true"
+            android:textColorHint="@color/textbox_secondary"
+            android:visibility="gone" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/call_options_layout">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/join_holder"
         android:layout_width="match_parent"
         android:layout_height="48dp">
@@ -54,5 +100,6 @@
             android:text="@string/join_start"/>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</RelativeLayout>
