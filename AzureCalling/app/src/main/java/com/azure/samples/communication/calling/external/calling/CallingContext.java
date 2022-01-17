@@ -7,7 +7,9 @@ import android.content.Context;
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
+import com.azure.android.communication.calling.CallFeatureFactory;
 import com.azure.android.communication.calling.CallState;
+import com.azure.android.communication.calling.Features;
 import com.azure.android.communication.calling.JoinMeetingLocator;
 import com.azure.android.communication.calling.AudioOptions;
 import com.azure.android.communication.calling.Call;
@@ -23,12 +25,12 @@ import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantsUpdatedEvent;
 import com.azure.android.communication.calling.PropertyChangedEvent;
 import com.azure.android.communication.calling.PropertyChangedListener;
-import com.azure.android.communication.calling.RecordingFeature;
+import com.azure.android.communication.calling.RecordingCallFeature;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.android.communication.calling.RemoteVideoStreamsUpdatedListener;
 import com.azure.android.communication.calling.TeamsMeetingLinkLocator;
-import com.azure.android.communication.calling.TranscriptionFeature;
+import com.azure.android.communication.calling.TranscriptionCallFeature;
 import com.azure.android.communication.calling.VideoDeviceInfo;
 import com.azure.android.communication.calling.VideoDevicesUpdatedEvent;
 import com.azure.android.communication.calling.VideoDevicesUpdatedListener;
@@ -83,8 +85,8 @@ public class CallingContext {
     private boolean isRecordingActive = false;
     private boolean isTranscriptionActive = false;
     private RemoteParticipant currentScreenSharingParticipant = null;
-    private RecordingFeature recordingFeature = null;
-    private TranscriptionFeature transcriptionFeature = null;
+    private RecordingCallFeature recordingFeature = null;
+    private TranscriptionCallFeature transcriptionFeature = null;
 
     private final Map<String, RemoteParticipant> remoteParticipantsMap;
     private final List<RemoteParticipant> displayedRemoteParticipants;
@@ -452,9 +454,9 @@ public class CallingContext {
         });
         call.addOnRemoteParticipantsUpdatedListener(this::onParticipantsUpdated);
         try {
-            recordingFeature = call.api(RecordingFeature.class);
+            recordingFeature = call.feature(Features.RECORDING);
             recordingFeature.addOnIsRecordingActiveChangedListener(this::onRecordingChanged);
-            transcriptionFeature = call.api(TranscriptionFeature.class);
+            transcriptionFeature = call.feature(Features.TRANSCRIPTION);
             transcriptionFeature.addOnIsTranscriptionActiveChangedListener(this::onTranscriptionChanged);
         } catch (Exception ex) {
             throw new IllegalStateException("Unknown api", ex);
