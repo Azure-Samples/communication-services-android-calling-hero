@@ -7,7 +7,6 @@ import android.content.Context;
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
-import com.azure.android.communication.calling.CallFeatureFactory;
 import com.azure.android.communication.calling.CallState;
 import com.azure.android.communication.calling.Features;
 import com.azure.android.communication.calling.JoinMeetingLocator;
