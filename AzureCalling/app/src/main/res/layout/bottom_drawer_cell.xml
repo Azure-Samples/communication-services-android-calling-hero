@@ -21,6 +21,8 @@
         android:layout_marginStart="72dp"
         android:layout_marginEnd="40dp"
         android:text="@string/audio_device_android"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

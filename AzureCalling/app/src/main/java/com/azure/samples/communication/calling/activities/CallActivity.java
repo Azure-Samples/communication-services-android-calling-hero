@@ -3,16 +3,14 @@
 
 package com.azure.samples.communication.calling.activities;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 import android.content.Intent;
 
 import androidx.lifecycle.Observer;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,45 +30,52 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.azure.android.communication.calling.CallState;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import com.azure.android.communication.calling.LocalVideoStream;
 import com.azure.android.communication.calling.MediaStreamType;
 import com.azure.android.communication.calling.ParticipantState;
 import com.azure.android.communication.calling.RemoteParticipant;
 import com.azure.android.communication.calling.RemoteVideoStream;
 import com.azure.samples.communication.calling.AzureCalling;
+import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.external.calling.CallingContext;
+import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
+import com.azure.samples.communication.calling.helpers.AudioDeviceType;
 import com.azure.samples.communication.calling.helpers.AudioSessionManager;
 import com.azure.samples.communication.calling.helpers.Constants;
-import com.azure.samples.communication.calling.external.calling.JoinCallConfig;
-import com.azure.samples.communication.calling.R;
-
 import com.azure.samples.communication.calling.helpers.JoinCallType;
+import com.azure.samples.communication.calling.helpers.InCallService;
 import com.azure.samples.communication.calling.helpers.ParticipantInfo;
 import com.azure.samples.communication.calling.helpers.PermissionHelper;
 import com.azure.samples.communication.calling.helpers.PermissionState;
-import com.azure.samples.communication.calling.helpers.InCallService;
 import com.azure.samples.communication.calling.view.AudioDeviceSelectionPopupWindow;
 import com.azure.samples.communication.calling.view.LocalParticipantView;
 import com.azure.samples.communication.calling.view.ParticipantListPopupWindow;
 import com.azure.samples.communication.calling.view.ParticipantView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+import java.util.function.Consumer;
 
 public class CallActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CallActivity.class.getSimpleName();
-
+    private static final String DEVICE_OPTIONS_BUTTON_DRAWABLE_ID = "DEVICE_OPTIONS_BUTTON_DRAWABLE_ID";
     private static final int MIN_TIME_BETWEEN_PARTICIPANT_VIEW_UPDATES = 500;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private CallingContext callingContext;
     private PermissionHelper permissionHelper;
-    private Intent inCallServiceIntent;
     private GridLayout gridLayout;
     private ImageButton videoImageButton;
     private ImageButton audioImageButton;
@@ -85,7 +90,6 @@ public class CallActivity extends AppCompatActivity {
     private LocalParticipantView localParticipantView;
     private ConstraintLayout localVideoViewContainer;
     private volatile boolean viewUpdatePending = false;
-    private boolean callHangUpOverlaid;
     private Button callHangupConfirmButton;
     private Runnable initialVideoToggleRequest;
     private ProgressBar callActivityProgressBar;
@@ -93,6 +97,16 @@ public class CallActivity extends AppCompatActivity {
     private JoinCallConfig joinCallConfig;
     private AudioDeviceSelectionPopupWindow audioDeviceSelectionPopupWindow;
     private ParticipantListPopupWindow participantListPopupWindow;
+    private ImageButton deviceOptionsButton;
+
+    private final Consumer<AudioDeviceType> audioDeviceTypeConsumer = new Consumer<AudioDeviceType>() {
+        @Override
+        public void accept(final AudioDeviceType audioDeviceType) {
+            final int drawableId = audioDeviceType == AudioDeviceType.ANDROID
+                    ? R.drawable.ic_fluent_speaker_2_28_regular : R.drawable.ic_fluent_speaker_2_28_filled;
+            setDrawable(deviceOptionsButton, drawableId);
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -183,6 +197,25 @@ public class CallActivity extends AppCompatActivity {
         callingContext.getTranscriptionStateLiveData().observe(this, observerTranscriptionState);
     }
 
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        final int deviceOptionsButtonDrawableId = (int) deviceOptionsButton.getTag();
+        outState.putInt(DEVICE_OPTIONS_BUTTON_DRAWABLE_ID, deviceOptionsButtonDrawableId);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        setDrawable(deviceOptionsButton, savedInstanceState.getInt(DEVICE_OPTIONS_BUTTON_DRAWABLE_ID));
+    }
+
+    private void setDrawable(final ImageButton view, final int drawableId) {
+        final Drawable drawable = ContextCompat.getDrawable(this, drawableId);
+        view.setImageDrawable(drawable);
+        view.setTag(drawableId);
+    }
+
     private void initializeDisplayedParticipantsLiveData() {
         final Observer<List<RemoteParticipant>> observerDisplayedRemoteParticipants = remoteParticipants -> {
             scheduleDelayedParticipantViewUpdate();
@@ -206,7 +239,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         final boolean callHangUpOverlaid = callHangupOverlay.getVisibility() == View.VISIBLE;
         final boolean isInLobbyWaitingOverlaid = inLobbyWaitingOverlay.getVisibility() == View.VISIBLE;
@@ -224,6 +257,9 @@ public class CallActivity extends AppCompatActivity {
                 callHangUpOverlaid, isInLobbyWaitingOverlaid,
                 isProgressBarVisible);
         gridLayout.post(() -> loadGridLayoutViews());
+
+        gridLayout.post(this::loadGridLayoutViews);
+
         if (localParticipantViewGridIndex == null) {
             setLocalParticipantView();
         }
@@ -260,9 +296,11 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPause() {
-        Log.d(LOG_TAG, "CallActivity onPause");
-        super.onPause();
+    protected void onStart() {
+        Log.d(LOG_TAG, "CallActivity onStart");
+        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
+                localParticipantView.setVideoStream(localVideoStream)));
+        super.onStart();
     }
 
     @Override
@@ -271,14 +309,6 @@ public class CallActivity extends AppCompatActivity {
         callingContext.pauseVideo().thenRun(() -> runOnUiThread(() ->
                 localParticipantView.setVideoStream((LocalVideoStream) null)));
         super.onStop();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(LOG_TAG, "CallActivity onResume");
-        callingContext.resumeVideo().thenAccept(localVideoStream -> runOnUiThread(() ->
-                localParticipantView.setVideoStream(localVideoStream)));
-        super.onResume();
     }
 
     @Override
@@ -296,11 +326,16 @@ public class CallActivity extends AppCompatActivity {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
         }
+
+        if (isFinishing()) {
+            hangup();
+        }
+
         super.onDestroy();
     }
 
     private void initializeCallNotification() {
-        inCallServiceIntent = new Intent(this, InCallService.class);
+        final Intent inCallServiceIntent = new Intent(this, InCallService.class);
         startService(inCallServiceIntent);
     }
 
@@ -327,7 +362,7 @@ public class CallActivity extends AppCompatActivity {
         } else {
             appendLocalParticipantView();
         }
-        gridLayout.post(() -> loadGridLayoutViews());
+        gridLayout.post(this::loadGridLayoutViews);
     }
 
     private void updateParticipantViews() {
@@ -392,8 +427,8 @@ public class CallActivity extends AppCompatActivity {
             final int preSize = prevParticipantViewList.size();
             final int currSize = participantViewList.size();
             if (!rangeInDefined(preSize, 0, 1) && rangeInDefined(currSize, 0, 1)
-                || (!rangeInDefined(preSize, 2, 4) && rangeInDefined(currSize, 2, 4))
-                || (!rangeInDefined(preSize, 5, 6)) && rangeInDefined(currSize, 5, 6)) {
+                    || (!rangeInDefined(preSize, 2, 4) && rangeInDefined(currSize, 2, 4))
+                    || (!rangeInDefined(preSize, 5, 6)) && rangeInDefined(currSize, 5, 6)) {
                 setupGridLayout();
             }
             updateGridLayoutViews();
@@ -534,7 +569,8 @@ public class CallActivity extends AppCompatActivity {
         if (audioDeviceSelectionPopupWindow == null) {
             final AudioSessionManager audioSessionManager
                     = ((AzureCalling) getApplicationContext()).getAudioSessionManager();
-            audioDeviceSelectionPopupWindow = new AudioDeviceSelectionPopupWindow(this, audioSessionManager);
+            audioDeviceSelectionPopupWindow =
+                    new AudioDeviceSelectionPopupWindow(this, audioSessionManager, audioDeviceTypeConsumer);
         }
         audioDeviceSelectionPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(),
                 Gravity.BOTTOM, 0, 0);
@@ -589,6 +625,7 @@ public class CallActivity extends AppCompatActivity {
             localParticipantView.cleanUpVideoRendering();
             detachFromParentView(localParticipantView);
         }
+        final Intent inCallServiceIntent = new Intent(this, InCallService.class);
         stopService(inCallServiceIntent);
         callHangupConfirmButton.setEnabled(false);
         callingContext.hangupAsync();
@@ -725,7 +762,8 @@ public class CallActivity extends AppCompatActivity {
         final Button callHangupCancelButton = findViewById(R.id.call_hangup_cancel);
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
-        final ImageButton deviceOptionsButton = findViewById(R.id.audio_device_button);
+        deviceOptionsButton = findViewById(R.id.audio_device_button);
+        deviceOptionsButton.setTag(R.drawable.ic_fluent_speaker_2_28_regular);
         deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
 
         infoHeaderView = findViewById(R.id.info_header);
