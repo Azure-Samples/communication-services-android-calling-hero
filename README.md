@@ -19,6 +19,7 @@ A separate version of the Calling Sample is available with **Teams Interop** sup
 
 - Start a new group call
 - Join an existing group call
+- Join an existing Teams Meeting (For instructions: [Teams Tenant Interoperability](https://docs.microsoft.com/azure/communication-services/concepts/teams-interop))
 - Render remote participant video streams dynamically
 - Switch layout between different call cases: only-local video view, one-on-one call view and group call with multiple participants
 - Turning local video stream from camera on/off

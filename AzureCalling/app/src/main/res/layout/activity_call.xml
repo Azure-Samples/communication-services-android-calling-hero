@@ -10,6 +10,17 @@
     android:backgroundTint="#A6CC3333"
     tools:context=".activities.CallActivity">
 
+    <ProgressBar
+        android:id="@+id/call_activity_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/previewHolder"
         android:layout_width="0dp"
@@ -19,14 +30,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <include layout="@layout/floating_header_area"/>
         <include layout="@layout/participant_header_notification"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
 
             <GridLayout
                 android:layout_width="match_parent"
@@ -35,6 +45,8 @@
                 android:clickable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/yourCameraHolder"
@@ -123,6 +135,47 @@
             android:src="@drawable/ic_fluent_call_end_28_filled">
 
         </ImageButton>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/in_lobby_waiting_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#CC000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/previewHolder"
+        app:layout_constraintEnd_toEndOf="@+id/previewHolder"
+        app:layout_constraintStart_toStartOf="@+id/previewHolder"
+        app:layout_constraintTop_toTopOf="@+id/previewHolder"
+        tools:visibility="invisible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="212dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:letterSpacing="0.01"
+            android:text="@string/in_lobby_waiting_message_title"
+            android:textColor="@color/defaultWhite"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:letterSpacing="0.01"
+            android:text="@string/in_lobby_waiting_message_description"
+            android:textColor="@color/defaultWhite"
+            android:textSize="20sp" />
+
     </LinearLayout>
 
     <LinearLayout
