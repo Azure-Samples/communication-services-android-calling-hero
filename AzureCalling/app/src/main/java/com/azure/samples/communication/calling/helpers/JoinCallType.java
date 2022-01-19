@@ -4,5 +4,6 @@
 package com.azure.samples.communication.calling.helpers;
 
 public enum JoinCallType {
-    GROUP_CALL
+    GROUP_CALL,
+    TEAMS_MEETING
 }
