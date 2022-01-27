@@ -763,7 +763,7 @@ public class CallActivity extends AppCompatActivity {
         callHangupCancelButton.setOnClickListener(l -> closeHangupDialog());
 
         deviceOptionsButton = findViewById(R.id.audio_device_button);
-        deviceOptionsButton.setTag(R.drawable.ic_fluent_speaker_2_24_regular);
+        deviceOptionsButton.setTag(R.drawable.ic_fluent_speaker_2_white_24_regular);
         deviceOptionsButton.setOnClickListener(l -> openAudioDeviceList());
 
         infoHeaderView = findViewById(R.id.info_header);
