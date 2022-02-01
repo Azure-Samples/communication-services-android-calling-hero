@@ -13,8 +13,6 @@ The sample is a native Android application that uses the Azure Communication Ser
 
 Additional documentation for this sample can be found on [Microsoft Docs](https://docs.microsoft.com/en-us/azure/communication-services/samples/calling-hero-sample?pivots=platform-android). See this sample's wiki to see updated information on [known issues](https://github.com/Azure-Samples/communication-services-android-calling-hero/wiki/Known-Issues)
 
-A separate version of the Calling Sample is available with **Teams Interop** support ([Teams Interop Sample](https://github.com/Azure-Samples/communication-services-android-calling-hero/tree/feature/teams_interop)). Teams Interop is currently in **Public Preview**. Please use the main branch sample for any production scenarios.
-
 ## Features
 
 - Start a new group call
