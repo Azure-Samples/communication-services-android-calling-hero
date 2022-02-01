@@ -62,6 +62,7 @@ import com.azure.samples.communication.calling.view.ParticipantView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -342,7 +343,7 @@ public class CallActivity extends AppCompatActivity {
     private void initParticipantViews() {
         // load local participant's view
         localParticipantView = new LocalParticipantView(this);
-        localParticipantView.setDisplayName(callingContext.getDisplayName() + " (Me)");
+        localParticipantView.setDisplayName(getLocalUserName());
         localParticipantView.setVideoDisplayed(callingContext.getCameraOn());
         localParticipantView.setSwitchCameraButtonDisplayed(callingContext.getCameraOn());
         localParticipantView.setIsMuted(!callingContext.getMicOn());
@@ -586,16 +587,22 @@ public class CallActivity extends AppCompatActivity {
 
     private void refreshParticipantList() {
         final List<ParticipantInfo> participantInfo = new ArrayList<>();
-        participantInfo.add(new ParticipantInfo(callingContext.getDisplayName(), !callingContext.getMicOn()));
+        participantInfo.add(new ParticipantInfo(getLocalUserName(), !callingContext.getMicOn()));
         callingContext.getRemoteParticipants().stream().forEach(remoteParticipant ->
                 participantInfo.add(new ParticipantInfo(remoteParticipant.getDisplayName(),
                         remoteParticipant.isMuted())));
+
+        participantInfo.sort(Comparator.comparing(a -> a.getDisplayName().toLowerCase()));
 
         if (participantListPopupWindow == null) {
             participantListPopupWindow = new ParticipantListPopupWindow(this, participantInfo);
         }
 
         participantListPopupWindow.setParticipantInfo(participantInfo);
+    }
+
+    private String getLocalUserName() {
+        return callingContext.getDisplayName().isEmpty() ? "(me)" : callingContext.getDisplayName() + " (me)";
     }
 
     private void openHangupDialog() {
