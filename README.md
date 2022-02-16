@@ -25,6 +25,7 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 
 ![Homepage](./docs/images/landing-page-android.png)
 ![Setup page](./docs/images/setup-page-android.png)
+<img src="./docs/images/setup-page-android.png" height="680">
 ![Join call page](./docs/images/join-call-page-android.png)
 ![Call page](./docs/images/call-page-android.png)
 
