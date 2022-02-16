@@ -23,11 +23,10 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 - Turning local video stream from camera on/off
 - Mute/unmute local microphone audio
 
-![Homepage](./docs/images/landing-page-android.png)
-![Setup page](./docs/images/setup-page-android.png)
+<img src="./docs/images/landing-page-android.png" height="680">
 <img src="./docs/images/setup-page-android.png" height="680">
-![Join call page](./docs/images/join-call-page-android.png)
-![Call page](./docs/images/call-page-android.png)
+<img src="./docs/images/join-call-page-android.png" height="680">
+<img src="./docs/images/call-page-android.png" height="680">
 
 ## Prerequisites
 
