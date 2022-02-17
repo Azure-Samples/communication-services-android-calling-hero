@@ -28,6 +28,7 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 <img src="./docs/images/join-call-page-android.png" height="680">
 <img src="./docs/images/call-page-android.png" height="680">
 
+
 ## Prerequisites
 
 - An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
