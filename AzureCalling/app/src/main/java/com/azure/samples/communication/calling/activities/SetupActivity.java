@@ -88,7 +88,8 @@ public class SetupActivity extends AppCompatActivity {
         public void accept(final AudioDeviceType audioDeviceType) {
             final Drawable drawableTop = ContextCompat.getDrawable(SetupActivity.this,
                     audioDeviceType == AudioDeviceType.ANDROID
-                            ? R.drawable.ic_fluent_speaker_2_28_regular : R.drawable.ic_fluent_speaker_2_28_filled);
+                            ? R.drawable.ic_fluent_speaker_2_white_24_regular
+                            : R.drawable.ic_fluent_speaker_2_white_24_filled);
             deviceOptionsButton.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
             deviceOptionsButton.setText(audioDeviceType.getAudioDeviceText());
         }
@@ -131,7 +132,6 @@ public class SetupActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 videoToggleButton.setEnabled(true);
                 setupProgressBar.setVisibility(View.GONE);
-                defaultAvatar.setVisibility(View.VISIBLE);
             });
         });
         initializeSpeaker();
@@ -441,6 +441,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void hidePermissionsWarning() {
+        defaultAvatar.setVisibility(View.VISIBLE);
         setupMissingLayout.setVisibility(View.GONE);
     }
 

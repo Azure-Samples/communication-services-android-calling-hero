@@ -64,7 +64,7 @@
 
     <LinearLayout
         android:id="@+id/call_buttons"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="92dp"
         android:background="@color/grey200"
         android:gravity="center"
@@ -76,10 +76,10 @@
 
         <ImageButton
             android:id="@+id/call_video"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/call_video"
             android:src="@drawable/toggle_selector_camera">
@@ -88,10 +88,10 @@
 
         <ImageButton
             android:id="@+id/call_audio"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/call_audio"
             android:src="@drawable/toggle_selector_mic">
@@ -101,21 +101,21 @@
         <ImageButton
             android:id="@+id/audio_device_button"
             style="@style/FluentButton"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Device Options"
-            android:src="@drawable/ic_fluent_speaker_2_28_regular">
+            android:contentDescription="@string/device_options"
+            android:src="@drawable/ic_fluent_speaker_2_white_24_regular">
         </ImageButton>
 
         <ImageButton
             android:id="@+id/call_share"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/call_share"
             android:src="@drawable/ic_fluent_share_android_24_filled">
@@ -125,14 +125,15 @@
         <ImageButton
             android:id="@+id/call_hangup"
             style="@style/FluentButton"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/button_filled"
             android:backgroundTint="#A6CC3333"
             android:contentDescription="@string/call_hangup"
-            android:src="@drawable/ic_fluent_call_end_28_filled">
+            android:src="@drawable/ic_fluent_call_end_24_filled">
 
         </ImageButton>
     </LinearLayout>
