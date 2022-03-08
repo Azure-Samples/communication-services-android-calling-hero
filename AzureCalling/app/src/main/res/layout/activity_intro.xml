@@ -77,7 +77,7 @@
     <Button
         android:id="@+id/intro_join"
         style="@style/FluentButtonOutlined"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:minWidth="400dp"
         android:maxWidth="400dp"
         android:layout_height="48dp"
