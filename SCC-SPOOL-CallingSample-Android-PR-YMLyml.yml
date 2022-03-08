@@ -6,7 +6,6 @@ trigger:
     include:
     - main
     - feature/*
-    - '*'
 name: $(date:yyyyMMdd)$(rev:.r)
 resources:
   repositories:
