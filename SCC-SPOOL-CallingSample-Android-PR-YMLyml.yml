@@ -1,0 +1,92 @@
+# Variable 'Ic3PipelineUsage' was defined in the Variables tab
+# Variable Group 'ServiceTreeLinkGroup' was defined in the Variables tab
+# Variable Group 'InfoSec-SecurityResults' was defined in the Variables tab
+trigger:
+  branches:
+    include:
+    - main
+    - feature/*
+    - '*'
+name: $(date:yyyyMMdd)$(rev:.r)
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: refs/heads/main
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    name: ess-stretch-a
+  steps:
+  - checkout: self
+    clean: true
+  - task: servicetree-link-build-task@1
+    displayName: 'ServiceTree: [$(BuildOutputUsage)] '
+    condition: always()
+    inputs:
+      ServiceTreeGateway: c29e963a-8ea3-4e6a-b28f-a035eaff83ab
+      Service: 5b23174b-8c6d-467d-862d-a3f24958fb74
+  - task: Shell++@0
+    displayName: Install SDK
+    inputs:
+      type: InlineScript
+      script: >-
+        export ANDROID_CLI_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip"
+
+        export ANDROID_HOME=$PWD/android-sdk
+
+        export ANDROID_COMPILE_SDK="29"
+
+        export ANDROID_BUILD_TOOLS="29.0.3"
+
+        export PATH=$PATH:${ANDROID_HOME}/cmdline-tools/bin/
+
+        if [ -d "android-sdk" ]; then rm -Rf android-sdk; fi
+
+        mkdir android-sdk
+
+        cd android-sdk
+
+        curl --output sdk-tools-linux.zip ${ANDROID_CLI_TOOLS_URL}
+
+        unzip sdk-tools-linux.zip
+
+        yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
+
+        sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
+
+        sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
+
+        sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+
+        cd ..
+
+        export ANDROID_SDK_ROOT=$PWD/android-sdk
+
+        cd AzureCalling
+
+        echo sdk.dir=$ANDROID_SDK_ROOT > local.properties
+
+        cd ..
+  - task: Shell++@0
+    displayName: Set Environment Variables
+    inputs:
+      type: InlineScript
+      script: >-
+        export KEYSTORE_FILEPATH="debug.keystore"
+
+        export KEYSTORE_PASSWORD="android"
+
+        export KEY_ALIAS="androiddebugkey"
+
+        export KEY_PASSWORD="android"
+  - task: Gradle@2
+    displayName: gradlew assembleDebug --stacktrace
+    inputs:
+      wrapperScript: AzureCalling/gradlew
+      cwd: AzureCalling
+      tasks: assembleDebug --stacktrace
+      publishJUnitResults: false
+      checkstyleAnalysisEnabled: true
+...
