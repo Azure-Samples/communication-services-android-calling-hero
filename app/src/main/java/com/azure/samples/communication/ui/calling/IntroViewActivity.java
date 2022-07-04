@@ -2,6 +2,7 @@ package com.azure.samples.communication.ui.calling;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -30,6 +31,7 @@ public class IntroViewActivity extends AppCompatActivity {
 
     private void joinCall() {
         Log.d("Mohtasim", "JoinCall button clicked!");
-
+        final Intent intent = new Intent(this, JoinCallActivity.class);
+        startActivity(intent);
     }
 }

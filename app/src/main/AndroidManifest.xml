@@ -11,8 +11,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AzureUICalling"
+        android:theme="@style/Theme.Fluent"
         tools:targetApi="31">
+        <activity
+            android:name=".JoinCallActivity"
+            android:exported="false" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.azure.samples.communication.ui.calling.IntroViewActivity" />
+        </activity>
         <activity
             android:name=".IntroViewActivity"
             android:exported="false" />
