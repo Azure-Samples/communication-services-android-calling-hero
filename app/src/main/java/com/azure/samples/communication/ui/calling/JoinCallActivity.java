@@ -15,13 +15,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class JoinCallActivity extends AppCompatActivity {
 
-    private TabItem groupTab;
-    private TabItem teemsTab;
     private TabLayout meetingTabLayout;
-    private AppCompatActivity activity;
-    private Bundle savedInstanceState = null;
-    private GroupMeetingFragment groupMeetingFragment;
-    private TeamsMeetingFragment teamsMeetingFragment;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -49,15 +43,12 @@ public class JoinCallActivity extends AppCompatActivity {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setTitle("Join");
         }
-        activity = this;
-        groupMeetingFragment = new GroupMeetingFragment();
         initializeUI();
 
     }
 
     private void initializeUI() {
-        groupTab = (TabItem) findViewById(R.id.group_meeting_tab);
-        teemsTab = (TabItem) findViewById(R.id.teams_meeting_tab);
+
         meetingTabLayout = findViewById(R.id.meeting_tab_layout);
 
         meetingTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -105,6 +96,4 @@ public class JoinCallActivity extends AppCompatActivity {
         transaction.replace(R.id.calling_fragment_container_view, fragment);
         transaction.commit();
     }
-
-
 }

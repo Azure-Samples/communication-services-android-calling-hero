@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F8F8"
-    tools:context=".GroupMeetingFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".StartCallActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Your Display Name"
+        android:text="Display Name"
         android:paddingLeft="16dp"
         android:paddingTop="24dp"
         android:paddingBottom="8dp"
@@ -32,7 +32,7 @@
             android:src="@drawable/ic_shape" />
 
         <EditText
-            android:id="@+id/group_call_display_name"
+            android:id="@+id/start_call_display_name"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="Enter a name"
@@ -51,57 +51,6 @@
         android:textSize="12dp"
         android:text="Name shown to the others on the call" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Group Call ID"
-        android:paddingLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingBottom="8dp"
-        android:textColor="#6E6E6E"
-        android:textSize="13sp"/>
-
-    <EditText
-        android:id="@+id/group_call_id"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:hint="Enter Call ID"
-        android:textSize="17sp"
-        android:textColor="#6E6E6E"
-        android:paddingTop="13dp"
-        android:paddingBottom="13dp"
-        android:paddingLeft="20dp"
-        android:background="@color/white"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:textSize="12dp"
-        android:text="Start a call to get call ID" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ACS Token"
-        android:paddingLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingBottom="8dp"
-        android:textColor="#6E6E6E"
-        android:textSize="13sp"/>
-
-    <EditText
-        android:id="@+id/acs_token"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:hint="Enter ACS Token"
-        android:textSize="17sp"
-        android:textColor="#6E6E6E"
-        android:paddingTop="13dp"
-        android:paddingBottom="13dp"
-        android:paddingLeft="20dp"
-        android:background="@color/white"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -109,7 +58,7 @@
         android:layout_marginBottom="20dp"/>
 
     <com.microsoft.fluentui.widget.Button
-        android:id="@+id/composite_setup_next_button"
+        android:id="@+id/start_call_next_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

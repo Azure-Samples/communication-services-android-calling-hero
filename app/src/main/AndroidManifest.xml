@@ -14,8 +14,11 @@
         android:theme="@style/Theme.Fluent"
         tools:targetApi="31">
         <activity
+            android:name=".StartCallActivity"
+            android:exported="false" />
+        <activity
             android:name=".JoinCallActivity"
-            android:exported="false" >
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.azure.samples.communication.ui.calling.IntroViewActivity" />

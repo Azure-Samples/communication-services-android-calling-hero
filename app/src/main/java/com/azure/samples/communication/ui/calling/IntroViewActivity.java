@@ -27,6 +27,8 @@ public class IntroViewActivity extends AppCompatActivity {
 
     private void startCall() {
         Log.d("Mohtasim", "StartCall button clicked!");
+        final Intent intent = new Intent(this, StartCallActivity.class);
+        startActivity(intent);
     }
 
     private void joinCall() {
