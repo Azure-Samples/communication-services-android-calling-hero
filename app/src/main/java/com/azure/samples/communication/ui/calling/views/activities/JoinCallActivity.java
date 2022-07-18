@@ -1,4 +1,4 @@
-package com.azure.samples.communication.ui.calling;
+package com.azure.samples.communication.ui.calling.views.activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.material.tabs.TabItem;
+import com.azure.samples.communication.ui.calling.R;
+import com.azure.samples.communication.ui.calling.views.fragments.TeamsMeetingFragment;
+import com.azure.samples.communication.ui.calling.views.fragments.GroupMeetingFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class JoinCallActivity extends AppCompatActivity {

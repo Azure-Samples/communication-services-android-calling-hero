@@ -1,11 +1,11 @@
-package com.azure.samples.communication.ui.calling;
+package com.azure.samples.communication.ui.calling.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
+import com.azure.samples.communication.ui.calling.R;
 import com.microsoft.fluentui.widget.Button;
 
 public class IntroViewActivity extends AppCompatActivity {
@@ -26,13 +26,11 @@ public class IntroViewActivity extends AppCompatActivity {
     }
 
     private void startCall() {
-        Log.d("Mohtasim", "StartCall button clicked!");
         final Intent intent = new Intent(this, StartCallActivity.class);
         startActivity(intent);
     }
 
     private void joinCall() {
-        Log.d("Mohtasim", "JoinCall button clicked!");
         final Intent intent = new Intent(this, JoinCallActivity.class);
         startActivity(intent);
     }

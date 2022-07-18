@@ -1,10 +1,12 @@
-package com.azure.samples.communication.ui.calling;
+package com.azure.samples.communication.ui.calling.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.azure.samples.communication.ui.calling.R;
+import com.azure.samples.communication.ui.calling.views.activities.IntroViewActivity;
 import com.microsoft.fluentui.widget.Button;
 
 public class SignInActivity extends AppCompatActivity {

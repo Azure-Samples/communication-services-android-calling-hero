@@ -1,4 +1,4 @@
-package com.azure.samples.communication.ui.calling;
+package com.azure.samples.communication.ui.calling.views.activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.azure.samples.communication.ui.calling.R;
 import com.microsoft.fluentui.widget.Button;
 
 public class StartCallActivity extends AppCompatActivity {

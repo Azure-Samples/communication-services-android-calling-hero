@@ -14,20 +14,20 @@
         android:theme="@style/Theme.Fluent"
         tools:targetApi="31">
         <activity
-            android:name=".StartCallActivity"
+            android:name=".views.activities.StartCallActivity"
             android:exported="false" />
         <activity
-            android:name=".JoinCallActivity"
+            android:name=".views.activities.JoinCallActivity"
             android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.azure.samples.communication.ui.calling.IntroViewActivity" />
+                android:value="com.azure.samples.communication.ui.calling.views.activities.IntroViewActivity" />
         </activity>
         <activity
-            android:name=".IntroViewActivity"
+            android:name=".views.activities.IntroViewActivity"
             android:exported="false" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".views.activities.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.azure.samples.communication.ui.calling;
+package com.azure.samples.communication.ui.calling.views.fragments;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.azure.samples.communication.ui.calling.R;
 
 /**
  * A simple {@link Fragment} subclass.
