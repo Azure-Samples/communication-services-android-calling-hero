@@ -4,9 +4,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.azure.samples.communication.ui.calling.R;
 
@@ -21,6 +25,7 @@ public class GroupMeetingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private EditText groupMeetingID;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -55,12 +60,39 @@ public class GroupMeetingFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View inflatedView = inflater.inflate(R.layout.fragment_group_meeting, container, false);
+
+        groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
+        groupMeetingID.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String text = charSequence.toString();
+                int textLength = text.length();
+                if(!Character.isDigit(text.charAt(textLength-1))
+                        && !Character.isAlphabetic(text.charAt(textLength-1))
+                        && text.charAt(textLength-1) != '-') {
+                    // Throw error dialog box
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group_meeting, container, false);
+        return inflatedView;
     }
 }

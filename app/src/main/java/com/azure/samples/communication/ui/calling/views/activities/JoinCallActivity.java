@@ -56,8 +56,7 @@ public class JoinCallActivity extends AppCompatActivity {
         meetingTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
-                Log.d("Mohtasim", "Tab name - " + tab.getText());
+                
                 if(tab.getText().equals("Group Meeting")) {
                     showGroupFragment();
                 } else {
@@ -72,18 +71,15 @@ public class JoinCallActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                Log.d("Mohtasim", "Tab name - " + tab.getText());
             }
         });
     }
 
     private void showTeamsFragment() {
-        Log.d("Mohtasim", "Teems Meeting is clicked");
         lauchFragment(TeamsMeetingFragment.class.getName());
     }
 
     private void showGroupFragment() {
-        Log.d("Mohtasim", "Group Meeting is clicked " + GroupMeetingFragment.class.getName());
         lauchFragment(GroupMeetingFragment.class.getName());
     }
 
