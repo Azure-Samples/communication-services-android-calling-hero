@@ -3,6 +3,7 @@ package com.azure.samples.communication.ui.calling.views.activities;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -34,5 +35,7 @@ public class StartCallActivity extends AppCompatActivity {
 
     private void goToMeetingInvitePage() {
         Log.d("Mohtasim", "Start call next button clicked!!");
+        final Intent intent = new Intent(this, InvitationActivity.class);
+        startActivity(intent);
     }
 }
