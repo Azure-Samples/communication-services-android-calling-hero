@@ -37,6 +37,8 @@
             android:layout_height="48dp"
             android:hint="Enter a name"
             android:textSize="17sp"
+            android:maxLines="1"
+            android:inputType="text"
             android:textColor="#6E6E6E"
             android:paddingTop="13dp"
             android:paddingBottom="13dp"

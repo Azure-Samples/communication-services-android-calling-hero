@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.azure.samples.communication.ui.calling.R;
@@ -31,10 +30,10 @@ public class StartCallActivity extends AppCompatActivity {
             ab.setTitle("Start Call");
         }
 
-        initialize();
+        initializeUI();
     }
 
-    private void initialize() {
+    private void initializeUI() {
         sharedPreferences = getSharedPreferences(Constants.ACS_DISPLAY_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -49,9 +48,25 @@ public class StartCallActivity extends AppCompatActivity {
     }
 
     private void goToMeetingInvitePage() {
+
+        final String displayName = startCallDisplayName.getText().toString();
+        if(!checkValidity(displayName)) {
+            // Throw exception
+            return ;
+        }
+
         final Intent intent = new Intent(this, InvitationActivity.class);
         editor.putString(Constants.ACS_DISPLAY_NAME, startCallDisplayName.getText().toString());
         editor.commit();
         startActivity(intent);
+    }
+
+    private boolean checkValidity(final String displayName) {
+        if(displayName.length() == 0) return false;
+
+        for(char c: displayName.toCharArray()) {
+            if(c != ' ')return true;
+        }
+        return false;
     }
 }
