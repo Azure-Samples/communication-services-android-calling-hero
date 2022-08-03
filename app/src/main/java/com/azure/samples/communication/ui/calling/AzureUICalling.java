@@ -1,12 +1,14 @@
 package com.azure.samples.communication.ui.calling;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.azure.samples.communication.ui.calling.externals.authentication.AADAuthHandler;
 import com.azure.samples.communication.ui.calling.utilities.AppSettings;
 import com.azure.samples.communication.ui.calling.externals.calling.CallingContext;
 import com.azure.samples.communication.ui.calling.externals.calling.TokenService;
+import com.azure.samples.communication.ui.calling.views.activities.Constants;
 
 public class AzureUICalling extends Application {
 
@@ -21,6 +23,7 @@ public class AzureUICalling extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d("Mohtasim", "Azure UI Calling ...");
+
         initializeDependencies();
     }
 
@@ -48,4 +51,5 @@ public class AzureUICalling extends Application {
     public AppSettings getAppSettings() {
         return appSettings;
     }
+
 }

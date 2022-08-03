@@ -6,9 +6,11 @@ import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.azure.samples.communication.ui.calling.R;
 import com.azure.samples.communication.ui.calling.views.fragments.TeamsMeetingFragment;
@@ -45,14 +47,13 @@ public class JoinCallActivity extends AppCompatActivity {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setTitle("Join");
         }
-        initializeUI();
 
+        initializeUI();
     }
 
     private void initializeUI() {
 
         meetingTabLayout = findViewById(R.id.meeting_tab_layout);
-
         meetingTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
