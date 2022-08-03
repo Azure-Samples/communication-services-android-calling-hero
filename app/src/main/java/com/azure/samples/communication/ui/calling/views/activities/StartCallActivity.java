@@ -49,9 +49,25 @@ public class StartCallActivity extends AppCompatActivity {
     }
 
     private void goToMeetingInvitePage() {
+
+        final String displayName = startCallDisplayName.getText().toString();
+        if(!checkValidity(displayName)) {
+            // Throw exception
+            return ;
+        }
+
         final Intent intent = new Intent(this, InvitationActivity.class);
         editor.putString(Constants.ACS_DISPLAY_NAME, startCallDisplayName.getText().toString());
         editor.commit();
         startActivity(intent);
+    }
+
+    private boolean checkValidity(final String displayName) {
+        if(displayName.length() == 0) return false;
+
+        for(char c: displayName.toCharArray()) {
+            if(c != ' ')return true;
+        }
+        return false;
     }
 }
