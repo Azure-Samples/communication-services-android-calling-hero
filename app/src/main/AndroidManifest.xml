@@ -39,6 +39,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.microsoft.identity.client.BrowserTabActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- android:path uses debug.keystore sha1-hash -->
+                <data
+                    android:host="com.azure.samples.communication.ui.calling"
+                    android:path="/N/deSgxoV5tlFRuEJ9X+PfbbxY8="
+                    android:scheme="msauth" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
