@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.util.Log;
 
 import com.azure.samples.communication.ui.calling.AzureUICalling;
@@ -41,9 +42,11 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void navigateToIntroViewPage() {
-
         if (appSettings.isAADAuthEnabled()) {
+            View progressOverlay = findViewById(R.id.overlay_loading);
+            progressOverlay.setVisibility(View.VISIBLE);
             authHandler.loadAccount(this, (isAccountFound) -> {
+                progressOverlay.setVisibility(View.GONE);
                 if (!isAccountFound) {
                   authHandler.signIn(this, () -> {
                       Log.d("Mohtasim", "Signed in");
@@ -57,6 +60,5 @@ public class SignInActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 }
