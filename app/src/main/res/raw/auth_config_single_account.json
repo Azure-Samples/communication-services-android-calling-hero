@@ -1,7 +1,7 @@
 {
   "client_id" : "4165a581-6134-4585-babc-beea5647754a",
   "authorization_user_agent" : "DEFAULT",
-  "redirect_uri" : "msauth://com.azure.samples.communication.ui.calling/N%2FdeSgxoV5tlFRuEJ9X%2BPfbbxY8%3D",
+  "redirect_uri" : "msauth://com.azure.samples.communication.calling/Aah1OaccgJScKbbTTSm3CW3H87I%3D",
   "account_mode" : "SINGLE",
   "authorities" : [
     {
