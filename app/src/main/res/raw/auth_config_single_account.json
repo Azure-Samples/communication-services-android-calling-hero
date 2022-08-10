@@ -1,14 +1,14 @@
 {
-  "client_id": "client-id",
-  "authorization_user_agent": "DEFAULT",
-  "redirect_uri": "msauth://package-name/sha1-hash",
+  "client_id" : "38df66d4-1b13-447b-b82d-190cf4657716",
+  "authorization_user_agent" : "DEFAULT",
+  "redirect_uri" : "msauth://com.azure.samples.communication.ui.calling/V5TBLYwXgYCu3kRBCym9P13PZeo%3D",
   "account_mode" : "SINGLE",
-  "authorities": [
+  "authorities" : [
     {
       "type": "AAD",
       "audience": {
         "type": "AzureADMyOrg",
-        "tenant_id": "tenant-id"
+        "tenant_id": "72f988bf-86f1-41af-91ab-2d7cd011db47"
       }
     }
   ]
