@@ -23,6 +23,8 @@ public class IntroViewActivity extends AppCompatActivity {
 
         joinCallButton = findViewById(R.id.join_call_button);
         joinCallButton.setOnClickListener(l -> joinCall());
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.view_intro_actionbar);
     }
 
     private void startCall() {
