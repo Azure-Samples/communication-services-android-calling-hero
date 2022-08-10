@@ -47,11 +47,16 @@ public class SignInActivity extends AppCompatActivity {
                 if (!isAccountFound) {
                   authHandler.signIn(this, () -> {
                       Log.d("Mohtasim", "Signed in");
+                      final Intent intent = new Intent(this, IntroViewActivity.class);
+                      startActivity(intent);
                   });
+                } else {
+                    Log.d("Mohtasim", "Signed in");
+                    final Intent intent = new Intent(this, IntroViewActivity.class);
+                    startActivity(intent);
                 }
             });
         }
-        final Intent intent = new Intent(this, IntroViewActivity.class);
-        startActivity(intent);
+
     }
 }

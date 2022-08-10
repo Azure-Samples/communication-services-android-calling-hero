@@ -18,6 +18,8 @@ public class CallingContext {
 
     Context appContext;
     private final Callable<String> tokenFetcher;
+    private UUID joinUUID;
+    private String joinId;
 
     public CallingContext(final Context applicationContext, final Callable<String> tokenFetcher) {
         this.tokenFetcher = tokenFetcher;
@@ -33,7 +35,9 @@ public class CallingContext {
     public CallCompositeRemoteOptions getCallCompositeRemoteOptions(CallType callType) {
         final CallCompositeJoinLocator locator;
         if (CallType.GROUP_CALL.equals(callType)) {
-            locator = new CallCompositeGroupCallLocator(UUID.randomUUID());
+            joinUUID = UUID.randomUUID();
+            joinId = joinUUID.toString();
+            locator = new CallCompositeGroupCallLocator(joinUUID);
         } else {
             throw new IllegalStateException("Illegal value for CallType.");
         }
@@ -41,5 +45,9 @@ public class CallingContext {
         return new CallCompositeRemoteOptions(locator,
                 getCommunicationTokenCredential(),
                 "Mohtasim");
+    }
+
+    public String getJoinId() {
+        return joinId;
     }
 }
