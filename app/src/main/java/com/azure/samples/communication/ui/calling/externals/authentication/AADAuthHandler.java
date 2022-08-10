@@ -29,7 +29,6 @@ public class AADAuthHandler {
     private final AppSettings appSettings;
     private ISingleAccountPublicClientApplication mSingleAccountApp;
     private String accessToken;
-    private String[] mScopes = { "User.Read" };
 
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
