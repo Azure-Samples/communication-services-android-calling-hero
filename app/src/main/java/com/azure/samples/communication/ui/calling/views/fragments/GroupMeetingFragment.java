@@ -18,8 +18,7 @@ import com.azure.samples.communication.ui.calling.views.activities.Constants;
 import com.microsoft.fluentui.widget.Button;
 
 /**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
+ * Fragment to host group call meetings
  */
 public class GroupMeetingFragment extends Fragment {
 
