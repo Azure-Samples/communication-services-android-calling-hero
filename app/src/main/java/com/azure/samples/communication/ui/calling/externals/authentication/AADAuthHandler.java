@@ -10,12 +10,14 @@ import androidx.annotation.RequiresApi;
 
 import com.azure.samples.communication.ui.calling.R;
 import com.azure.samples.communication.ui.calling.utilities.AppSettings;
+import com.microsoft.identity.client.AcquireTokenSilentParameters;
 import com.microsoft.identity.client.AuthenticationCallback;
 import com.microsoft.identity.client.IAccount;
 import com.microsoft.identity.client.IAuthenticationResult;
 import com.microsoft.identity.client.IPublicClientApplication;
 import com.microsoft.identity.client.ISingleAccountPublicClientApplication;
 import com.microsoft.identity.client.PublicClientApplication;
+import com.microsoft.identity.client.SilentAuthenticationCallback;
 import com.microsoft.identity.client.exception.MsalException;
 
 import java.util.function.Consumer;
@@ -27,6 +29,7 @@ public class AADAuthHandler {
     private final AppSettings appSettings;
     private ISingleAccountPublicClientApplication mSingleAccountApp;
     private String accessToken;
+    private String[] mScopes = { "User.Read" };
 
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
@@ -91,7 +94,6 @@ public class AADAuthHandler {
                     aadCallback.accept(false);
                 } else {
                     mSingleAccountApp.acquireToken(activity, appSettings.getAADScopes(), new AuthenticationCallback() {
-
                         @RequiresApi(api = Build.VERSION_CODES.N)
                         @Override
                         public void onSuccess(final IAuthenticationResult authenticationResult) {
