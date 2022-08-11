@@ -45,12 +45,20 @@ public class SignInActivity extends AppCompatActivity {
         appSettings = ((AzureUICalling) getApplication()).getAppSettings();
     }
 
+    private void toggleProgress(boolean show){
+        View progressOverlay = findViewById(R.id.overlay_loading);
+        if (show){
+            progressOverlay.setVisibility(View.VISIBLE);
+        }
+        else {
+            progressOverlay.setVisibility(View.GONE);
+        }
+    }
+
     private void navigateToIntroViewPage() {
         if (appSettings.isAADAuthEnabled()) {
-            View progressOverlay = findViewById(R.id.overlay_loading);
-            progressOverlay.setVisibility(View.VISIBLE);
+            toggleProgress(true);
             authHandler.loadAccount(this, (isAccountFound) -> {
-                progressOverlay.setVisibility(View.GONE);
                 if (!isAccountFound) {
                   authHandler.signIn(this, () -> {
                       authHandler.callGraphAPI(this, (object) -> {
@@ -58,11 +66,13 @@ public class SignInActivity extends AppCompatActivity {
                               //username.setText(((UserProfile) object).getDisplayName());
                               final Intent intent = new Intent(this, IntroViewActivity.class);
                               intent.putExtra(DISPLAY_NAME, ((UserProfile) object).getDisplayName());
+                              toggleProgress(false);
                               startActivity(intent);
                           } else {
                               //Log.d(LOG_TAG, object.toString());
                               final Intent intent = new Intent(this, IntroViewActivity.class);
                               intent.putExtra(DISPLAY_NAME, "");
+                              toggleProgress(false);
                               startActivity(intent);
                           }
                       });
@@ -73,11 +83,13 @@ public class SignInActivity extends AppCompatActivity {
                             //username.setText(((UserProfile) object).getDisplayName());
                             final Intent intent = new Intent(this, IntroViewActivity.class);
                             intent.putExtra(DISPLAY_NAME, ((UserProfile) object).getDisplayName());
+                            toggleProgress(false);
                             startActivity(intent);
                         } else {
                             //Log.d(LOG_TAG, object.toString());
                             final Intent intent = new Intent(this, IntroViewActivity.class);
                             intent.putExtra(DISPLAY_NAME, "");
+                            toggleProgress(false);
                             startActivity(intent);
                         }
                     });
