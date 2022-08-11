@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 import com.azure.samples.communication.ui.calling.R;
+import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.microsoft.fluentui.widget.Button;
 
 public class StartCallActivity extends AppCompatActivity {
