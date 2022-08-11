@@ -10,6 +10,7 @@ public final class AppSettings {
     private static final String TOKEN_URL = "communicationTokenFetchUrl";
     private static final String IS_AAD_AUTH_ENABLED = "isAADAuthEnabled";
     private static final String SCOPES = "aadScopes";
+    private static final String GRAPH_URL = "graphURL";
 
     private final Properties properties;
 
@@ -33,5 +34,9 @@ public final class AppSettings {
     public boolean isAADAuthEnabled() {
         final String isAadAuthEnabled = properties.getProperty(IS_AAD_AUTH_ENABLED);
         return Boolean.parseBoolean(isAadAuthEnabled);
+    }
+
+    public String getGraphUrl() {
+        return properties.getProperty(GRAPH_URL);
     }
 }

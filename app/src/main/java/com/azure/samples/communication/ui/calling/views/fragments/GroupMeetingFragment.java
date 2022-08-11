@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.azure.samples.communication.ui.calling.R;
-import com.azure.samples.communication.ui.calling.views.activities.Constants;
+import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.microsoft.fluentui.widget.Button;
 
 /**
