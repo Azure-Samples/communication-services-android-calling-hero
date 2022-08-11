@@ -80,3 +80,4 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+app/android-calling-sample-key.keystore

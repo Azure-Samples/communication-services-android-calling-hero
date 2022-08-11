@@ -1,20 +1,26 @@
 package com.azure.samples.communication.ui.calling.views.activities;
 
+import static com.azure.samples.communication.ui.calling.contracts.Constants.DISPLAY_NAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
 import com.azure.samples.communication.ui.calling.externals.authentication.AADAuthHandler;
+import com.azure.samples.communication.ui.calling.externals.authentication.UserProfile;
 import com.azure.samples.communication.ui.calling.utilities.AppSettings;
 import com.azure.samples.communication.ui.calling.views.activities.IntroViewActivity;
 import com.microsoft.fluentui.widget.Button;
 
 public class SignInActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = SignInActivity.class.getSimpleName();
 
     private Button signInButton;
     private AADAuthHandler authHandler;
@@ -24,8 +30,6 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-
-
 
         initializeAuth();
         initializeUI();
@@ -49,16 +53,40 @@ public class SignInActivity extends AppCompatActivity {
                 progressOverlay.setVisibility(View.GONE);
                 if (!isAccountFound) {
                   authHandler.signIn(this, () -> {
-                      Log.d("Mohtasim", "Signed in");
-                      final Intent intent = new Intent(this, IntroViewActivity.class);
-                      startActivity(intent);
+                      authHandler.callGraphAPI(this, (object) -> {
+                          if(object instanceof UserProfile) {
+                              //username.setText(((UserProfile) object).getDisplayName());
+                              final Intent intent = new Intent(this, IntroViewActivity.class);
+                              intent.putExtra(DISPLAY_NAME, ((UserProfile) object).getDisplayName());
+                              startActivity(intent);
+                          } else {
+                              //Log.d(LOG_TAG, object.toString());
+                              final Intent intent = new Intent(this, IntroViewActivity.class);
+                              intent.putExtra(DISPLAY_NAME, "");
+                              startActivity(intent);
+                          }
+                      });
                   });
                 } else {
-                    Log.d("Mohtasim", "Signed in");
-                    final Intent intent = new Intent(this, IntroViewActivity.class);
-                    startActivity(intent);
+                    authHandler.callGraphAPI(this, (object) -> {
+                        if(object instanceof UserProfile) {
+                            //username.setText(((UserProfile) object).getDisplayName());
+                            final Intent intent = new Intent(this, IntroViewActivity.class);
+                            intent.putExtra(DISPLAY_NAME, ((UserProfile) object).getDisplayName());
+                            startActivity(intent);
+                        } else {
+                            //Log.d(LOG_TAG, object.toString());
+                            final Intent intent = new Intent(this, IntroViewActivity.class);
+                            intent.putExtra(DISPLAY_NAME, "");
+                            startActivity(intent);
+                        }
+                    });
+
                 }
             });
+        } else {
+            final Intent intent = new Intent(this, IntroViewActivity.class);
+            startActivity(intent);
         }
     }
 }

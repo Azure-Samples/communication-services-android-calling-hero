@@ -25,9 +25,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/avatar_view"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Mona Kane" />
+        app:layout_constraintEnd_toStartOf="@id/signout_button"
+        android:maxLines="1"
+        android:ellipsize="middle"
+        android:text="Mona Kane" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.microsoft.fluentui.widget.Button
         android:id="@+id/signout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

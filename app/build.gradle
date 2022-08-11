@@ -11,8 +11,9 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
+        
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -24,6 +25,21 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("android-calling-sample-key.keystore")
+            storePassword "android-sample"
+            keyAlias "android-calling-sample"
+            keyPassword "android-sample"
+        }
+        release {
+            storeFile file("android-calling-sample-key.keystore")
+            storePassword "android-sample"
+            keyAlias "android-calling-sample"
+            keyPassword "android-sample"
+        }
     }
 
     packagingOptions {
