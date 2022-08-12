@@ -37,7 +37,8 @@
                 android:layout_marginRight="16dp"
                 android:background="@drawable/button_background"
                 android:layout_marginBottom="24dp"
-                android:text="Sign In" />
+                android:text="@string/sign_in"
+                />
         </LinearLayout>
 
     </LinearLayout>

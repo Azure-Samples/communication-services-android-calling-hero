@@ -49,9 +49,13 @@ public class SignInActivity extends AppCompatActivity {
         View progressOverlay = findViewById(R.id.overlay_loading);
         if (show){
             progressOverlay.setVisibility(View.VISIBLE);
+            signInButton.setText(R.string.signing_in);
+            signInButton.setEnabled(false);
         }
         else {
             progressOverlay.setVisibility(View.GONE);
+            signInButton.setText(R.string.sign_in);
+            signInButton.setEnabled(true);
         }
     }
 
