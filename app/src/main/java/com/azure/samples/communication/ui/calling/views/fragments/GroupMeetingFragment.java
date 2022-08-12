@@ -57,7 +57,7 @@ public class GroupMeetingFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View inflatedView = inflater.inflate(R.layout.fragment_group_meeting, container, false);
-        joinCallButton = inflatedView.findViewById(R.id.composite_setup_next_button);
+        joinCallButton = inflatedView.findViewById(R.id.group_call_join_next);
         joinCallButton.setOnClickListener(l -> joinCall());
 
         displayNameEditor = inflatedView.findViewById(R.id.group_call_display_name);

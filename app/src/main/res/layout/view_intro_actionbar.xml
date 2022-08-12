@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/username_textview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -28,8 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/signout_button"
         android:maxLines="1"
-        android:ellipsize="middle"
-        android:text="Mona Kane" />
+        android:ellipsize="middle" />
 
     <com.microsoft.fluentui.widget.Button
         android:id="@+id/signout_button"
