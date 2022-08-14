@@ -11,10 +11,12 @@ public final class AppSettings {
     private static final String IS_AAD_AUTH_ENABLED = "isAADAuthEnabled";
     private static final String SCOPES = "aadScopes";
     private static final String GRAPH_URL = "graphURL";
+    private static Context context;
 
     private final Properties properties;
 
     public AppSettings(final Context context) {
+        this.context = context;
         try {
             properties = new Properties();
             properties.load(context.getAssets().open(CONFIG_FILE));
@@ -38,5 +40,9 @@ public final class AppSettings {
 
     public String getGraphUrl() {
         return properties.getProperty(GRAPH_URL);
+    }
+
+    public Context getContext() {
+        return this.context;
     }
 }
