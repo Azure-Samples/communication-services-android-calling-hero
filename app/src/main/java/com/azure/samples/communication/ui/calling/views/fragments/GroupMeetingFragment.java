@@ -82,12 +82,9 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();
         calling.createCallingContext();
         CallingContext callingContext = calling.getCallingContext();
-        CallCompositeRemoteOptions remoteOptions = new CallCompositeRemoteOptions(
-                new CallCompositeGroupCallLocator(UUID.fromString(groupCallId)),
-                callingContext.getCommunicationTokenCredential(),
-                displayName
-                );
+
         composite.addOnErrorEventHandler(callCompositeEventHandler);
+        CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName);
         composite.launch(requireActivity(), remoteOptions);
     }
 

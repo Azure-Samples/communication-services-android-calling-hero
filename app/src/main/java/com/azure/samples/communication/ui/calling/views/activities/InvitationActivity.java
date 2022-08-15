@@ -11,15 +11,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
-import com.azure.android.communication.ui.calling.models.CallCompositeJoinLocator;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
-import com.azure.samples.communication.ui.calling.contracts.CallType;
 import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.azure.samples.communication.ui.calling.externals.calling.CallingContext;
 import com.microsoft.fluentui.widget.Button;
