@@ -57,15 +57,13 @@ public class GroupMeetingFragment extends Fragment {
         joinCallButton.setOnClickListener(l -> joinCall());
 
         displayNameEditor = inflatedView.findViewById(R.id.group_call_display_name);
-        final String savedDisplayName = sharedPreferences.getString(Constants.ACS_DISPLAY_NAME, "");
+        final String savedDisplayName = sharedPreferences.getString(Constants.GIVEN_NAME, "");
         if(savedDisplayName.length() > 0) {
             displayNameEditor.setText(savedDisplayName);
         }
         groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
         return inflatedView;
     }
-
-
 
     private void joinCall() {
         final String displayName = displayNameEditor.getText().toString();
@@ -77,16 +75,16 @@ public class GroupMeetingFragment extends Fragment {
             return ;
         }
 
-        editor.putString(Constants.ACS_DISPLAY_NAME, displayName);
-
-        editor.putString(Constants.ACS_MEETING_ID, groupCallId);
+        editor.putString(Constants.GIVEN_NAME, displayName);
         editor.apply();
+
         final CallComposite composite = new CallCompositeBuilder()
                 .build();
+
         AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();
         calling.createCallingContext();
         CallingContext callingContext = calling.getCallingContext();
-        CallCompositeRemoteOptions remoteOptions = new CallCompositeRemoteOptions(new CallCompositeGroupCallLocator(UUID.fromString(groupCallId)),callingContext.getCommunicationTokenCredential(),displayName);
+        CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName);
         composite.launch(requireActivity(), remoteOptions);
     }
 

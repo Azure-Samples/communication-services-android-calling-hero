@@ -2,9 +2,13 @@ package com.azure.samples.communication.ui.calling.views.activities;
 
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
+import static com.azure.samples.communication.ui.calling.contracts.Constants.GIVEN_NAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,6 +19,7 @@ import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOpti
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
 import com.azure.samples.communication.ui.calling.contracts.CallType;
+import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.azure.samples.communication.ui.calling.externals.calling.CallingContext;
 import com.microsoft.fluentui.widget.Button;
 
@@ -25,12 +30,14 @@ public class InvitationActivity extends AppCompatActivity {
 
     private CallingContext callingContext;
     private CallCompositeRemoteOptions options;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
 
+        sharedPreferences = this.getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
         startCallSetup();
         initializeUI();
     }
@@ -49,7 +56,7 @@ public class InvitationActivity extends AppCompatActivity {
 
         options = ((AzureUICalling) getApplicationContext())
                 .getCallingContext()
-                .getCallCompositeRemoteOptions(CallType.GROUP_CALL);
+                .getCallCompositeRemoteOptions(sharedPreferences.getString(GIVEN_NAME, ""));
     }
 
     private void openShareDialogue() {

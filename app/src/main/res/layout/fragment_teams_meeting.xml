@@ -37,7 +37,7 @@
                 android:src="@drawable/ic_teams_link" />
 
             <EditText
-                android:id="@+id/group_call_display_name"
+                android:id="@+id/teams_call_link"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@color/white"
