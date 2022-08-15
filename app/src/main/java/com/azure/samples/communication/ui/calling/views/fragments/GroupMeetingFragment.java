@@ -13,9 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.azure.android.communication.ui.calling.CallComposite;
+import com.azure.android.communication.ui.calling.CallCompositeBuilder;
+import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
+import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
+import com.azure.samples.communication.ui.calling.contracts.CallType;
 import com.azure.samples.communication.ui.calling.contracts.Constants;
+import com.azure.samples.communication.ui.calling.externals.calling.CallingContext;
 import com.microsoft.fluentui.widget.Button;
+import com.azure.samples.communication.ui.calling.AzureUICalling;
 
 /**
  * Fragment to host group call meetings
@@ -102,14 +109,20 @@ public class GroupMeetingFragment extends Fragment {
             return ;
         }
 
-        final String groupCallId = groupMeetingID.getText().toString();
-        groupCallId.trim();
+        final String groupCallId = groupMeetingID.getText().toString().trim();
         groupMeetingID.setText(groupCallId);
 
         editor.putString(Constants.ACS_DISPLAY_NAME, displayName);
         editor.putString(Constants.ACS_MEETING_ID, groupCallId);
         editor.commit();
+        final CallComposite composite = new CallCompositeBuilder()
+                .build();
+        AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();
+        calling.createCallingContext();
+        CallingContext callingContext = calling.getCallingContext();
 
+        CallCompositeRemoteOptions options = callingContext.getCallCompositeRemoteOptions(CallType.GROUP_CALL);
+        composite.launch(requireActivity(), options);
     }
 
     private boolean checkValidity(final String displayName) {
