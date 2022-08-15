@@ -56,7 +56,7 @@ public class TeamsMeetingFragment extends Fragment {
         teamsJoinMeetingButton.setOnClickListener(l -> joinTeamsCall());
 
         teamsDisplayNameEditor = inflatedView.findViewById(R.id.teams_call_display_name);
-        final String savedDisplayName = sharedPreferences.getString(Constants.GIVEN_NAME, "");
+        final String savedDisplayName = sharedPreferences.getString(Constants.ACS_DISPLAY_NAME, "");
         if(savedDisplayName.length() > 0) {
             teamsDisplayNameEditor.setText(savedDisplayName);
         }
@@ -75,7 +75,7 @@ public class TeamsMeetingFragment extends Fragment {
             return ;
         }
 
-        editor.putString(Constants.GIVEN_NAME, displayName);
+        editor.putString(Constants.ACS_DISPLAY_NAME, displayName);
         editor.apply();
 
         final CallComposite composite = new CallCompositeBuilder()

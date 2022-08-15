@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.azure.samples.communication.ui.calling.AzureUICalling;
@@ -96,23 +95,19 @@ public class IntroViewActivity extends AppCompatActivity {
     }
 
     private void signOut() {
-        final String buttonState = signOutButton.getText().toString();
 
-        if(getString(R.string.sign_out).equals(buttonState)) {
+        if(!appSettings.isAADAuthEnabled()) {
+            return ;
+        }
+        usernameTextView.setText("");
+        avatarView.setName("");
 
-            usernameTextView.setText("");
-            avatarView.setName("");
-            signOutButton.setText(getString(R.string.sign_in));
-
-            sharedPreferences.edit().remove(ACS_DISPLAY_NAME).apply();
-            sharedPreferences.edit().remove(IS_LOGGED_IN).apply();
-
-            authHandler.signOut(() -> {});
-        } else {
+        authHandler.signOut(() -> {
+            sharedPreferences.edit().clear().apply();
             final Intent intent = new Intent(this, SignInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-        }
+        });
     }
 
     private void startCall() {

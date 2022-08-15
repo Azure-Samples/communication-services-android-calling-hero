@@ -2,6 +2,7 @@ package com.azure.samples.communication.ui.calling.views.activities;
 
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
+import static com.azure.samples.communication.ui.calling.contracts.Constants.ACS_DISPLAY_NAME;
 import static com.azure.samples.communication.ui.calling.contracts.Constants.GIVEN_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,7 +57,7 @@ public class InvitationActivity extends AppCompatActivity {
 
         options = ((AzureUICalling) getApplicationContext())
                 .getCallingContext()
-                .getCallCompositeRemoteOptions(sharedPreferences.getString(GIVEN_NAME, ""));
+                .getCallCompositeRemoteOptions(sharedPreferences.getString(ACS_DISPLAY_NAME, ""));
     }
 
     private void openShareDialogue() {
