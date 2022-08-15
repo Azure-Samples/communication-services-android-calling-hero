@@ -1,13 +1,13 @@
 package com.azure.samples.communication.ui.calling.externals.authentication;
 
 import static com.azure.samples.communication.ui.calling.contracts.Constants.DISPLAY_NAME;
-import static com.azure.samples.communication.ui.calling.contracts.Constants.EMAIL;
+import static com.azure.samples.communication.ui.calling.contracts.Constants.USERNAME;
 import static com.azure.samples.communication.ui.calling.contracts.Constants.GIVEN_NAME;
 import static com.azure.samples.communication.ui.calling.contracts.Constants.ID;
-import static com.azure.samples.communication.ui.calling.contracts.Constants.SURNAME;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -18,16 +18,15 @@ import androidx.annotation.RequiresApi;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.azure.samples.communication.ui.calling.R;
+import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.azure.samples.communication.ui.calling.utilities.AppSettings;
 import com.azure.samples.communication.ui.calling.utilities.MSGraphRequestWrapper;
-import com.microsoft.identity.client.AcquireTokenSilentParameters;
 import com.microsoft.identity.client.AuthenticationCallback;
 import com.microsoft.identity.client.IAccount;
 import com.microsoft.identity.client.IAuthenticationResult;
 import com.microsoft.identity.client.IPublicClientApplication;
 import com.microsoft.identity.client.ISingleAccountPublicClientApplication;
 import com.microsoft.identity.client.PublicClientApplication;
-import com.microsoft.identity.client.SilentAuthenticationCallback;
 import com.microsoft.identity.client.exception.MsalException;
 
 import org.json.JSONException;
@@ -41,14 +40,18 @@ public class AADAuthHandler {
 
     private final AppSettings appSettings;
     private ISingleAccountPublicClientApplication mSingleAccountApp;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private String accessToken = null;
     private String[] mScopes = { "User.Read" };
 
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
+        sharedPreferences = appSettings.getContext().getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
-    public void signIn(final Activity activity, final Runnable onSuccess) {
+    public void signIn(final Activity activity, final Consumer<Object> callback) {
         if (mSingleAccountApp == null) {
             return;
         }
@@ -57,7 +60,9 @@ public class AADAuthHandler {
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
-                onSuccess.run();
+                callGraphAPI(activity, (object) -> {
+                    callback.accept(object);
+                });
             }
 
             @Override
@@ -73,6 +78,7 @@ public class AADAuthHandler {
     }
 
     private void findUserProfile(Activity activity, final Consumer<Object> authCallback) {
+
         MSGraphRequestWrapper.callGraphAPIUsingVolley(
                 activity,
                 appSettings.getGraphUrl() + "/me",
@@ -85,11 +91,8 @@ public class AADAuthHandler {
                             UserProfile userProfile = new UserProfile();
                             userProfile.setDisplayName(response.get(DISPLAY_NAME).toString());
                             userProfile.setGivenName(response.get(GIVEN_NAME).toString());
-                            userProfile.setSurname(response.get(SURNAME).toString());
-                            userProfile.setEmail(response.get(EMAIL).toString());
                             userProfile.setId(response.get(ID).toString());
 
-                            Log.d(LOG_TAG, response.toString());
                             authCallback.accept(userProfile);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -109,14 +112,10 @@ public class AADAuthHandler {
     public void callGraphAPI(Activity activity, final Consumer<Object> authCallback) {
 
         if(accessToken == null || accessToken.length() == 0) {
-            acquireToken(activity, (token) -> {
-                accessToken = token;
-                findUserProfile(activity, authCallback);
-            });
+            findUserProfile(activity, authCallback);
         }  else {
             findUserProfile(activity, authCallback);
         }
-
     }
 
     public String getAccessToken() {
@@ -141,13 +140,15 @@ public class AADAuthHandler {
         });
     }
 
-    private void acquireToken(final Activity activity, final Consumer<String> callback) {
-        mSingleAccountApp.acquireToken(activity, appSettings.getAADScopes(), new AuthenticationCallback() {
+    private void acquireToken(final Activity activity, final Consumer<Object> callback) {
+        mSingleAccountApp.acquireToken(activity, mScopes, new AuthenticationCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
-                callback.accept(accessToken);
+                callGraphAPI(activity, (object) -> {
+                    callback.accept(object);
+                });
             }
 
             @Override
@@ -162,7 +163,7 @@ public class AADAuthHandler {
         });
     }
 
-    private void getCurrentAccount(final Activity activity, final Consumer<Boolean> aadCallback) {
+    private void getCurrentAccount(final Activity activity, final Consumer<Object> aadCallback) {
         if (mSingleAccountApp == null) {
             return;
         }
@@ -172,10 +173,10 @@ public class AADAuthHandler {
             @Override
             public void onAccountLoaded(@Nullable final IAccount activeAccount) {
                 if (activeAccount == null) {
-                    aadCallback.accept(false);
+                    aadCallback.accept(new Boolean(false));
                 } else {
-                    acquireToken(activity, (token) -> {
-                        if(token != null && token.length() > 0) aadCallback.accept(true);
+                    acquireToken(activity, (object) -> {
+                        aadCallback.accept(object);
                     });
                 }
             }
@@ -187,7 +188,7 @@ public class AADAuthHandler {
                     @Nullable final IAccount currentAccount) {
                 if (currentAccount == null) {
                     // Perform a cleanup task as the signed-in account changed.
-                    aadCallback.accept(false);
+                    aadCallback.accept(new Boolean(false));
                 }
             }
 
@@ -200,7 +201,7 @@ public class AADAuthHandler {
 
 
     //When app comes to the foreground, load existing account to determine if user is signed in
-    public void loadAccount(final Activity activity, final Consumer<Boolean> aadCallback) {
+    public void loadAccount(final Activity activity, final Consumer<Object> aadCallback) {
         PublicClientApplication.createSingleAccountPublicClientApplication(activity.getApplicationContext(),
                 R.raw.auth_config_single_account,
                 new IPublicClientApplication.ISingleAccountApplicationCreatedListener() {

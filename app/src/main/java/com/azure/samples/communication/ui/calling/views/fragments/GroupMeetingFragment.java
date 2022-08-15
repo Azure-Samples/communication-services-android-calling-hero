@@ -113,8 +113,9 @@ public class GroupMeetingFragment extends Fragment {
         groupMeetingID.setText(groupCallId);
 
         editor.putString(Constants.ACS_DISPLAY_NAME, displayName);
+
         editor.putString(Constants.ACS_MEETING_ID, groupCallId);
-        editor.commit();
+        editor.apply();
         final CallComposite composite = new CallCompositeBuilder()
                 .build();
         AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();

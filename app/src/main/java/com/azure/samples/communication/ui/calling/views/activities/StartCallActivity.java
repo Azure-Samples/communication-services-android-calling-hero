@@ -35,7 +35,7 @@ public class StartCallActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        sharedPreferences = getSharedPreferences(Constants.ACS_DISPLAY_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Constants.ACS_SHARED_PREF, MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         startCallDisplayName = findViewById(R.id.start_call_display_name);
@@ -57,7 +57,7 @@ public class StartCallActivity extends AppCompatActivity {
         }
 
         final Intent intent = new Intent(this, InvitationActivity.class);
-        editor.putString(Constants.ACS_DISPLAY_NAME, startCallDisplayName.getText().toString());
+        editor.putString(Constants.GIVEN_NAME, startCallDisplayName.getText().toString());
         editor.commit();
         startActivity(intent);
     }
