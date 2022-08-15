@@ -66,6 +66,7 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
             showError(SampleErrorMessages.GROUP_ID_INVALID);
             return ;
         }
+
         if (TextUtils.isEmpty(displayName)){
             showError(SampleErrorMessages.DISPLAY_NAME_REQUIRED);
             return ;

@@ -80,7 +80,6 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
                 .putString(Constants.ACS_MEETING_LINK, teamsLink)
                 .apply();
 
-
         final CallComposite composite = new CallCompositeBuilder()
                 .build();
         AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();
