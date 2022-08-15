@@ -15,6 +15,7 @@ import android.widget.EditText;
 
 import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
+import com.azure.android.communication.ui.calling.models.CallCompositeGroupCallLocator;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
@@ -23,6 +24,8 @@ import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.azure.samples.communication.ui.calling.externals.calling.CallingContext;
 import com.microsoft.fluentui.widget.Button;
 import com.azure.samples.communication.ui.calling.AzureUICalling;
+
+import java.util.UUID;
 
 /**
  * Fragment to host group call meetings
@@ -120,9 +123,8 @@ public class GroupMeetingFragment extends Fragment {
         AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();
         calling.createCallingContext();
         CallingContext callingContext = calling.getCallingContext();
-
-        CallCompositeRemoteOptions options = callingContext.getCallCompositeRemoteOptions(CallType.GROUP_CALL);
-        composite.launch(requireActivity(), options);
+        CallCompositeRemoteOptions remoteOptions = new CallCompositeRemoteOptions(new CallCompositeGroupCallLocator(UUID.fromString(groupCallId)),callingContext.getCommunicationTokenCredential(),displayName);
+        composite.launch(requireActivity(), remoteOptions);
     }
 
     private boolean checkValidity(final String displayName) {
