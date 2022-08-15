@@ -57,7 +57,7 @@ public class StartCallActivity extends AppCompatActivity {
         }
 
         final Intent intent = new Intent(this, InvitationActivity.class);
-        editor.putString(Constants.GIVEN_NAME, startCallDisplayName.getText().toString());
+        editor.putString(Constants.ACS_DISPLAY_NAME, startCallDisplayName.getText().toString());
         editor.commit();
         startActivity(intent);
     }

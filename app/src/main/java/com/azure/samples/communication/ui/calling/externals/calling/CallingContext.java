@@ -1,6 +1,7 @@
 package com.azure.samples.communication.ui.calling.externals.calling;
 
 import android.content.Context;
+import android.telecom.Call;
 import android.util.Log;
 
 import com.azure.android.communication.common.CommunicationTokenCredential;
@@ -32,19 +33,23 @@ public class CallingContext {
         return new CommunicationTokenCredential(communicationTokenRefreshOptions);
     }
 
-    public CallCompositeRemoteOptions getCallCompositeRemoteOptions(CallType callType) {
+    public CallCompositeRemoteOptions getCallCompositeRemoteOptions(final String displayName) {
         final CallCompositeJoinLocator locator;
-        if (CallType.GROUP_CALL.equals(callType)) {
-            joinUUID = UUID.randomUUID();
-            joinId = joinUUID.toString();
-            locator = new CallCompositeGroupCallLocator(joinUUID);
-        } else {
-            throw new IllegalStateException("Illegal value for CallType.");
-        }
+        joinUUID = UUID.randomUUID();
+        joinId = joinUUID.toString();
+        locator = new CallCompositeGroupCallLocator(joinUUID);
 
         return new CallCompositeRemoteOptions(locator,
                 getCommunicationTokenCredential(),
-                "Mohtasim");
+                displayName);
+    }
+
+    public CallCompositeRemoteOptions getCallCompositeRemoteOptions(final String displayName,
+                                                                    final String teamsLink) {
+        final CallCompositeJoinLocator locator = new CallCompositeTeamsMeetingLinkLocator(teamsLink);
+        return new CallCompositeRemoteOptions(locator,
+                getCommunicationTokenCredential(),
+                displayName);
     }
 
     public String getJoinId() {
