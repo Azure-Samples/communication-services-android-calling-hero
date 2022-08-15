@@ -32,31 +32,17 @@ import java.util.UUID;
  */
 public class GroupMeetingFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private EditText groupMeetingID;
     private EditText displayNameEditor;
     private Button joinCallButton;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public GroupMeetingFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         sharedPreferences = this.getActivity().getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -75,31 +61,7 @@ public class GroupMeetingFragment extends Fragment {
         if(savedDisplayName.length() > 0) {
             displayNameEditor.setText(savedDisplayName);
         }
-
         groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
-        groupMeetingID.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String text = charSequence.toString();
-                int textLength = text.length();
-                if(!Character.isDigit(text.charAt(textLength-1))
-                        && !Character.isAlphabetic(text.charAt(textLength-1))
-                        && text.charAt(textLength-1) != '-') {
-                    // Throw error dialog box
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        // Inflate the layout for this fragment
         return inflatedView;
     }
 
@@ -107,13 +69,13 @@ public class GroupMeetingFragment extends Fragment {
 
     private void joinCall() {
         final String displayName = displayNameEditor.getText().toString();
-        if(!checkValidity(displayName)) {
+        final String groupCallId = groupMeetingID.getText().toString().trim();
+        groupMeetingID.setText(groupCallId);
+
+        if(displayName.isEmpty() || !isUUID(groupCallId)) {
             // Show error card
             return ;
         }
-
-        final String groupCallId = groupMeetingID.getText().toString().trim();
-        groupMeetingID.setText(groupCallId);
 
         editor.putString(Constants.ACS_DISPLAY_NAME, displayName);
 
@@ -128,12 +90,12 @@ public class GroupMeetingFragment extends Fragment {
         composite.launch(requireActivity(), remoteOptions);
     }
 
-    private boolean checkValidity(final String displayName) {
-        if(displayName.length() == 0) return false;
-
-        for(char c: displayName.toCharArray()) {
-            if(c != ' ')return true;
+    private boolean isUUID(final String groupCallID) {
+        try {
+            UUID.fromString(groupCallID);
+            return true;
+        } catch (Exception ex) {
+            return false;
         }
-        return false;
     }
 }
