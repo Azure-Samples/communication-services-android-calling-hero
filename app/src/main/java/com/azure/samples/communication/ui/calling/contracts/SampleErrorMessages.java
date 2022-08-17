@@ -1,5 +1,9 @@
 package com.azure.samples.communication.ui.calling.contracts;
 
 public class SampleErrorMessages {
-    public static final String GROUP_ID_ERROR_MESSAGE = "Group call ID is required";
+    public static final String GROUP_ID_REQUIRED = "Group call ID is required";
+    public static final String GROUP_ID_INVALID = "Group call ID is not valid";
+    public static final String DISPLAY_NAME_REQUIRED = "Display Name is required";
+    public static final String TEAMS_LINK_REQUIRED = "Teams Link is required";
+    public static final String TEAMS_LINK_INVALID = "Teams Link is not valid";
 }
