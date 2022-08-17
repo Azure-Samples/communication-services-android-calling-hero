@@ -22,7 +22,7 @@ public class ErrorInfoBar {
         if (errorMessage == null || errorMessage.isEmpty()) {
             return;
         }
-        snackbar = Snackbar.Companion.make(rootView, "", Snackbar.LENGTH_INDEFINITE, Snackbar.Style.REGULAR);
+        snackbar = Snackbar.Companion.make(rootView, "", Snackbar.LENGTH_LONG, Snackbar.Style.REGULAR);
         snackbar.getView().setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.snackbar_background));
         final ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbar.getView().getLayoutParams();
         DisplayMetrics metrics = rootView.getResources().getDisplayMetrics();
