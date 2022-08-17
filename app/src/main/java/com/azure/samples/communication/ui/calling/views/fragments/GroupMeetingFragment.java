@@ -22,6 +22,7 @@ import com.azure.samples.communication.ui.calling.R;
 import com.azure.samples.communication.ui.calling.contracts.CallType;
 import com.azure.samples.communication.ui.calling.contracts.Constants;
 import com.azure.samples.communication.ui.calling.externals.calling.CallingContext;
+import com.azure.samples.communication.ui.calling.views.components.ErrorInfoBar;
 import com.microsoft.fluentui.widget.Button;
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 
@@ -37,6 +38,7 @@ public class GroupMeetingFragment extends Fragment {
     private Button joinCallButton;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private ErrorInfoBar errorInfoBar;
 
     public GroupMeetingFragment() {}
 
@@ -62,7 +64,15 @@ public class GroupMeetingFragment extends Fragment {
             displayNameEditor.setText(savedDisplayName);
         }
         groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
+        errorInfoBar = new ErrorInfoBar();
         return inflatedView;
+    }
+
+    @Override
+    public void onDestroy() {
+        // the way to dismiss error card
+        errorInfoBar.dismissErrorInfoBar();
+        super.onDestroy();
     }
 
     private void joinCall() {
@@ -72,6 +82,7 @@ public class GroupMeetingFragment extends Fragment {
 
         if(displayName.isEmpty() || !isUUID(groupCallId)) {
             // Show error card
+            errorInfoBar.displayErrorInfoBar(this.getView(), "error message example");
             return ;
         }
 
