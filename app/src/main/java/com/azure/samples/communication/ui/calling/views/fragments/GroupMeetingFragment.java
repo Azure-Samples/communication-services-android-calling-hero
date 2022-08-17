@@ -9,6 +9,10 @@ import android.widget.EditText;
 
 import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
+import com.azure.android.communication.ui.calling.CallCompositeEventHandler;
+import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
+import com.azure.android.communication.ui.calling.models.CallCompositeErrorEvent;
+import com.azure.android.communication.ui.calling.models.CallCompositeGroupCallLocator;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
@@ -38,11 +42,15 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         joinCallButton.setOnClickListener(l -> joinCall());
 
         displayNameEditor = inflatedView.findViewById(R.id.group_call_display_name);
-        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, "");
-        if(savedDisplayName.length() > 0) {
+        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, null);
+        if(!TextUtils.isEmpty(savedDisplayName)) {
             displayNameEditor.setText(savedDisplayName);
         }
         groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
+        final String savedGroupCallID = getSharedPreferences().getString(Constants.ACS_GROUPCALL_ID, null);
+        if (!TextUtils.isEmpty(savedGroupCallID)){
+            groupMeetingID.setText(savedGroupCallID);
+        }
         return inflatedView;
     }
 
@@ -65,6 +73,7 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         getSharedPreferences()
                 .edit()
                 .putString(Constants.ACS_DISPLAY_NAME, displayName)
+                .putString(Constants.ACS_GROUPCALL_ID, groupCallId)
                 .apply();
 
         final CallComposite composite = new CallCompositeBuilder()
@@ -73,7 +82,12 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         AzureUICalling calling = (AzureUICalling) requireActivity().getApplicationContext();
         calling.createCallingContext();
         CallingContext callingContext = calling.getCallingContext();
-        CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName);
+        CallCompositeRemoteOptions remoteOptions = new CallCompositeRemoteOptions(
+                new CallCompositeGroupCallLocator(UUID.fromString(groupCallId)),
+                callingContext.getCommunicationTokenCredential(),
+                displayName
+                );
+        composite.addOnErrorEventHandler(callCompositeEventHandler);
         composite.launch(requireActivity(), remoteOptions);
     }
 

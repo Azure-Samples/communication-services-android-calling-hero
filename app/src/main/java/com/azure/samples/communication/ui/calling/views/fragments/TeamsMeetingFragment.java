@@ -13,6 +13,9 @@ import android.widget.EditText;
 
 import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
+import com.azure.android.communication.ui.calling.CallCompositeEventHandler;
+import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
+import com.azure.android.communication.ui.calling.models.CallCompositeErrorEvent;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.ui.calling.AzureUICalling;
 import com.azure.samples.communication.ui.calling.R;
@@ -40,11 +43,15 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
         teamsJoinMeetingButton.setOnClickListener(l -> joinTeamsCall());
 
         teamsDisplayNameEditor = inflatedView.findViewById(R.id.teams_call_display_name);
-        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, "");
-        if(savedDisplayName.length() > 0) {
+        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, null);
+        if(!TextUtils.isEmpty(savedDisplayName)) {
             teamsDisplayNameEditor.setText(savedDisplayName);
         }
         teamsMeetingLink = inflatedView.findViewById(R.id.teams_call_link);
+        final String savedMeetingLink = getSharedPreferences().getString(Constants.ACS_MEETING_LINK, null);
+        if (!TextUtils.isEmpty(savedMeetingLink)){
+            teamsMeetingLink.setText(savedMeetingLink);
+        }
 
         return inflatedView;
     }
@@ -72,6 +79,7 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
         getSharedPreferences()
                 .edit()
                 .putString(Constants.ACS_DISPLAY_NAME, displayName)
+                .putString(Constants.ACS_MEETING_LINK, teamsLink)
                 .apply();
 
         final CallComposite composite = new CallCompositeBuilder()
@@ -80,6 +88,7 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
         calling.createCallingContext();
         CallingContext callingContext = calling.getCallingContext();
         CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName, teamsLink);
+        composite.addOnErrorEventHandler(callCompositeEventHandler);
         composite.launch(requireActivity(), remoteOptions);
     }
 
