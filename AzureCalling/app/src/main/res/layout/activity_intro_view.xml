@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.azure.samples.communication.calling.views.activities.IntroViewActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center|bottom">
+
+        <include layout="@layout/landing_layout" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+
+        <com.microsoft.fluentui.widget.Button
+            style="@style/Widget.FluentUI.Button"
+            android:id="@+id/start_call_button"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Start a call"
+            android:background="@drawable/button_background"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <com.microsoft.fluentui.widget.Button
+            style="@style/Widget.FluentUI.Button"
+            android:id="@+id/join_call_button"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bordered_button_background"
+            android:text="Join a call"
+            android:textColor="#0078D4"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"/>
+    </LinearLayout>
+
+</LinearLayout>
