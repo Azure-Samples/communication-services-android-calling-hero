@@ -1,11 +1,11 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 package com.azure.samples.communication.calling.views.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import androidx.fragment.app.Fragment;
-
 import com.azure.android.communication.ui.calling.CallCompositeEventHandler;
 import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
 import com.azure.android.communication.ui.calling.models.CallCompositeErrorEvent;

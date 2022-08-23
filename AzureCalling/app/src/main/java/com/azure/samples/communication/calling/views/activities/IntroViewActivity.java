@@ -1,17 +1,17 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.views.activities;
 
 import static com.azure.samples.communication.calling.contracts.Constants.IS_LOGGED_IN;
 import static com.azure.samples.communication.calling.contracts.Constants.USERNAME;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
-
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
@@ -75,6 +75,7 @@ public class IntroViewActivity extends AppCompatActivity {
         joinCallButton.setOnClickListener(l -> joinCall());
 
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null){
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.view_intro_actionbar);

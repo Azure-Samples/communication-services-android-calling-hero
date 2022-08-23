@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.contracts;
 
 public class Constants {
@@ -14,4 +17,8 @@ public class Constants {
     public static final String EMAIL = "mail";
     public static final String SURNAME = "surname";
     public static final String ID = "id";
+
+    public static final String START_CALL = "Start a call";
+    public static final String JOIN_CALL = "Join";
+    public static final String INVITE_ANOTHER_DEVICE = "Invite another device?";
 }

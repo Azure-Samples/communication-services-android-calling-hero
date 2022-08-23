@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.externals.authentication;
 
 import static com.azure.samples.communication.calling.contracts.Constants.DISPLAY_NAME;
@@ -9,14 +12,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.utilities.AppSettings;

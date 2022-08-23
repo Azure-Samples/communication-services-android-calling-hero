@@ -21,10 +21,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            android:background="@drawable/tab_background"
+            android:background="@drawable/tabview_background"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabMode="fixed"
+            app:tabIndicatorHeight="0dp"
             app:tabTextColor="#6E6E6E"
-            app:tabSelectedTextColor="#FFFFFF"
-            app:tabIndicatorColor="#FFFFFF" >
+            app:tabSelectedTextColor="#FFFFFF">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/group_meeting_tab"

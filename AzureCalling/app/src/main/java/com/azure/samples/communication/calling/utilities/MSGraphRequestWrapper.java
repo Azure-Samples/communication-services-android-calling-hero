@@ -1,10 +1,11 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.utilities;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,8 +36,6 @@ public class MSGraphRequestWrapper {
                                                @NonNull final String accessToken,
                                                @NonNull final Response.Listener<JSONObject> responseListener,
                                                @NonNull final Response.ErrorListener errorListener) {
-        Log.d(TAG, "Starting volley request to graph");
-        Log.d(TAG, "Bearer " + accessToken);
         /* Make sure we have a token to send to graph */
         if (accessToken == null || accessToken.length() == 0) {
             return;
@@ -60,8 +59,6 @@ public class MSGraphRequestWrapper {
                 return headers;
             }
         };
-
-        Log.d(TAG, "Adding HTTP GET to Queue, Request: " + request.toString());
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 3000,

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.views.fragments;
 
 import android.os.Bundle;
@@ -12,7 +15,6 @@ import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.calling.AzureCalling;
-
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.contracts.SampleErrorMessages;

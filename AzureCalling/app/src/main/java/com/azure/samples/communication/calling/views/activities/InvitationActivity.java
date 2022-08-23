@@ -1,15 +1,23 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.views.activities;
 
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 import static com.azure.samples.communication.calling.contracts.Constants.ACS_DISPLAY_NAME;
+import static com.azure.samples.communication.calling.contracts.Constants.INVITE_ANOTHER_DEVICE;
+import static com.azure.samples.communication.calling.contracts.Constants.JOIN_CALL;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
@@ -30,9 +38,27 @@ public class InvitationActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
+
+        final ActionBar ab = getSupportActionBar();
+        // Disable the Up button
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(INVITE_ANOTHER_DEVICE);
+        }
 
         sharedPreferences = this.getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
         startCallSetup();

@@ -41,4 +41,7 @@
 
     <color name="defaultBlack">@android:color/black</color>
     <color name="defaultWhite">@android:color/white</color>
+
+    <color name="selectedTab">#0063B1</color>
+    <color name="unselectedTab">#F1F1F1</color>
 </resources>

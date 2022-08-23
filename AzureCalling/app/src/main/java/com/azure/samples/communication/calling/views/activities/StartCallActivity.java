@@ -1,13 +1,19 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.views.activities;
+
+import static com.azure.samples.communication.calling.contracts.Constants.START_CALL;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.EditText;
-
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.microsoft.fluentui.widget.Button;
@@ -20,6 +26,17 @@ public class StartCallActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_call);
@@ -28,7 +45,7 @@ public class StartCallActivity extends AppCompatActivity {
         // Disable the Up button
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
-            ab.setTitle("Start Call");
+            ab.setTitle(START_CALL);
         }
 
         initializeUI();

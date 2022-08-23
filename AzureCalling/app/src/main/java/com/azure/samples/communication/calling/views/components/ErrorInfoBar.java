@@ -1,12 +1,13 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.views.components;
 
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.core.content.ContextCompat;
-
 import com.azure.samples.communication.calling.R;
 import com.microsoft.fluentui.snackbar.Snackbar;
 

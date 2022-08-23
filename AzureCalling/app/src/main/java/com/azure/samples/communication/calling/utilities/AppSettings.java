@@ -1,7 +1,9 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling.utilities;
 
 import android.content.Context;
-
 import java.io.IOException;
 import java.util.Properties;
 

@@ -1,8 +1,9 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.calling;
 
 import android.app.Application;
-import android.util.Log;
-
 import com.azure.samples.communication.calling.externals.authentication.AADAuthHandler;
 import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.externals.calling.CallingContext;
@@ -20,7 +21,6 @@ public class AzureCalling extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("Mohtasim", "Azure UI Calling ...");
 
         initializeDependencies();
     }
