@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public final class AppSettings {
-    private static final String CONFIG_FILE = "Azure.properties";
+    private static final String CONFIG_FILE = "appSettings.properties";
     private static final String TOKEN_URL = "communicationTokenFetchUrl";
     private static final String IS_AAD_AUTH_ENABLED = "isAADAuthEnabled";
     private static final String SCOPES = "aadScopes";
