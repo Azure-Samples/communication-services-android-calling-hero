@@ -47,7 +47,8 @@ public class AADAuthHandler {
 
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
-        sharedPreferences = appSettings.getContext().getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
+        sharedPreferences = appSettings.getContext()
+                .getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
 
@@ -77,7 +78,7 @@ public class AADAuthHandler {
         });
     }
 
-    private void findUserProfile(Activity activity, final Consumer<Object> authCallback) {
+    private void findUserProfile(final Activity activity, final Consumer<Object> authCallback) {
 
         MSGraphRequestWrapper.callGraphAPIUsingVolley(
                 activity,
@@ -85,10 +86,10 @@ public class AADAuthHandler {
                 accessToken,
                 new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(final JSONObject response) {
 
                         try {
-                            UserProfile userProfile = new UserProfile();
+                            final UserProfile userProfile = new UserProfile();
                             userProfile.setDisplayName(response.get(DISPLAY_NAME).toString());
                             userProfile.setGivenName(response.get(GIVEN_NAME).toString());
                             userProfile.setId(response.get(ID).toString());
@@ -101,7 +102,7 @@ public class AADAuthHandler {
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
+                    public void onErrorResponse(final VolleyError error) {
                         //Log.e(LOG_TAG, error.getMessage());
                         authCallback.accept(error);
                     }
@@ -109,9 +110,9 @@ public class AADAuthHandler {
         );
     }
 
-    public void callGraphAPI(Activity activity, final Consumer<Object> authCallback) {
+    public void callGraphAPI(final Activity activity, final Consumer<Object> authCallback) {
 
-        if(accessToken == null || accessToken.length() == 0) {
+        if (accessToken == null || accessToken.length() == 0) {
             findUserProfile(activity, authCallback);
         }  else {
             findUserProfile(activity, authCallback);

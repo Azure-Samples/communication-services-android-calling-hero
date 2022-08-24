@@ -30,25 +30,27 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
     private EditText teamsMeetingLink;
     private Button teamsJoinMeetingButton;
 
-    public TeamsMeetingFragment() {}
+    public TeamsMeetingFragment() {
 
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View inflatedView = inflater.inflate(R.layout.fragment_teams_meeting, container, false);
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
+        final View inflatedView = inflater.inflate(R.layout.fragment_teams_meeting, container,
+                false);
         teamsJoinMeetingButton = inflatedView.findViewById(R.id.teams_call_join_next);
         teamsJoinMeetingButton.setOnClickListener(l -> joinTeamsCall());
 
         teamsDisplayNameEditor = inflatedView.findViewById(R.id.teams_call_display_name);
 
         final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, null);
-        if(!TextUtils.isEmpty(savedDisplayName)) {
+        if (!TextUtils.isEmpty(savedDisplayName)) {
             teamsDisplayNameEditor.setText(savedDisplayName);
         }
         teamsMeetingLink = inflatedView.findViewById(R.id.teams_call_link);
         final String savedMeetingLink = getSharedPreferences().getString(Constants.ACS_MEETING_LINK, null);
-        if (!TextUtils.isEmpty(savedMeetingLink)){
+        if (!TextUtils.isEmpty(savedMeetingLink)) {
             teamsMeetingLink.setText(savedMeetingLink);
         }
 
@@ -60,19 +62,19 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
         final String teamsLink = teamsMeetingLink.getText().toString().trim();
         teamsMeetingLink.setText(teamsLink);
 
-        if (TextUtils.isEmpty(teamsLink)){
+        if (TextUtils.isEmpty(teamsLink)) {
             showError(SampleErrorMessages.TEAMS_LINK_REQUIRED);
             return;
         }
 
-        if (!isValidWebURL(teamsLink)){
+        if (!isValidWebURL(teamsLink)) {
             showError(SampleErrorMessages.TEAMS_LINK_INVALID);
             return;
         }
 
-        if (TextUtils.isEmpty(displayName)){
+        if (TextUtils.isEmpty(displayName)) {
             showError(SampleErrorMessages.DISPLAY_NAME_REQUIRED);
-            return ;
+            return;
         }
 
         getSharedPreferences()
@@ -83,15 +85,16 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
 
         final CallComposite composite = new CallCompositeBuilder()
                 .build();
-        AzureCalling calling = (AzureCalling) requireActivity().getApplicationContext();
+        final AzureCalling calling = (AzureCalling) requireActivity().getApplicationContext();
         calling.createCallingContext();
-        CallingContext callingContext = calling.getCallingContext();
-        CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName, teamsLink);
+        final CallingContext callingContext = calling.getCallingContext();
+        final CallCompositeRemoteOptions remoteOptions = callingContext
+                                            .getCallCompositeRemoteOptions(displayName, teamsLink);
         composite.addOnErrorEventHandler(callCompositeEventHandler);
         composite.launch(requireActivity(), remoteOptions);
     }
 
-    private Boolean isValidWebURL(String url){
+    private Boolean isValidWebURL(final String url) {
         return URLUtil.isValidUrl(url) && Patterns.WEB_URL.matcher(url).matches();
     }
 }

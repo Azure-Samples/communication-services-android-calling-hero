@@ -7,7 +7,6 @@ import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 import static com.azure.samples.communication.calling.contracts.Constants.ACS_DISPLAY_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.INVITE_ANOTHER_DEVICE;
-import static com.azure.samples.communication.calling.contracts.Constants.JOIN_CALL;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +37,7 @@ public class InvitationActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -49,7 +48,7 @@ public class InvitationActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
 

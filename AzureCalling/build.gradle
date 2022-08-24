@@ -7,3 +7,11 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+subprojects {
+    apply from: "checkstyle.gradle"
+    afterEvaluate {
+        preBuild.dependsOn 'checkstyle'
+        check.dependsOn 'checkstyle'
+    }
+}

@@ -12,6 +12,7 @@ import androidx.core.app.NavUtils;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
 import com.azure.samples.communication.calling.R;
@@ -23,10 +24,10 @@ public class StartCallActivity extends AppCompatActivity {
     private EditText startCallDisplayName;
     private Button startCallNextButton;
     private SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -37,7 +38,7 @@ public class StartCallActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_call);
 
@@ -60,7 +61,7 @@ public class StartCallActivity extends AppCompatActivity {
         startCallNextButton.setOnClickListener(l -> goToMeetingInvitePage());
 
         final String savedDisplayName = sharedPreferences.getString(Constants.ACS_DISPLAY_NAME, "");
-        if(savedDisplayName.length() > 0) {
+        if (savedDisplayName.length() > 0) {
             startCallDisplayName.setText(savedDisplayName);
         }
     }
@@ -68,23 +69,14 @@ public class StartCallActivity extends AppCompatActivity {
     private void goToMeetingInvitePage() {
 
         final String displayName = startCallDisplayName.getText().toString();
-        if(!checkValidity(displayName)) {
+        if (TextUtils.isEmpty(displayName)) {
             // Throw exception
-            return ;
+            return;
         }
 
         final Intent intent = new Intent(this, InvitationActivity.class);
         editor.putString(Constants.ACS_DISPLAY_NAME, startCallDisplayName.getText().toString());
         editor.commit();
         startActivity(intent);
-    }
-
-    private boolean checkValidity(final String displayName) {
-        if(displayName.length() == 0) return false;
-
-        for(char c: displayName.toCharArray()) {
-            if(c != ' ')return true;
-        }
-        return false;
     }
 }

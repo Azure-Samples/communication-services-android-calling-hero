@@ -14,24 +14,23 @@ import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
 import com.azure.samples.communication.calling.views.components.ErrorInfoBar;
 
 public abstract class AbstractBaseFragment extends Fragment {
-    protected CallCompositeEventHandler<CallCompositeErrorEvent> callCompositeEventHandler = new CallCompositeEventHandler<CallCompositeErrorEvent>() {
+    protected CallCompositeEventHandler<CallCompositeErrorEvent> callCompositeEventHandler =
+            new CallCompositeEventHandler<CallCompositeErrorEvent>() {
         @Override
-        public void handle(CallCompositeErrorEvent eventArgs) {
-            if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_JOIN_FAILED)){
+        public void handle(final CallCompositeErrorEvent eventArgs) {
+            if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_JOIN_FAILED)) {
                 showError(SampleErrorMessages.CALL_COMPOSITE_JOIN_CALL_FAILED);
-            }
-            else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_END_FAILED)){
+            } else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_END_FAILED)) {
                 showError(SampleErrorMessages.CALL_COMPOSITE_END_CALL_FAILED);
-            }
-            else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.TOKEN_EXPIRED)){
+            } else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.TOKEN_EXPIRED)) {
                 showError(SampleErrorMessages.CALL_COMPOSITE_TOKEN_EXPIRED);
             }
         }
     };
-    protected SharedPreferences getSharedPreferences(){
+    protected SharedPreferences getSharedPreferences() {
         return requireActivity().getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
     }
-    protected void showError(String error){
+    protected void showError(final String error) {
         new ErrorInfoBar().displayErrorInfoBar(this.getView(), error);
     }
 }
