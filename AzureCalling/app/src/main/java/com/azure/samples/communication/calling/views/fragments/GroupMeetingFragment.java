@@ -29,24 +29,26 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
     private EditText groupMeetingID;
     private EditText displayNameEditor;
 
-    public GroupMeetingFragment() {}
+    public GroupMeetingFragment() {
+
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
 
-        View inflatedView = inflater.inflate(R.layout.fragment_group_meeting, container, false);
-        Button joinCallButton = inflatedView.findViewById(R.id.group_call_join_next);
+        final View inflatedView = inflater.inflate(R.layout.fragment_group_meeting, container, false);
+        final Button joinCallButton = inflatedView.findViewById(R.id.group_call_join_next);
         joinCallButton.setOnClickListener(l -> joinCall());
 
         displayNameEditor = inflatedView.findViewById(R.id.group_call_display_name);
         final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, null);
-        if(!TextUtils.isEmpty(savedDisplayName)) {
+        if (!TextUtils.isEmpty(savedDisplayName)) {
             displayNameEditor.setText(savedDisplayName);
         }
         groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
         final String savedGroupCallID = getSharedPreferences().getString(Constants.ACS_GROUPCALL_ID, null);
-        if (!TextUtils.isEmpty(savedGroupCallID)){
+        if (!TextUtils.isEmpty(savedGroupCallID)) {
             groupMeetingID.setText(savedGroupCallID);
         }
         return inflatedView;
@@ -56,18 +58,18 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         final String displayName = displayNameEditor.getText().toString();
         final String groupCallId = groupMeetingID.getText().toString().trim();
         groupMeetingID.setText(groupCallId);
-        if (TextUtils.isEmpty(groupCallId)){
+        if (TextUtils.isEmpty(groupCallId)) {
             showError(SampleErrorMessages.GROUP_ID_REQUIRED);
             return;
         }
-        if (!isUUID(groupCallId)){
+        if (!isUUID(groupCallId)) {
             showError(SampleErrorMessages.GROUP_ID_INVALID);
-            return ;
+            return;
         }
 
-        if (TextUtils.isEmpty(displayName)){
+        if (TextUtils.isEmpty(displayName)) {
             showError(SampleErrorMessages.DISPLAY_NAME_REQUIRED);
-            return ;
+            return;
         }
         getSharedPreferences()
                 .edit()
@@ -78,12 +80,12 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         final CallComposite composite = new CallCompositeBuilder()
                 .build();
 
-        AzureCalling calling = (AzureCalling) requireActivity().getApplicationContext();
+        final AzureCalling calling = (AzureCalling) requireActivity().getApplicationContext();
         calling.createCallingContext();
-        CallingContext callingContext = calling.getCallingContext();
+        final CallingContext callingContext = calling.getCallingContext();
 
         composite.addOnErrorEventHandler(callCompositeEventHandler);
-        CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName);
+        final CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName);
         composite.launch(requireActivity(), remoteOptions);
     }
 

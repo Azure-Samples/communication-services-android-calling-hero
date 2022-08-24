@@ -33,7 +33,7 @@ public class SignInActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
@@ -45,7 +45,7 @@ public class SignInActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if(!appSettings.isAADAuthEnabled()) {
+        if (!appSettings.isAADAuthEnabled()) {
             navigateToIntroView();
         }
     }
@@ -68,14 +68,13 @@ public class SignInActivity extends AppCompatActivity {
         appSettings = ((AzureCalling) getApplication()).getAppSettings();
     }
 
-    private void toggleProgress(boolean show){
-        View progressOverlay = findViewById(R.id.overlay_loading);
-        if (show){
+    private void toggleProgress(final boolean show) {
+        final View progressOverlay = findViewById(R.id.overlay_loading);
+        if (show) {
             progressOverlay.setVisibility(View.VISIBLE);
             signInButton.setText(R.string.signing_in);
             signInButton.setEnabled(false);
-        }
-        else {
+        } else {
             progressOverlay.setVisibility(View.GONE);
             signInButton.setText(R.string.sign_in);
             signInButton.setEnabled(true);
@@ -89,7 +88,7 @@ public class SignInActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void cacheProfile(UserProfile profile) {
+    private void cacheProfile(final UserProfile profile) {
         editor.putBoolean(IS_LOGGED_IN, true);
         editor.putString(USERNAME, profile.getDisplayName());
         editor.putString(GIVEN_NAME, profile.getDisplayName());
@@ -102,15 +101,15 @@ public class SignInActivity extends AppCompatActivity {
             toggleProgress(true);
 
             authHandler.loadAccount(this, (object) -> {
-                if(object instanceof Boolean) {
+                if (object instanceof Boolean) {
                     authHandler.signIn(this, (profile) -> {
-                        if(profile instanceof UserProfile) {
+                        if (profile instanceof UserProfile) {
                             cacheProfile((UserProfile) profile);
                             navigateToIntroView();
                         }
                     });
                 }
-                if(object instanceof UserProfile) {
+                if (object instanceof UserProfile) {
                     cacheProfile((UserProfile) object);
                     navigateToIntroView();
                 }

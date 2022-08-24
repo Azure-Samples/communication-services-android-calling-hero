@@ -1,4 +1,9 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.samples.communication.ui.calling;
+
+import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
 
@@ -8,7 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,7 +25,7 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        final Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.azure.samples.communication.ui.calling", appContext.getPackageName());
     }
 }

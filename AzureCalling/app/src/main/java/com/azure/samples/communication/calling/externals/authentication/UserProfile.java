@@ -14,7 +14,7 @@ public class UserProfile {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
@@ -22,7 +22,7 @@ public class UserProfile {
         return givenName;
     }
 
-    public void setGivenName(String givenName) {
+    public void setGivenName(final String givenName) {
         this.givenName = givenName;
     }
 
@@ -30,7 +30,7 @@ public class UserProfile {
         return surname;
     }
 
-    public void setSurname(String surname) {
+    public void setSurname(final String surname) {
         this.surname = surname;
     }
 
@@ -38,7 +38,7 @@ public class UserProfile {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -46,7 +46,7 @@ public class UserProfile {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 }
