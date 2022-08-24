@@ -56,7 +56,7 @@
                 <!-- android:path uses debug.keystore sha1-hash -->
                 <data
                     android:host="com.azure.samples.communication.ui.calling"
-                    android:path="/V5TBLYwXgYCu3kRBCym9P13PZeo="
+                    android:path="/44rymnrbe1l8wfl8deB3a/fQqhs="
                     android:scheme="msauth" />
             </intent-filter>
         </activity>
