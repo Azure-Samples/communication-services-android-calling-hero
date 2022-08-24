@@ -4,18 +4,10 @@
 package com.azure.samples.communication.calling;
 
 import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.media.AudioManager;
-import android.os.Build;
-
-import com.azure.samples.communication.calling.external.authentication.AADAuthHandler;
-import com.azure.samples.communication.calling.external.calling.CallingContext;
-import com.azure.samples.communication.calling.helpers.AudioSessionManager;
-import com.azure.samples.communication.calling.helpers.PermissionHelper;
-import com.azure.samples.communication.calling.external.calling.TokenService;
-import com.azure.samples.communication.calling.helpers.AppSettings;
+import com.azure.samples.communication.calling.externals.authentication.AADAuthHandler;
+import com.azure.samples.communication.calling.utilities.AppSettings;
+import com.azure.samples.communication.calling.externals.calling.CallingContext;
+import com.azure.samples.communication.calling.externals.calling.TokenService;
 
 public class AzureCalling extends Application {
 
@@ -25,14 +17,12 @@ public class AzureCalling extends Application {
     private CallingContext callingContext;
     private AADAuthHandler aadAuthHandler;
     private TokenService tokenService;
-    private PermissionHelper permissionHelper;
-    private AudioSessionManager audioSessionManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
         initializeDependencies();
-        createInCallNotificationChannel();
     }
 
     private void initializeDependencies() {
@@ -41,21 +31,15 @@ public class AzureCalling extends Application {
         this.aadAuthHandler = new AADAuthHandler(appSettings);
         this.tokenService = new TokenService(
                 getApplicationContext(), tokenGenerationAddress, () -> aadAuthHandler.getAccessToken());
-        this.permissionHelper = new PermissionHelper();
     }
 
     public void createCallingContext() {
         this.callingContext = new CallingContext(getApplicationContext(),
-            () -> tokenService.getCommunicationTokenAsync().get());
-    }
-
-    public void createAudioSessionManager() {
-        this.audioSessionManager = new AudioSessionManager(
-                (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
+                () -> tokenService.getCommunicationTokenAsync().get());
     }
 
     public CallingContext getCallingContext() {
-        return callingContext;
+        return this.callingContext;
     }
 
     public AADAuthHandler getAadAuthHandler() {
@@ -66,26 +50,4 @@ public class AzureCalling extends Application {
         return appSettings;
     }
 
-    public PermissionHelper getPermissionHelper() {
-        return permissionHelper;
-    }
-
-    public AudioSessionManager getAudioSessionManager() {
-        return audioSessionManager;
-    }
-
-    private void createInCallNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final CharSequence name = "AzureCalling Call Status";
-            final String description = "Provides a notification for on-going calls";
-            final int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            final NotificationChannel channel = new NotificationChannel(IN_CALL_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            channel.setSound(null, null);
-            final NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 }

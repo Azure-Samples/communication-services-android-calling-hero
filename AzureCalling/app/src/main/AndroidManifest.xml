@@ -3,40 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.azure.samples.communication.calling">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission
-        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <application
         android:name="com.azure.samples.communication.calling.AzureCalling"
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Fluent"
-        android:hardwareAccelerated="true"
-        android:hasFragileUserData="true">
+        tools:targetApi="31">
         <activity
-            android:name="com.azure.samples.communication.calling.activities.EndActivity"
-            android:exported="true"
-            android:parentActivityName="com.azure.samples.communication.calling.activities.CallActivity"
-            android:screenOrientation="portrait" />
+            android:name="com.azure.samples.communication.calling.views.activities.InvitationActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.azure.samples.communication.calling.views.activities.IntroViewActivity" />
+        </activity>
+        <activity
+            android:name="com.azure.samples.communication.calling.views.activities.StartCallActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.azure.samples.communication.calling.views.activities.IntroViewActivity" />
+        </activity>
+        <activity
+            android:name="com.azure.samples.communication.calling.views.activities.JoinCallActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.azure.samples.communication.calling.views.activities.IntroViewActivity" />
+        </activity>
+        <activity
+            android:name="com.azure.samples.communication.calling.views.activities.IntroViewActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-
-        <!-- Required for AAD Authentication -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.azure.samples.communication.calling.views.activities.SignInActivity"
+            android:exported="false">
+        </activity>
         <activity android:name="com.microsoft.identity.client.BrowserTabActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -44,44 +55,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- android:path uses debug.keystore sha1-hash -->
                 <data
-                    android:host="com.azure.samples.communication.calling"
-                    android:path="/44rymnrbe1l8wfl8deB3a/fQqhs="
+                    android:host="com.azure.samples.communication.ui.calling"
+                    android:path="/V5TBLYwXgYCu3kRBCym9P13PZeo="
                     android:scheme="msauth" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.azure.samples.communication.calling.activities.CallActivity"
-            android:exported="true"
-            android:configChanges="orientation|screenSize|screenLayout"
-            android:parentActivityName="com.azure.samples.communication.calling.activities.SetupActivity"
-            android:screenOrientation="sensor"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name="com.azure.samples.communication.calling.activities.SetupActivity"
-            android:exported="true"
-            android:label="@string/title_activity_setup"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.azure.samples.communication.calling.activities.JoinCallActivity"
-            android:exported="true"
-            android:label="@string/title_activity_join_call"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName="com.azure.samples.communication.calling.activities.IntroActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.azure.samples.communication.calling.activities.IntroActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <service android:name="com.azure.samples.communication.calling.helpers.InCallService"
-            android:stopWithTask="true"
-            android:foregroundServiceType="microphone"/>
     </application>
 
 </manifest>

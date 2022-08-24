@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:state_enabled="false">
+    <shape>
+        <solid android:color="#E1E1E1"/>
+        <corners android:radius="8dp"/>
+    </shape>
+</item>
+<item>
+    <ripple android:color="?attr/fluentuiButtonBackgroundPressedColor">
+        <item android:id="@android:id/mask" android:drawable="@android:color/white" />
+        <item>
+            <shape>
+                <solid android:color="#0078D4"/>
+                <corners android:radius="8dp"/>
+            </shape>
+        </item>
+    </ripple>
+</item>
+</selector>
