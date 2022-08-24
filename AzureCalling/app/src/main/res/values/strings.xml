@@ -1,74 +1,8 @@
 <resources>
-    <string name="app_name">Azure Calling</string>
-    <string name="intro_exception">"Exceptionally simple video calling"</string>
-    <string name="intro_features">"Up to 16 participants \nHigh quality video and sound \nIndustry leading security"</string>
-    <string name="intro_start">Start new call</string>
-    <string name="intro_join">Join a call</string>
-    <string name="intro_learn"><a href="https://aka.ms/ACS-CallingSample-Android">Learn more</a> about this sample app</string>
-    <string name="intro_cloud_cd">cloud</string>
-    <string name="intro_sign_in">Sign in to Microsoft Account</string>
-    <string name="intro_sign_out">Sign out</string>
-
-    <string name="title_activity_join_call">JoinCall</string>
-    <string name="join_enter">Enter meeting ID</string>
-    <string name="join_join_hint">ex. 4fe34380-81e5-11eb-a16e-6161a3176f61</string>
-    <string name="join_start">Join Call</string>
-
-    <string name="title_activity_setup">Lobby</string>
-    <string name="setup_enter">Enter your name</string>
-    <string name="setup_name_hint">John Smith</string>
-    <string name="setup_start_call">Start call</string>
-    <string name="setup_missing_cd">Missing placeholder</string>
-    <string name="setup_missing_text">Missing placeholder</string>
-    <string name="setup_missing_button">Go to Settings</string>
-    <string name="setup_video_off">Video off</string>
-    <string name="setup_video_on">Video on</string>
-    <string name="setup_mic_off">Mic off</string>
-    <string name="setup_mic_on">Mic on</string>
-    <string name="setup_device">Device</string>
-    <string name="setup_missing_video">Your camera is disabled. To enable, please go to Settings to allow access.</string>
-    <string name="setup_missing_mic">Your audio is disabled. To enable, please go to Settings to allow access. You must enable audio to start this call.</string>
-    <string name="setup_missing_video_mic">Your camera and audio are disabled. To enable, please go to Settings to
-        allow access. You must enable audio to start this call.</string>
-    <string name="setup_gradient">Setup Gradient</string>
-
-    <string name="audio_device_android">Android</string>
-    <string name="audio_device_speaker">Speaker</string>
-
-    <string name="call_hangup_confirm">Leave call</string>
-    <string name="call_hangup_cancel">Cancel</string>
-    <string name="call_share">Share Content</string>
-    <string name="call_hangup">Hang Up</string>
-    <string name="call_video">Toggle Video</string>
-    <string name="call_audio">Toggle Audio</string>
-    <string name="number_of_participants">Number of participants:</string>
-
-    <string name="end_call">Call ended</string>
-    <string name="end_have">Have any feedback for us? We’d love to hear how we can improve this experience.</string>
-    <string name="end_feedback">Provide feedback</string>
-    <string name="end_feedbackUrl">https://aka.ms/ACS-CallingSample-Android-Issues</string>
-    <string name="end_return">Return to home screen</string>
-
-    <string name="join_teams_enter">Join a Teams meeting</string>
-    <string name="join_teams_meeting_hint">ex. https://teams.microsoft.com/l/meetup-join/...</string>
-    <string name="in_lobby_waiting_message_title">Waiting for host</string>
-    <string name="in_lobby_waiting_message_description">Someone in the meeting will let you in soon</string>
-
-    <string name="start_recording"><b>Recording has started.</b> By joining, you are giving consent for this meeting to be recorded.
-        <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
-    <string name="stop_recording"><b>Recording is being saved. </b>Recording has stopped.
-        <a href="https://support.microsoft.com/en-us/office/record-a-meeting-in-teams-34dfbe7f-b07d-4a27-b4c6-de62f1348c24"><u>Learn More</u></a></string>
-    <string name="start_transcribing"><b>Transcription has started.</b> By joining, you are giving consent for this meeting to be transcribed.
-        <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
-    <string name="stop_transcribing"><b>Transcription is being saved. </b>Transcription has stopped.
-        <a href="https://support.microsoft.com/en-us/office/record-a-meeting-in-teams-34dfbe7f-b07d-4a27-b4c6-de62f1348c24"><u>Learn More</u></a></string>
-    <string name="start_recording_and_transcribing"><b>Recording and transcription have started. </b> By joining, you are giving consent for this meeting to be recorded and transcribed.
-        <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
-    <string name="stop_recording_while_transcribing"><b>Recording has stopped. </b>You are now only transcribing this meeting.
-        <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
-    <string name="stop_transcribing_while_recording"><b>Transcription has stopped. </b>You are now only recording this meeting.
-        <a href="https://privacy.microsoft.com/en-US/privacystatement#mainnoticetoendusersmodule"><u>Privacy policy</u></a></string>
-    <string name="open_participant_list">Open Participant List</string>
-    <string name="switch_camera_button">Switch Camera Button</string>
-    <string name="device_options">Device Options</string>
+    <string name="app_name">AzureCalling</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_in">Sign in</string>
+    <string name="signing_in">Signing in…</string>
 </resources>
