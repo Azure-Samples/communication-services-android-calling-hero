@@ -55,7 +55,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- android:path uses debug.keystore sha1-hash -->
                 <data
-                    android:host="com.azure.samples.communication.ui.calling"
+                    android:host="com.azure.samples.communication.calling"
                     android:path="/44rymnrbe1l8wfl8deB3a/fQqhs="
                     android:scheme="msauth" />
             </intent-filter>
