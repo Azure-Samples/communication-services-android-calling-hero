@@ -38,7 +38,7 @@ public class IntroViewActivity extends AppCompatActivity {
     private String username;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro_view);
 
@@ -48,7 +48,7 @@ public class IntroViewActivity extends AppCompatActivity {
         sharedPreferences = this.getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
         final boolean isLoggedIn = sharedPreferences.getBoolean(IS_LOGGED_IN, false);
 
-        if(appSettings.isAADAuthEnabled() && !isLoggedIn) {
+        if (appSettings.isAADAuthEnabled() && !isLoggedIn) {
             sharedPreferences.edit().clear().apply();
             final Intent intent = new Intent(this, SignInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -74,15 +74,15 @@ public class IntroViewActivity extends AppCompatActivity {
         joinCallButton = findViewById(R.id.join_call_button);
         joinCallButton.setOnClickListener(l -> joinCall());
 
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
 
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.view_intro_actionbar);
         }
 
         signOutButton = findViewById(R.id.signout_button);
-        if(!appSettings.isAADAuthEnabled()) {
+        if (!appSettings.isAADAuthEnabled()) {
             signOutButton.setText(getString(R.string.sign_in));
         }
         signOutButton.setOnClickListener(l -> signOut());
@@ -96,8 +96,8 @@ public class IntroViewActivity extends AppCompatActivity {
 
     private void signOut() {
 
-        if(!appSettings.isAADAuthEnabled()) {
-            return ;
+        if (!appSettings.isAADAuthEnabled()) {
+            return;
         }
         usernameTextView.setText("");
         avatarView.setName("");

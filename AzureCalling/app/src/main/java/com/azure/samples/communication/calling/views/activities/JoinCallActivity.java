@@ -33,7 +33,7 @@ public class JoinCallActivity extends AppCompatActivity {
     private View teamsMeetingTab;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -44,7 +44,7 @@ public class JoinCallActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_call);
 
@@ -56,7 +56,7 @@ public class JoinCallActivity extends AppCompatActivity {
         }
 
         initializeUI();
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             showGroupFragment();
         }
     }
@@ -70,9 +70,9 @@ public class JoinCallActivity extends AppCompatActivity {
 
         meetingTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(final TabLayout.Tab tab) {
                 
-                if(tab.getText().equals("Group Meeting")) {
+                if (tab.getText().equals("Group Meeting")) {
                     showGroupFragment();
                 } else {
                     showTeamsFragment();
@@ -80,12 +80,12 @@ public class JoinCallActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public void onTabUnselected(final TabLayout.Tab tab) {
 
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onTabReselected(final TabLayout.Tab tab) {
             }
         });
     }
@@ -116,8 +116,10 @@ public class JoinCallActivity extends AppCompatActivity {
 
     private StateListDrawable setImageButtonStateNew(final Context mContext) {
         final StateListDrawable states = new StateListDrawable();
-        states.addState(new int[] {android.R.attr.state_selected}, ContextCompat.getDrawable(mContext, R.drawable.tab_background_normal_blue));
-        states.addState(new int[] {-android.R.attr.state_selected}, ContextCompat.getDrawable(mContext, R.drawable.tab_background_normal));
+        states.addState(new int[] {android.R.attr.state_selected},
+                ContextCompat.getDrawable(mContext, R.drawable.tab_background_normal_blue));
+        states.addState(new int[] {-android.R.attr.state_selected},
+                ContextCompat.getDrawable(mContext, R.drawable.tab_background_normal));
 
         return states;
     }

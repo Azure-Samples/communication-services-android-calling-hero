@@ -15,14 +15,15 @@ public class ErrorInfoBar {
 
     private Snackbar snackbar;
 
-    public void displayErrorInfoBar(View rootView, String errorMessage) {
+    public void displayErrorInfoBar(final View rootView, final String errorMessage) {
         if (errorMessage == null || errorMessage.isEmpty()) {
             return;
         }
         snackbar = Snackbar.Companion.make(rootView, "", Snackbar.LENGTH_LONG, Snackbar.Style.REGULAR);
-        snackbar.getView().setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.snackbar_background));
+        snackbar.getView()
+                .setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.snackbar_background));
         final ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbar.getView().getLayoutParams();
-        DisplayMetrics metrics = rootView.getResources().getDisplayMetrics();
+        final DisplayMetrics metrics = rootView.getResources().getDisplayMetrics();
 
         params.setMargins(params.leftMargin + getDp(16, metrics),
                 params.topMargin,
@@ -31,7 +32,7 @@ public class ErrorInfoBar {
 
         snackbar.getView().setLayoutParams(params);
         snackbar.setAnimationMode(Snackbar.ANIMATION_MODE_FADE);
-        snackbar.setText((CharSequence)errorMessage);
+        snackbar.setText((CharSequence) errorMessage);
         snackbar.setTextColor(ContextCompat.getColor(rootView.getContext(), R.color.snackbar_text_color));
         snackbar.show();
     }
@@ -42,7 +43,7 @@ public class ErrorInfoBar {
         }
     }
 
-    private int getDp(int margin, DisplayMetrics metrics) {
+    private int getDp(final int margin, final DisplayMetrics metrics) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 margin,

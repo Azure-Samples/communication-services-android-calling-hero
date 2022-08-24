@@ -27,8 +27,8 @@ public class CallingContext {
     }
 
     public CommunicationTokenCredential getCommunicationTokenCredential() {
-        final CommunicationTokenRefreshOptions communicationTokenRefreshOptions =  new CommunicationTokenRefreshOptions (
-                tokenFetcher, true );
+        final CommunicationTokenRefreshOptions communicationTokenRefreshOptions =
+                new CommunicationTokenRefreshOptions(tokenFetcher, true);
         return new CommunicationTokenCredential(communicationTokenRefreshOptions);
     }
 
