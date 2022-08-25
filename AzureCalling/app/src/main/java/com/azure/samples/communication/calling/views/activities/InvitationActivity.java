@@ -20,11 +20,16 @@ import android.view.MenuItem;
 
 import com.azure.android.communication.ui.calling.CallComposite;
 import com.azure.android.communication.ui.calling.CallCompositeBuilder;
+import com.azure.android.communication.ui.calling.CallCompositeEventHandler;
+import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
+import com.azure.android.communication.ui.calling.models.CallCompositeErrorEvent;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
+import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
 import com.azure.samples.communication.calling.externals.calling.CallingContext;
+import com.azure.samples.communication.calling.views.components.ErrorInfoBar;
 import com.microsoft.fluentui.widget.Button;
 
 public class InvitationActivity extends AppCompatActivity {
@@ -35,6 +40,23 @@ public class InvitationActivity extends AppCompatActivity {
     private CallingContext callingContext;
     private CallCompositeRemoteOptions options;
     private SharedPreferences sharedPreferences;
+    private ErrorInfoBar errorInfoBar;
+    private CallCompositeEventHandler<CallCompositeErrorEvent> callCompositeEventHandler =
+        new CallCompositeEventHandler<CallCompositeErrorEvent>() {
+            @Override
+            public void handle(final CallCompositeErrorEvent eventArgs) {
+                if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_JOIN_FAILED)) {
+                    errorInfoBar.displayErrorInfoBar(findViewById(R.id.invitition_activity),
+                            SampleErrorMessages.CALL_COMPOSITE_JOIN_CALL_FAILED);
+                } else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_END_FAILED)) {
+                    errorInfoBar.displayErrorInfoBar(findViewById(R.id.invitition_activity),
+                            SampleErrorMessages.CALL_COMPOSITE_END_CALL_FAILED);
+                } else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.TOKEN_EXPIRED)) {
+                    errorInfoBar.displayErrorInfoBar(findViewById(R.id.invitition_activity),
+                            SampleErrorMessages.CALL_COMPOSITE_TOKEN_EXPIRED);
+                }
+            }
+        };
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -60,6 +82,7 @@ public class InvitationActivity extends AppCompatActivity {
         }
 
         sharedPreferences = this.getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
+        errorInfoBar = new ErrorInfoBar();
         startCallSetup();
         initializeUI();
     }
@@ -94,8 +117,7 @@ public class InvitationActivity extends AppCompatActivity {
 
     private void makeCall() {
         final CallComposite composite = new CallCompositeBuilder().build();
+        composite.addOnErrorEventHandler(callCompositeEventHandler);
         composite.launch(this, options);
     }
-
-
 }

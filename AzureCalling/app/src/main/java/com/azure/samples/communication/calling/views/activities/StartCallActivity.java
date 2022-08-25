@@ -15,8 +15,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
+
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
+import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
+import com.azure.samples.communication.calling.views.components.ErrorInfoBar;
 import com.microsoft.fluentui.widget.Button;
 
 public class StartCallActivity extends AppCompatActivity {
@@ -70,7 +73,8 @@ public class StartCallActivity extends AppCompatActivity {
 
         final String displayName = startCallDisplayName.getText().toString();
         if (TextUtils.isEmpty(displayName)) {
-            // Throw exception
+            new ErrorInfoBar().displayErrorInfoBar(findViewById(R.id.start_activity),
+                    SampleErrorMessages.DISPLAY_NAME_REQUIRED);
             return;
         }
 
