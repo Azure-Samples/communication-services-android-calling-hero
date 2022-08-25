@@ -40,16 +40,11 @@ public class AADAuthHandler {
 
     private final AppSettings appSettings;
     private ISingleAccountPublicClientApplication mSingleAccountApp;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private String accessToken = null;
     private String[] mScopes = { "User.Read" };
 
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
-        sharedPreferences = appSettings.getContext()
-                .getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
     }
 
     public void signIn(final Activity activity, final Consumer<Object> callback) {
