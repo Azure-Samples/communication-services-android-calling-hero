@@ -5,7 +5,7 @@ languages:
 products:
 - azure
 - azure-communication-services
-- communication-ui-library-android
+- azure-communication-ui-calling
 ---
 
 # Group Calling Sample
