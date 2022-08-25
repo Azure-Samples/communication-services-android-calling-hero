@@ -5,6 +5,8 @@ package com.azure.samples.communication.calling.externals.calling;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -22,11 +24,13 @@ public final class TokenService {
     private final RequestQueue queue;
     private final String communicationTokenFetchUrl;
     private final Callable<String> getAuthTokenFunction;
+    private Context appContext;
 
     public TokenService(
             final Context applicationContext,
             final String communicationTokenFetchUrl,
             final Callable<String> getAuthTokenFunction) {
+        appContext = applicationContext;
         this.communicationTokenFetchUrl = communicationTokenFetchUrl;
         this.getAuthTokenFunction = getAuthTokenFunction;
         this.queue = Volley.newRequestQueue(applicationContext);
@@ -36,8 +40,10 @@ public final class TokenService {
         final CompletableFuture<String> tokenCompletableFuture = new CompletableFuture<>();
         final Response.Listener<JSONObject> responseListener = response ->
                 parseResponse(response, tokenCompletableFuture);
-        final Response.ErrorListener errorListener = error -> Log.e(LOG_TAG,
-                "Failed getting communication token", error);
+        final Response.ErrorListener errorListener = error -> {
+            Toast.makeText(appContext, error.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(LOG_TAG, "Failed getting communication token", error);
+        };
         final JsonObjectRequest request = new JsonObjectRequest(
                 communicationTokenFetchUrl, null, responseListener, errorListener) {
             @Override
@@ -63,6 +69,7 @@ public final class TokenService {
     private void parseResponse(final JSONObject response, final CompletableFuture<String> tokenCompletableFuture) {
         try {
             final String userToken = response.getString("token");
+            Toast.makeText(appContext, userToken, Toast.LENGTH_SHORT).show();
             tokenCompletableFuture.complete(userToken);
         } catch (final JSONException e) {
             e.printStackTrace();
