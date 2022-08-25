@@ -8,8 +8,6 @@ import static com.azure.samples.communication.calling.contracts.Constants.GIVEN_
 import static com.azure.samples.communication.calling.contracts.Constants.ID;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -18,7 +16,6 @@ import androidx.annotation.RequiresApi;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.azure.samples.communication.calling.R;
-import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.utilities.MSGraphRequestWrapper;
 import com.microsoft.identity.client.AuthenticationCallback;
