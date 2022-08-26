@@ -73,7 +73,8 @@ public class StartCallActivity extends AppCompatActivity {
 
         final String displayName = startCallDisplayName.getText().toString();
         if (TextUtils.isEmpty(displayName)) {
-            new ErrorInfoBar().displayErrorInfoBar(findViewById(R.id.start_activity),
+            new ErrorInfoBar().displayErrorInfoBar(
+                    this.getWindow().getDecorView().findViewById(android.R.id.content),
                     SampleErrorMessages.DISPLAY_NAME_REQUIRED);
             return;
         }

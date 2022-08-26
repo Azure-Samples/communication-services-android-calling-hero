@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +38,7 @@ public class InvitationActivity extends AppCompatActivity {
     private Button startCallButton;
     private Button shareCallButton;
 
+    private Activity activity;
     private CallingContext callingContext;
     private CallCompositeRemoteOptions options;
     private SharedPreferences sharedPreferences;
@@ -46,13 +48,16 @@ public class InvitationActivity extends AppCompatActivity {
             @Override
             public void handle(final CallCompositeErrorEvent eventArgs) {
                 if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_JOIN_FAILED)) {
-                    errorInfoBar.displayErrorInfoBar(findViewById(R.id.invitition_activity),
+                    errorInfoBar.displayErrorInfoBar(
+                            activity.getWindow().getDecorView().findViewById(android.R.id.content),
                             SampleErrorMessages.CALL_COMPOSITE_JOIN_CALL_FAILED);
                 } else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.CALL_END_FAILED)) {
-                    errorInfoBar.displayErrorInfoBar(findViewById(R.id.invitition_activity),
+                    errorInfoBar.displayErrorInfoBar(
+                            activity.getWindow().getDecorView().findViewById(android.R.id.content),
                             SampleErrorMessages.CALL_COMPOSITE_END_CALL_FAILED);
                 } else if (eventArgs.getErrorCode().equals(CallCompositeErrorCode.TOKEN_EXPIRED)) {
-                    errorInfoBar.displayErrorInfoBar(findViewById(R.id.invitition_activity),
+                    errorInfoBar.displayErrorInfoBar(
+                            activity.getWindow().getDecorView().findViewById(android.R.id.content),
                             SampleErrorMessages.CALL_COMPOSITE_TOKEN_EXPIRED);
                 }
             }
@@ -73,6 +78,7 @@ public class InvitationActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
+        activity = this;
 
         final ActionBar ab = getSupportActionBar();
         // Disable the Up button
