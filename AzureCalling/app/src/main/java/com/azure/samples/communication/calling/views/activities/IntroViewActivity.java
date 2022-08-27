@@ -102,7 +102,7 @@ public class IntroViewActivity extends AppCompatActivity {
         usernameTextView.setText("");
         avatarView.setName("");
 
-        authHandler.signOut(() -> {
+        authHandler.signOut(this, (isSignedOut) -> {
             sharedPreferences.edit().clear().apply();
             final Intent intent = new Intent(this, SignInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

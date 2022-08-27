@@ -3,11 +3,14 @@
 
 package com.azure.samples.communication.calling.externals.authentication;
 
+import static com.azure.samples.communication.calling.contracts.Constants.ACS_ACCESS_TOKEN;
 import static com.azure.samples.communication.calling.contracts.Constants.DISPLAY_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.GIVEN_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.ID;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.azure.samples.communication.calling.R;
+import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.utilities.MSGraphRequestWrapper;
 import com.microsoft.identity.client.AuthenticationCallback;
@@ -40,8 +44,14 @@ public class AADAuthHandler {
     private String accessToken = null;
     private String[] mScopes = { "User.Read" };
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
+        sharedPreferences = appSettings.getContext()
+                .getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
     public void signIn(final Activity activity, final Consumer<Object> callback) {
@@ -53,6 +63,8 @@ public class AADAuthHandler {
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
+                editor.putString(ACS_ACCESS_TOKEN, accessToken);
+                editor.apply();
                 callGraphAPI(activity, (object) -> {
                     callback.accept(object);
                 });
@@ -112,33 +124,41 @@ public class AADAuthHandler {
     }
 
     public String getAccessToken() {
-        return accessToken;
+        return sharedPreferences.getString(ACS_ACCESS_TOKEN, "");
     }
 
-    public void signOut(final Runnable onSuccess) {
-        if (mSingleAccountApp == null) {
-            return;
-        }
-
+    private void signingOut(final Consumer<Boolean> signoutCallback) {
         mSingleAccountApp.signOut(new ISingleAccountPublicClientApplication.SignOutCallback() {
             @Override
             public void onSignOut() {
-                onSuccess.run();
+                signoutCallback.accept(true);
             }
 
             @Override
             public void onError(@NonNull final MsalException exception) {
                 Log.e(LOG_TAG, exception.getMessage());
+                signoutCallback.accept(false);
             }
         });
     }
 
+    public void signOut(final Activity activity, final Consumer<Boolean> signOutCallback) {
+        if (mSingleAccountApp == null) {
+            signOutCallback.accept(false);
+        } else {
+            signingOut(signOutCallback);
+        }
+    }
+
     private void acquireToken(final Activity activity, final Consumer<Object> callback) {
+
         mSingleAccountApp.acquireToken(activity, mScopes, new AuthenticationCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
+                editor.putString(ACS_ACCESS_TOKEN, accessToken);
+                editor.apply();
                 callGraphAPI(activity, (object) -> {
                     callback.accept(object);
                 });

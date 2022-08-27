@@ -43,6 +43,14 @@ public class CallingContext {
                 displayName);
     }
 
+    public CallCompositeRemoteOptions getCallCompositeGroupRemoteOptions(final String displayName,
+                                                                         final UUID groupCallID) {
+        final CallCompositeJoinLocator locator = new CallCompositeGroupCallLocator(groupCallID);
+        return new CallCompositeRemoteOptions(locator,
+                getCommunicationTokenCredential(),
+                displayName);
+    }
+
     public CallCompositeRemoteOptions getCallCompositeRemoteOptions(final String displayName,
                                                                     final String teamsLink) {
         final CallCompositeJoinLocator locator = new CallCompositeTeamsMeetingLinkLocator(teamsLink);

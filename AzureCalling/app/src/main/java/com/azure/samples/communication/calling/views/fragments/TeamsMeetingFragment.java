@@ -44,12 +44,12 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
 
         teamsDisplayNameEditor = inflatedView.findViewById(R.id.teams_call_display_name);
 
-        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, null);
+        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, "");
         if (!TextUtils.isEmpty(savedDisplayName)) {
             teamsDisplayNameEditor.setText(savedDisplayName);
         }
         teamsMeetingLink = inflatedView.findViewById(R.id.teams_call_link);
-        final String savedMeetingLink = getSharedPreferences().getString(Constants.ACS_MEETING_LINK, null);
+        final String savedMeetingLink = getSharedPreferences().getString(Constants.ACS_MEETING_LINK, "");
         if (!TextUtils.isEmpty(savedMeetingLink)) {
             teamsMeetingLink.setText(savedMeetingLink);
         }

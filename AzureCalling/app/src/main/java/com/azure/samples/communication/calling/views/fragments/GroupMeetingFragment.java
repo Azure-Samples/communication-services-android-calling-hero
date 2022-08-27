@@ -42,12 +42,12 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         joinCallButton.setOnClickListener(l -> joinCall());
 
         displayNameEditor = inflatedView.findViewById(R.id.group_call_display_name);
-        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, null);
+        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, "");
         if (!TextUtils.isEmpty(savedDisplayName)) {
             displayNameEditor.setText(savedDisplayName);
         }
         groupMeetingID = inflatedView.findViewById(R.id.group_call_id);
-        final String savedGroupCallID = getSharedPreferences().getString(Constants.ACS_GROUPCALL_ID, null);
+        final String savedGroupCallID = getSharedPreferences().getString(Constants.ACS_GROUPCALL_ID, "");
         if (!TextUtils.isEmpty(savedGroupCallID)) {
             groupMeetingID.setText(savedGroupCallID);
         }
@@ -85,7 +85,8 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         final CallingContext callingContext = calling.getCallingContext();
 
         composite.addOnErrorEventHandler(callCompositeEventHandler);
-        final CallCompositeRemoteOptions remoteOptions = callingContext.getCallCompositeRemoteOptions(displayName);
+        final CallCompositeRemoteOptions remoteOptions = callingContext
+                .getCallCompositeGroupRemoteOptions(displayName, UUID.fromString(groupCallId));
         composite.launch(requireActivity(), remoteOptions);
     }
 
