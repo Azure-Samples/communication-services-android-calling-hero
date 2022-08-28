@@ -16,6 +16,7 @@
         tools:targetApi="31">
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.InvitationActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -37,6 +38,7 @@
         </activity>
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.IntroViewActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,8 +57,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- android:path uses debug.keystore sha1-hash -->
                 <data
-                    android:host="com.azure.samples.communication.calling"
-                    android:path="/44rymnrbe1l8wfl8deB3a/fQqhs="
+                    android:host="com.azure.samples.communication.ui.calling"
+                    android:path="/V5TBLYwXgYCu3kRBCym9P13PZeo="
                     android:scheme="msauth" />
             </intent-filter>
         </activity>

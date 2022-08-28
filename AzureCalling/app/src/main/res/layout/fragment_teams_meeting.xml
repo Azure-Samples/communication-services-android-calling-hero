@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
-            android:paddingTop="24dp"
+            android:paddingTop="16dp"
             android:paddingBottom="8dp"
             android:text="Teams meeting"
             android:textColor="#616161"
@@ -107,8 +107,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginBottom="20dp"/>
+            android:layout_weight="1"/>
 
         <com.microsoft.fluentui.widget.Button
             style="@style/FluentButton"
