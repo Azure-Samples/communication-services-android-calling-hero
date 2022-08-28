@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@color/fragment_background"
         android:gravity="center|bottom">
 
         <include layout="@layout/landing_layout" />
@@ -21,6 +22,7 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="center|bottom"
+        android:background="@color/fragment_background"
         android:orientation="vertical">
 
         <com.microsoft.fluentui.widget.Button

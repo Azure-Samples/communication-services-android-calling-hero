@@ -14,6 +14,7 @@
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
+        android:background="@color/fragment_background"
         android:layout_height="wrap_content">
 
         <com.google.android.material.tabs.TabLayout
@@ -26,8 +27,8 @@
             app:tabIndicatorColor="@android:color/transparent"
             app:tabMode="fixed"
             app:tabIndicatorHeight="0dp"
-            app:tabTextColor="#6E6E6E"
-            app:tabSelectedTextColor="#FFFFFF">
+            app:tabTextColor="@color/textbox_primary"
+            app:tabSelectedTextColor="@color/tab_selected_text_color">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/group_meeting_tab"

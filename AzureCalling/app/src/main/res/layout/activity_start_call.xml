@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/fragment_background"
     tools:context="com.azure.samples.communication.calling.views.activities.StartCallActivity">
 
     <TextView
@@ -15,12 +16,14 @@
         android:paddingLeft="16dp"
         android:paddingTop="24dp"
         android:paddingBottom="8dp"
+        android:background="@color/fragment_background"
         android:textColor="#6E6E6E"
         android:textSize="13sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/fragment_background"
         android:orientation="horizontal">
 
         <ImageView
@@ -29,10 +32,11 @@
             android:paddingTop="13dp"
             android:paddingLeft="16dp"
             android:paddingBottom="13dp"
-            android:background="@color/white"
+            android:background="@color/colorPrimary"
             android:src="@drawable/ic_shape" />
 
         <EditText
+            android:theme="@style/Theme.Fluent"
             android:id="@+id/start_call_display_name"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -40,16 +44,17 @@
             android:textSize="17sp"
             android:maxLines="1"
             android:inputType="text"
-            android:textColor="#6E6E6E"
+            android:textColor="@color/textbox_primary"
             android:paddingTop="13dp"
             android:paddingBottom="13dp"
             android:paddingLeft="20dp"
-            android:background="@color/white"/>
+            android:background="@color/colorPrimary"/>
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/fragment_background"
         android:paddingLeft="16dp"
         android:textSize="12dp"
         android:text="Name shown to the others on the call" />
@@ -58,9 +63,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@color/fragment_background"
         android:layout_marginBottom="20dp"/>
 
     <com.microsoft.fluentui.widget.Button
+        style="@style/FluentButton"
         android:id="@+id/start_call_next_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

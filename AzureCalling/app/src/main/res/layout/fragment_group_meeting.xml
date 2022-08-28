@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8F8F8"
+        android:background="@color/fragment_background"
         android:orientation="vertical">
 
         <TextView
@@ -25,13 +25,13 @@
             android:id="@+id/group_call_id"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/white"
+            android:background="@color/colorPrimary"
             android:hint="Enter Call ID"
             android:inputType="text"
             android:paddingLeft="20dp"
             android:paddingTop="13dp"
             android:paddingBottom="13dp"
-            android:textColor="#6E6E6E"
+            android:textColor="@color/textbox_primary"
             android:textColorHint="#757575"
             android:textSize="17sp" />
 
@@ -63,20 +63,20 @@
                 android:paddingTop="13dp"
                 android:paddingLeft="16dp"
                 android:paddingBottom="13dp"
-                android:background="@color/white"
+                android:background="@color/colorPrimary"
                 android:src="@drawable/ic_display_name" />
 
             <EditText
                 android:id="@+id/group_call_display_name"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@color/white"
+                android:background="@color/colorPrimary"
                 android:hint="Enter a name"
                 android:inputType="text"
                 android:paddingLeft="20dp"
                 android:paddingTop="13dp"
                 android:paddingBottom="13dp"
-                android:textColor="#6E6E6E"
+                android:textColor="@color/textbox_primary"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
         </LinearLayout>
@@ -86,6 +86,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:textSize="12dp"
+            android:textColor="#6E6E6E"
             android:text="Name shown to the others on the call" />
 
         <LinearLayout
@@ -95,6 +96,7 @@
             android:layout_marginBottom="20dp"/>
 
         <com.microsoft.fluentui.widget.Button
+            style="@style/FluentButton"
             android:id="@+id/group_call_join_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -102,8 +104,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/button_background"
-            android:text="Next"
-            android:textColor="#FFFFFF" />
+            android:text="Next" />
 
     </LinearLayout>
 </FrameLayout>

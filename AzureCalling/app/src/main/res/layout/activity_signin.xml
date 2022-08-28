@@ -5,11 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    tools:context="com.azure.samples.communication.calling.views.activities.SignInActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.azure.samples.communication.calling.views.activities.SignInActivity"
+        android:background="@color/fragment_background"
         android:orientation="vertical">
 
         <LinearLayout
@@ -29,7 +29,7 @@
             android:gravity="center|bottom">
 
             <com.microsoft.fluentui.widget.Button
-                style="@style/Widget.FluentUI.Button"
+                style="@style/FluentButton"
                 android:id="@+id/sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"

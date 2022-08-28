@@ -58,6 +58,10 @@ public class SignInActivity extends AppCompatActivity {
     private void initializeUI() {
         signInButton = findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(l -> onClickSignInButton());
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
     }
 
     private void initializeAuth() {
