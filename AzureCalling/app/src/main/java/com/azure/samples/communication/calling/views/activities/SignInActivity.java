@@ -96,7 +96,7 @@ public class SignInActivity extends AppCompatActivity {
         editor.putBoolean(IS_LOGGED_IN, true);
         editor.putString(USERNAME, profile.getDisplayName());
         editor.putString(GIVEN_NAME, profile.getDisplayName());
-        editor.putString(ACS_DISPLAY_NAME, profile.getGivenName());
+        editor.putString(ACS_DISPLAY_NAME, profile.getDisplayName());
         editor.apply();
     }
 
