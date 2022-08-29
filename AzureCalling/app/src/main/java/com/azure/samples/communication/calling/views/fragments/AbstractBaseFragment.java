@@ -9,11 +9,14 @@ import androidx.fragment.app.Fragment;
 import com.azure.android.communication.ui.calling.CallCompositeEventHandler;
 import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
 import com.azure.android.communication.ui.calling.models.CallCompositeErrorEvent;
+import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
+import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.views.components.ErrorInfoBar;
 
 public abstract class AbstractBaseFragment extends Fragment {
+    protected AppSettings appSettings = ((AzureCalling) requireActivity().getApplication()).getAppSettings();
     protected CallCompositeEventHandler<CallCompositeErrorEvent> callCompositeEventHandler =
             new CallCompositeEventHandler<CallCompositeErrorEvent>() {
         @Override

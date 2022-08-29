@@ -16,9 +16,11 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
+import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.views.components.ErrorInfoBar;
 import com.microsoft.fluentui.widget.Button;
 
@@ -26,6 +28,7 @@ public class StartCallActivity extends AppCompatActivity {
 
     private EditText startCallDisplayName;
     private Button startCallNextButton;
+    private AppSettings appSettings;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -44,7 +47,7 @@ public class StartCallActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_call);
-
+        appSettings = ((AzureCalling) getApplication()).getAppSettings();
         final ActionBar ab = getSupportActionBar();
         // Disable the Up button
         if (ab != null) {
@@ -63,15 +66,15 @@ public class StartCallActivity extends AppCompatActivity {
         startCallNextButton = findViewById(R.id.start_call_next_button);
         startCallNextButton.setOnClickListener(l -> goToMeetingInvitePage());
 
-        final String savedDisplayName = sharedPreferences.getString(Constants.ACS_DISPLAY_NAME, "");
+        final String savedDisplayName = appSettings.getUserProfile().getDisplayName();
         if (savedDisplayName.length() > 0) {
             startCallDisplayName.setText(savedDisplayName);
         }
     }
 
     private void goToMeetingInvitePage() {
-
         final String displayName = startCallDisplayName.getText().toString();
+        appSettings.getUserProfile().setDisplayName(displayName);
         if (TextUtils.isEmpty(displayName)) {
             new ErrorInfoBar().displayErrorInfoBar(
                     this.getWindow().getDecorView().findViewById(android.R.id.content),
@@ -80,8 +83,6 @@ public class StartCallActivity extends AppCompatActivity {
         }
 
         final Intent intent = new Intent(this, InvitationActivity.class);
-        editor.putString(Constants.ACS_DISPLAY_NAME, startCallDisplayName.getText().toString());
-        editor.commit();
         startActivity(intent);
     }
 }

@@ -4,7 +4,6 @@
 package com.azure.samples.communication.calling.views.activities;
 
 import static com.azure.samples.communication.calling.contracts.Constants.IS_LOGGED_IN;
-import static com.azure.samples.communication.calling.contracts.Constants.USERNAME;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
@@ -66,7 +65,7 @@ public class IntroViewActivity extends AppCompatActivity {
 
     private void initializeUI() {
 
-        username = sharedPreferences.getString(USERNAME, "");
+        username = appSettings.getUserProfile().getUsername();
 
         startCallButton = findViewById(R.id.start_call_button);
         startCallButton.setOnClickListener(l -> startCall());

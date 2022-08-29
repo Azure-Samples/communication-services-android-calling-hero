@@ -83,8 +83,9 @@ public class AADAuthHandler {
                     public void onResponse(final JSONObject response) {
 
                         try {
-                            final UserProfile userProfile = new UserProfile();
+                            final UserProfile userProfile = appSettings.getUserProfile();
                             userProfile.setDisplayName(response.get(DISPLAY_NAME).toString());
+                            userProfile.setUsername(response.get(DISPLAY_NAME).toString());
                             userProfile.setGivenName(response.get(GIVEN_NAME).toString());
                             userProfile.setId(response.get(ID).toString());
 

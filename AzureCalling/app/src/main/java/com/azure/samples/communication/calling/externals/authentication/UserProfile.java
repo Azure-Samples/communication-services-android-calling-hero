@@ -4,11 +4,20 @@
 package com.azure.samples.communication.calling.externals.authentication;
 
 public class UserProfile {
-    private String displayName;
+    private String username = "";
+    private String displayName = "";
     private String givenName;
     private String surname;
     private String email;
     private String id;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
+    }
 
     public String getDisplayName() {
         return displayName;

@@ -44,7 +44,7 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
 
         teamsDisplayNameEditor = inflatedView.findViewById(R.id.teams_call_display_name);
 
-        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, "");
+        final String savedDisplayName = appSettings.getUserProfile().getDisplayName();
         if (!TextUtils.isEmpty(savedDisplayName)) {
             teamsDisplayNameEditor.setText(savedDisplayName);
         }
@@ -61,7 +61,7 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
         final String displayName = teamsDisplayNameEditor.getText().toString();
         final String teamsLink = teamsMeetingLink.getText().toString().trim();
         teamsMeetingLink.setText(teamsLink);
-
+        appSettings.getUserProfile().setDisplayName(displayName);
         if (TextUtils.isEmpty(teamsLink)) {
             showError(SampleErrorMessages.TEAMS_LINK_REQUIRED);
             return;
@@ -79,7 +79,6 @@ public class TeamsMeetingFragment extends AbstractBaseFragment {
 
         getSharedPreferences()
                 .edit()
-                .putString(Constants.ACS_DISPLAY_NAME, displayName)
                 .putString(Constants.ACS_MEETING_LINK, teamsLink)
                 .apply();
 

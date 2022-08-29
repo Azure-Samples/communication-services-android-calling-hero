@@ -4,8 +4,6 @@
 package com.azure.samples.communication.calling.views.activities;
 
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
-
-import static com.azure.samples.communication.calling.contracts.Constants.ACS_DISPLAY_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.INVITE_ANOTHER_DEVICE;
 
 import androidx.appcompat.app.ActionBar;
@@ -30,6 +28,7 @@ import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
 import com.azure.samples.communication.calling.externals.calling.CallingContext;
+import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.views.components.ErrorInfoBar;
 import com.microsoft.fluentui.widget.Button;
 
@@ -43,6 +42,7 @@ public class InvitationActivity extends AppCompatActivity {
     private CallCompositeRemoteOptions options;
     private SharedPreferences sharedPreferences;
     private ErrorInfoBar errorInfoBar;
+    private AppSettings appSettings;
     private CallCompositeEventHandler<CallCompositeErrorEvent> callCompositeEventHandler =
         new CallCompositeEventHandler<CallCompositeErrorEvent>() {
             @Override
@@ -79,7 +79,7 @@ public class InvitationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
         activity = this;
-
+        appSettings = ((AzureCalling) getApplication()).getAppSettings();
         final ActionBar ab = getSupportActionBar();
         // Disable the Up button
         if (ab != null) {
@@ -107,7 +107,7 @@ public class InvitationActivity extends AppCompatActivity {
 
         options = ((AzureCalling) getApplicationContext())
                 .getCallingContext()
-                .getCallCompositeRemoteOptions(sharedPreferences.getString(ACS_DISPLAY_NAME, ""));
+                .getCallCompositeRemoteOptions(appSettings.getUserProfile().getDisplayName());
     }
 
     private void openShareDialogue() {

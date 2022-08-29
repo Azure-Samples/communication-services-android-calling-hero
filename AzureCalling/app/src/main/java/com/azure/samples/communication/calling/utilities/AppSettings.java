@@ -6,6 +6,7 @@ package com.azure.samples.communication.calling.utilities;
 import android.content.Context;
 
 import com.azure.samples.communication.calling.externals.authentication.AuthenticationToken;
+import com.azure.samples.communication.calling.externals.authentication.UserProfile;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -19,12 +20,14 @@ public final class AppSettings {
     private static Context context;
 
     private AuthenticationToken authenticationToken;
+    private UserProfile userProfile;
 
     private final Properties properties;
 
     public AppSettings(final Context context) {
         this.context = context;
         authenticationToken = new AuthenticationToken();
+        userProfile = new UserProfile();
         try {
             properties = new Properties();
             properties.load(context.getAssets().open(CONFIG_FILE));
@@ -56,5 +59,9 @@ public final class AppSettings {
 
     public AuthenticationToken getAuthenticationToken() {
         return authenticationToken;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 }

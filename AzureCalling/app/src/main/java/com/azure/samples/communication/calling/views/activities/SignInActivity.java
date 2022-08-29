@@ -3,10 +3,8 @@
 
 package com.azure.samples.communication.calling.views.activities;
 
-import static com.azure.samples.communication.calling.contracts.Constants.ACS_DISPLAY_NAME;
-import static com.azure.samples.communication.calling.contracts.Constants.GIVEN_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.IS_LOGGED_IN;
-import static com.azure.samples.communication.calling.contracts.Constants.USERNAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -92,11 +90,8 @@ public class SignInActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void cacheProfile(final UserProfile profile) {
+    private void cacheSignIn() {
         editor.putBoolean(IS_LOGGED_IN, true);
-        editor.putString(USERNAME, profile.getDisplayName());
-        editor.putString(GIVEN_NAME, profile.getDisplayName());
-        editor.putString(ACS_DISPLAY_NAME, profile.getDisplayName());
         editor.apply();
     }
 
@@ -108,13 +103,13 @@ public class SignInActivity extends AppCompatActivity {
                 if (object instanceof Boolean) {
                     authHandler.signIn(this, (profile) -> {
                         if (profile instanceof UserProfile) {
-                            cacheProfile((UserProfile) profile);
+                            cacheSignIn();
                             navigateToIntroView();
                         }
                     });
                 }
                 if (object instanceof UserProfile) {
-                    cacheProfile((UserProfile) object);
+                    cacheSignIn();
                     navigateToIntroView();
                 }
             });

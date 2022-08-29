@@ -42,7 +42,7 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         joinCallButton.setOnClickListener(l -> joinCall());
 
         displayNameEditor = inflatedView.findViewById(R.id.group_call_display_name);
-        final String savedDisplayName = getSharedPreferences().getString(Constants.ACS_DISPLAY_NAME, "");
+        final String savedDisplayName = appSettings.getUserProfile().getDisplayName();
         if (!TextUtils.isEmpty(savedDisplayName)) {
             displayNameEditor.setText(savedDisplayName);
         }
@@ -58,6 +58,7 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         final String displayName = displayNameEditor.getText().toString();
         final String groupCallId = groupMeetingID.getText().toString().trim();
         groupMeetingID.setText(groupCallId);
+        appSettings.getUserProfile().setDisplayName(displayName);
         if (TextUtils.isEmpty(groupCallId)) {
             showError(SampleErrorMessages.GROUP_ID_REQUIRED);
             return;
@@ -73,7 +74,6 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         }
         getSharedPreferences()
                 .edit()
-                .putString(Constants.ACS_DISPLAY_NAME, displayName)
                 .putString(Constants.ACS_GROUPCALL_ID, groupCallId)
                 .apply();
 
