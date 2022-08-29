@@ -17,6 +17,7 @@
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.InvitationActivity"
             android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"
             android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -24,6 +25,7 @@
         </activity>
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.StartCallActivity"
+            android:screenOrientation="portrait"
             android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -31,6 +33,7 @@
         </activity>
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.JoinCallActivity"
+            android:screenOrientation="portrait"
             android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -38,6 +41,7 @@
         </activity>
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.IntroViewActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
@@ -48,6 +52,7 @@
         </activity>
         <activity
             android:name="com.azure.samples.communication.calling.views.activities.SignInActivity"
+            android:screenOrientation="portrait"
             android:exported="false">
         </activity>
         <activity android:name="com.microsoft.identity.client.BrowserTabActivity">
