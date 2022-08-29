@@ -43,7 +43,6 @@ public class AADAuthHandler {
     private final AppSettings appSettings;
     private ISingleAccountPublicClientApplication mSingleAccountApp;
     private String accessToken = null;
-    private String[] mScopes = { "User.Read" };
 
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
@@ -53,7 +52,7 @@ public class AADAuthHandler {
         if (mSingleAccountApp == null) {
             return;
         }
-        mSingleAccountApp.signIn(activity, null, mScopes, new AuthenticationCallback() {
+        mSingleAccountApp.signIn(activity, null, appSettings.getAADScopes(), new AuthenticationCallback() {
 
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
@@ -153,7 +152,7 @@ public class AADAuthHandler {
                     new AcquireTokenSilentParameters(
                         new AcquireTokenSilentParameters
                                 .Builder()
-                                .withScopes(Arrays.asList(mScopes))
+                                .withScopes(Arrays.asList(appSettings.getAADScopes()))
                                 .fromAuthority(AzureCloudInstance.AzurePublic,
                                         appSettings.getTenantId())
                                 .forAccount(account)
@@ -179,7 +178,7 @@ public class AADAuthHandler {
 
     private void acquireToken(final Activity activity, final Consumer<Object> callback) {
 
-        mSingleAccountApp.acquireToken(activity, mScopes, new AuthenticationCallback() {
+        mSingleAccountApp.acquireToken(activity, appSettings.getAADScopes(), new AuthenticationCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
