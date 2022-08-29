@@ -56,7 +56,7 @@ public final class AppSettings {
     }
 
     public String getTenantId() {
-        return properties.getProperty(TENANT_ID);
+        return (properties.getProperty(TENANT_ID) == null) ? "" : properties.getProperty(TENANT_ID);
     }
 
     public Context getContext() {
