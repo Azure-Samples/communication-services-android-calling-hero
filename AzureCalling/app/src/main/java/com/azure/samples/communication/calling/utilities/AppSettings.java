@@ -17,7 +17,7 @@ public final class AppSettings {
     private static final String IS_AAD_AUTH_ENABLED = "isAADAuthEnabled";
     private static final String SCOPES = "aadScopes";
     private static final String GRAPH_URL = "graphURL";
-    private static final String TENANT_ID = "tenantId";
+    private static final String TENANT_ID = "tenant";
     private static Context context;
 
 
