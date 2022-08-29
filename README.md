@@ -95,7 +95,7 @@ With additional configuration, this sample also supports connecting to an **Azur
 
 6. Edit `AzureCalling/app/src/main/assets/appSettings.properties` and set the value for the key `communicationTokenFetchUrl` to be the URL for your secure Authentication Endpoint.
 7. Edit `AzureCalling/app/src/main/assets/appSettings.properties` and set the value for the key `aadScopes` from `Azure Active Directory` `Expose an API` scopes.
-8. Set value for graphURL in AzureCalling/app/assets/appSettings.properties as the Graph API endpoint to fetch user information. 
+8. Set value for `graphURL` in `AzureCalling/app/assets/appSettings.properties` as the Graph API endpoint to fetch user information. 
 9. Edit `AzureCalling/app/src/main/assets/appSettings.properties` and set the value for the key `tenantId` to enable silent login so that the user does not have to be authenticate again and again while restarting the application.
 
 ## Additional Reading
