@@ -4,6 +4,9 @@
 package com.azure.samples.communication.calling.utilities;
 
 import android.content.Context;
+
+import com.azure.samples.communication.calling.externals.authentication.AuthenticationToken;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -15,10 +18,13 @@ public final class AppSettings {
     private static final String GRAPH_URL = "graphURL";
     private static Context context;
 
+    private AuthenticationToken authenticationToken;
+
     private final Properties properties;
 
     public AppSettings(final Context context) {
         this.context = context;
+        authenticationToken = new AuthenticationToken();
         try {
             properties = new Properties();
             properties.load(context.getAssets().open(CONFIG_FILE));
@@ -46,5 +52,9 @@ public final class AppSettings {
 
     public Context getContext() {
         return this.context;
+    }
+
+    public AuthenticationToken getAuthenticationToken() {
+        return authenticationToken;
     }
 }

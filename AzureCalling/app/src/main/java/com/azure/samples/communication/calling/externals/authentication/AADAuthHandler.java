@@ -3,7 +3,6 @@
 
 package com.azure.samples.communication.calling.externals.authentication;
 
-import static com.azure.samples.communication.calling.contracts.Constants.ACS_ACCESS_TOKEN;
 import static com.azure.samples.communication.calling.contracts.Constants.DISPLAY_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.GIVEN_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.ID;
@@ -63,8 +62,7 @@ public class AADAuthHandler {
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
-                editor.putString(ACS_ACCESS_TOKEN, accessToken);
-                editor.apply();
+                appSettings.getAuthenticationToken().setToken(accessToken);
                 callGraphAPI(activity, (object) -> {
                     callback.accept(object);
                 });
@@ -124,7 +122,7 @@ public class AADAuthHandler {
     }
 
     public String getAccessToken() {
-        return sharedPreferences.getString(ACS_ACCESS_TOKEN, "");
+        return appSettings.getAuthenticationToken().getToken();
     }
 
     private void signingOut(final Consumer<Boolean> signoutCallback) {
@@ -157,8 +155,7 @@ public class AADAuthHandler {
             @Override
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
-                editor.putString(ACS_ACCESS_TOKEN, accessToken);
-                editor.apply();
+                appSettings.getAuthenticationToken().setToken(accessToken);
                 callGraphAPI(activity, (object) -> {
                     callback.accept(object);
                 });
