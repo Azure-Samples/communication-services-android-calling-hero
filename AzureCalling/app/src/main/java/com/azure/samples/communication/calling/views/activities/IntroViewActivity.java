@@ -56,13 +56,15 @@ public class IntroViewActivity extends AppCompatActivity {
                 final Intent intent = new Intent(this, SignInActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            } else {
-                final View progressOverlay = findViewById(R.id.overlay_loading);
+            } else if (isLoggedIn && appSettings.getAuthenticationToken().getToken() == null) {
+                final View progressOverlay = findViewById(R.id.intro_overlay_loading);
                 progressOverlay.setVisibility(View.VISIBLE);
-                authHandler.loadAccount(this, (profile) -> {
+                authHandler.loadAccount(this, isLoggedIn, (profile) -> {
                     if (profile instanceof UserProfile) {
                         ((TextView) findViewById(R.id.username_textview))
                                 .setText(((UserProfile) profile).getUsername());
+                        ((AvatarView) findViewById(R.id.avatar_view))
+                                .setName(((UserProfile) profile).getUsername());
                     }
                     progressOverlay.setVisibility(View.GONE);
                 });

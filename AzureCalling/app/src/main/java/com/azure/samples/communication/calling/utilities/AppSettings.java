@@ -17,7 +17,9 @@ public final class AppSettings {
     private static final String IS_AAD_AUTH_ENABLED = "isAADAuthEnabled";
     private static final String SCOPES = "aadScopes";
     private static final String GRAPH_URL = "graphURL";
+    private static final String TENANT_ID = "tenantId";
     private static Context context;
+
 
     private AuthenticationToken authenticationToken;
     private UserProfile userProfile;
@@ -51,6 +53,10 @@ public final class AppSettings {
 
     public String getGraphUrl() {
         return properties.getProperty(GRAPH_URL);
+    }
+
+    public String getTenantId() {
+        return properties.getProperty(TENANT_ID);
     }
 
     public Context getContext() {

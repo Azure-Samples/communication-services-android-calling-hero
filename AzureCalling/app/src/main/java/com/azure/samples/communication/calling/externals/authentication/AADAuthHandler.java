@@ -19,17 +19,21 @@ import com.android.volley.VolleyError;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.utilities.MSGraphRequestWrapper;
+import com.microsoft.identity.client.AcquireTokenSilentParameters;
 import com.microsoft.identity.client.AuthenticationCallback;
+import com.microsoft.identity.client.AzureCloudInstance;
 import com.microsoft.identity.client.IAccount;
 import com.microsoft.identity.client.IAuthenticationResult;
 import com.microsoft.identity.client.IPublicClientApplication;
 import com.microsoft.identity.client.ISingleAccountPublicClientApplication;
 import com.microsoft.identity.client.PublicClientApplication;
+import com.microsoft.identity.client.SilentAuthenticationCallback;
 import com.microsoft.identity.client.exception.MsalException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class AADAuthHandler {
@@ -141,6 +145,38 @@ public class AADAuthHandler {
         }
     }
 
+    private void acquireTokenSilently(final Activity activity,
+                                      final IAccount account,
+                                      final Consumer<Object> callback) {
+
+        mSingleAccountApp.acquireTokenSilentAsync(
+                    new AcquireTokenSilentParameters(
+                        new AcquireTokenSilentParameters
+                                .Builder()
+                                .withScopes(Arrays.asList(mScopes))
+                                .fromAuthority(AzureCloudInstance.AzurePublic,
+                                        appSettings.getTenantId())
+                                .forAccount(account)
+                                .withCallback(new SilentAuthenticationCallback() {
+                                    @Override
+                                    public void onSuccess(final IAuthenticationResult authenticationResult) {
+                                        accessToken = authenticationResult.getAccessToken();
+                                        appSettings.getAuthenticationToken().setToken(accessToken);
+                                        callGraphAPI(activity, (object) -> {
+                                            callback.accept(object);
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final MsalException exception) {
+                                        acquireToken(activity, (object) -> {
+                                            callback.accept(object);
+                                        });
+                                        Log.e(LOG_TAG, exception.getMessage());
+                                    }
+                                }).self()));
+    }
+
     private void acquireToken(final Activity activity, final Consumer<Object> callback) {
 
         mSingleAccountApp.acquireToken(activity, mScopes, new AuthenticationCallback() {
@@ -149,9 +185,7 @@ public class AADAuthHandler {
             public void onSuccess(final IAuthenticationResult authenticationResult) {
                 accessToken = authenticationResult.getAccessToken();
                 appSettings.getAuthenticationToken().setToken(accessToken);
-                callGraphAPI(activity, (object) -> {
-                    callback.accept(object);
-                });
+                callGraphAPI(activity, callback);
             }
 
             @Override
@@ -166,7 +200,9 @@ public class AADAuthHandler {
         });
     }
 
-    private void getCurrentAccount(final Activity activity, final Consumer<Object> aadCallback) {
+    private void getCurrentAccount(final Activity activity,
+                                   final boolean isLoggedIn,
+                                   final Consumer<Object> aadCallback) {
         if (mSingleAccountApp == null) {
             return;
         }
@@ -178,9 +214,15 @@ public class AADAuthHandler {
                 if (activeAccount == null) {
                     aadCallback.accept(new Boolean(false));
                 } else {
-                    acquireToken(activity, (object) -> {
-                        aadCallback.accept(object);
-                    });
+                    if (isLoggedIn) {
+                        acquireTokenSilently(activity, activeAccount, (object) -> {
+                            aadCallback.accept(object);
+                        });
+                    } else {
+                        acquireToken(activity, (object) -> {
+                            aadCallback.accept(object);
+                        });
+                    }
                 }
             }
 
@@ -204,14 +246,14 @@ public class AADAuthHandler {
 
 
     //When app comes to the foreground, load existing account to determine if user is signed in
-    public void loadAccount(final Activity activity, final Consumer<Object> aadCallback) {
+    public void loadAccount(final Activity activity, final boolean isLoggedIn, final Consumer<Object> aadCallback) {
         PublicClientApplication.createSingleAccountPublicClientApplication(activity.getApplicationContext(),
                 R.raw.auth_config_single_account,
                 new IPublicClientApplication.ISingleAccountApplicationCreatedListener() {
                     @Override
                     public void onCreated(final ISingleAccountPublicClientApplication application) {
                         mSingleAccountApp = application;
-                        getCurrentAccount(activity, aadCallback);
+                        getCurrentAccount(activity, isLoggedIn, aadCallback);
                     }
 
                     @Override

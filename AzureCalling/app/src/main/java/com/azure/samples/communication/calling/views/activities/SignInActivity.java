@@ -99,7 +99,7 @@ public class SignInActivity extends AppCompatActivity {
         if (appSettings.isAADAuthEnabled()) {
             toggleProgress(true);
 
-            authHandler.loadAccount(this, (object) -> {
+            authHandler.loadAccount(this, false, (object) -> {
                 if (object instanceof Boolean) {
                     authHandler.signIn(this, (profile) -> {
                         if (profile instanceof UserProfile) {
