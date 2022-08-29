@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
@@ -56,13 +57,14 @@ public class IntroViewActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             } else {
-                authHandler.callGraphAPI(this, (profile) -> {
+                final View progressOverlay = findViewById(R.id.overlay_loading);
+                progressOverlay.setVisibility(View.VISIBLE);
+                authHandler.loadAccount(this, (profile) -> {
                     if (profile instanceof UserProfile) {
-                        appSettings.getUserProfile()
-                                .setUsername(((UserProfile) profile).getUsername());
                         ((TextView) findViewById(R.id.username_textview))
                                 .setText(((UserProfile) profile).getUsername());
                     }
+                    progressOverlay.setVisibility(View.GONE);
                 });
             }
         }
