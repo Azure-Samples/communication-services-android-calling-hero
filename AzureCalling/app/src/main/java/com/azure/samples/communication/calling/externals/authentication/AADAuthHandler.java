@@ -6,6 +6,7 @@ package com.azure.samples.communication.calling.externals.authentication;
 import static com.azure.samples.communication.calling.contracts.Constants.DISPLAY_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.GIVEN_NAME;
 import static com.azure.samples.communication.calling.contracts.Constants.ID;
+import static com.azure.samples.communication.calling.contracts.SampleErrorMessages.USER_LOGIN_CANCEL;
 
 import android.app.Activity;
 import android.content.Context;
@@ -75,7 +76,7 @@ public class AADAuthHandler {
 
             @Override
             public void onCancel() {
-                Log.d(LOG_TAG, "User cancelled login.");
+                Log.d(LOG_TAG, USER_LOGIN_CANCEL);
             }
         });
     }

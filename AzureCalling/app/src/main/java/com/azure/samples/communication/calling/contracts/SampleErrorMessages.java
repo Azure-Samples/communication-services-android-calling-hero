@@ -12,4 +12,5 @@ public class SampleErrorMessages {
     public static final String CALL_COMPOSITE_JOIN_CALL_FAILED = "Could not join call";
     public static final String CALL_COMPOSITE_END_CALL_FAILED = "Could not end call";
     public static final String CALL_COMPOSITE_TOKEN_EXPIRED = "ACS Token has expired";
+    public static final String USER_LOGIN_CANCEL = "User cancelled login";
 }
