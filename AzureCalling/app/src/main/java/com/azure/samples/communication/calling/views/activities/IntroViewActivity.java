@@ -15,6 +15,7 @@ import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.externals.authentication.AADAuthHandler;
+import com.azure.samples.communication.calling.externals.authentication.UserProfile;
 import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.microsoft.fluentui.persona.AvatarView;
 import com.microsoft.fluentui.widget.Button;
@@ -44,16 +45,34 @@ public class IntroViewActivity extends AppCompatActivity {
         authHandler = ((AzureCalling) getApplication()).getAadAuthHandler();
         appSettings = ((AzureCalling) getApplication()).getAppSettings();
 
+
         sharedPreferences = this.getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
         final boolean isLoggedIn = sharedPreferences.getBoolean(IS_LOGGED_IN, false);
 
-        if (appSettings.isAADAuthEnabled() && !isLoggedIn) {
-            sharedPreferences.edit().clear().apply();
-            final Intent intent = new Intent(this, SignInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        if (appSettings.isAADAuthEnabled()) {
+            if (!isLoggedIn) {
+                sharedPreferences.edit().clear().apply();
+                final Intent intent = new Intent(this, SignInActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else {
+                authHandler.callGraphAPI(this, (profile) -> {
+                    if (profile instanceof UserProfile) {
+                        appSettings.getUserProfile()
+                                .setUsername(((UserProfile) profile).getUsername());
+                        ((TextView) findViewById(R.id.username_textview))
+                                .setText(((UserProfile) profile).getUsername());
+                    }
+                });
+            }
         }
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initializeUI();
     }
 

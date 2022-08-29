@@ -75,6 +75,9 @@ public class StartCallActivity extends AppCompatActivity {
     private void goToMeetingInvitePage() {
         final String displayName = startCallDisplayName.getText().toString();
         appSettings.getUserProfile().setDisplayName(displayName);
+        if (appSettings.getUserProfile().getUsername().isEmpty()) {
+            appSettings.getUserProfile().setUsername(displayName);
+        }
         if (TextUtils.isEmpty(displayName)) {
             new ErrorInfoBar().displayErrorInfoBar(
                     this.getWindow().getDecorView().findViewById(android.R.id.content),

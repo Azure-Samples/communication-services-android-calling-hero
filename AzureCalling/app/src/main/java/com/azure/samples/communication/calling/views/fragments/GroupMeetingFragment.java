@@ -17,6 +17,7 @@ import com.azure.samples.communication.calling.R;
 import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.contracts.SampleErrorMessages;
 import com.azure.samples.communication.calling.externals.calling.CallingContext;
+import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.microsoft.fluentui.widget.Button;
 
 import java.util.UUID;
@@ -28,15 +29,15 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
 
     private EditText groupMeetingID;
     private EditText displayNameEditor;
+    private AppSettings appSettings;
 
     public GroupMeetingFragment() {
-
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-
+        appSettings = ((AzureCalling) requireActivity().getApplicationContext()).getAppSettings();
         final View inflatedView = inflater.inflate(R.layout.fragment_group_meeting, container, false);
         final Button joinCallButton = inflatedView.findViewById(R.id.group_call_join_next);
         joinCallButton.setOnClickListener(l -> joinCall());
@@ -59,6 +60,7 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
         final String groupCallId = groupMeetingID.getText().toString().trim();
         groupMeetingID.setText(groupCallId);
         appSettings.getUserProfile().setDisplayName(displayName);
+
         if (TextUtils.isEmpty(groupCallId)) {
             showError(SampleErrorMessages.GROUP_ID_REQUIRED);
             return;
@@ -76,6 +78,10 @@ public class GroupMeetingFragment extends AbstractBaseFragment {
                 .edit()
                 .putString(Constants.ACS_GROUPCALL_ID, groupCallId)
                 .apply();
+
+        if (appSettings.getUserProfile().getUsername().isEmpty()) {
+            appSettings.getUserProfile().setUsername(displayName);
+        }
 
         final CallComposite composite = new CallCompositeBuilder()
                 .build();

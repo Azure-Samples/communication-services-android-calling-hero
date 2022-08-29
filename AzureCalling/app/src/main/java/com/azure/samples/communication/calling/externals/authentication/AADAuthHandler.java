@@ -77,7 +77,7 @@ public class AADAuthHandler {
         MSGraphRequestWrapper.callGraphAPIUsingVolley(
                 activity,
                 appSettings.getGraphUrl() + "/me",
-                accessToken,
+                appSettings.getAuthenticationToken().getToken(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
