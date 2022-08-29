@@ -9,8 +9,6 @@ import static com.azure.samples.communication.calling.contracts.Constants.ID;
 import static com.azure.samples.communication.calling.contracts.SampleErrorMessages.USER_LOGIN_CANCEL;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -19,7 +17,6 @@ import androidx.annotation.RequiresApi;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.azure.samples.communication.calling.R;
-import com.azure.samples.communication.calling.contracts.Constants;
 import com.azure.samples.communication.calling.utilities.AppSettings;
 import com.azure.samples.communication.calling.utilities.MSGraphRequestWrapper;
 import com.microsoft.identity.client.AuthenticationCallback;
@@ -44,14 +41,8 @@ public class AADAuthHandler {
     private String accessToken = null;
     private String[] mScopes = { "User.Read" };
 
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-
     public AADAuthHandler(final AppSettings appSettings) {
         this.appSettings = appSettings;
-        sharedPreferences = appSettings.getContext()
-                .getSharedPreferences(Constants.ACS_SHARED_PREF, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
     }
 
     public void signIn(final Activity activity, final Consumer<Object> callback) {
