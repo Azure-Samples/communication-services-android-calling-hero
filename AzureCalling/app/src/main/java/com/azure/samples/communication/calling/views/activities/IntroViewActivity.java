@@ -65,6 +65,7 @@ public class IntroViewActivity extends AppCompatActivity {
                                 .setText(((UserProfile) profile).getUsername());
                         ((AvatarView) findViewById(R.id.avatar_view))
                                 .setName(((UserProfile) profile).getUsername());
+                        ((AvatarView) findViewById(R.id.avatar_view)).invalidate();
                     }
                     progressOverlay.setVisibility(View.GONE);
                 });
