@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+   Copyright (c) Microsoft Corporation. All rights reserved.
+   Licensed under the MIT License.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/invitation_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.azure.samples.communication.calling.views.activities.InvitationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center|bottom">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="26dp"
+            android:layout_height="51dp"
+            app:srcCompat="@drawable/ic_shape" />
+
+        <TextView
+            android:id="@+id/tv_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Invite Another Device?"
+            android:textColor="@color/text_primary"
+            android:textSize="26dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="299dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="4dp"
+            android:text="Use the group call ID to join this call on another device."
+            android:textColor="@color/text_primary"
+            android:textSize="17dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:gravity="center|bottom">
+        <com.microsoft.fluentui.widget.Button
+            android:id="@+id/share_button"
+            android:layout_width="174dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bordered_button_background"
+            android:text="Share group call ID"
+            android:textColor="@color/fluentui_communication_blue" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center|bottom">
+
+        <com.microsoft.fluentui.widget.Button
+            style="@style/FluentButton"
+            android:id="@+id/start_call_continue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/fluentui_white"
+            android:background="@drawable/button_background"
+            android:text="Continue" />
+    </LinearLayout>
+
+</LinearLayout>

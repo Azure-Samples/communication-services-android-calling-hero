@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="window_background">@android:color/white</color>
+    <color name="colorPrimary">@android:color/white</color>
+    <color name="colorPrimaryDark">@color/grey400</color>
+    <color name="colorAccent">#0078D4</color>
+    <color name="colorAccent_light">#C7E0F4</color>
+    <color name="text_primary">@color/grey950</color>
+    <color name="text_secondary">@color/grey700</color>
+    <color name="textbox_primary">@color/grey500</color>
+    <color name="textbox_secondary">@color/grey300</color>
+    <color name="recording_transcription_notification_bar">@android:color/white</color>
+    <color name="text_color_link_floating_bar">@color/grey900</color>
+    <color name="snackbar_color">#F9D9D9</color>
+    <color name="snackbar_text_color">#A52121</color>
+
+    <color name="fluent_dismiss_icon_tint">@android:color/black</color>
+    <color name="audio_device_menu">@android:color/white</color>
+    <color name="menu_separator_line">#E1E1E1</color>
+
+    <color name="fluent_default_icon_tint">@android:color/white</color>
+    <color name="fluent_default_icon_reverse_tint">@android:color/black</color>
+
+    <color name="grey950">#FF141414</color>
+    <color name="grey900">#212121</color>
+    <color name="grey700">#FF303030</color>
+    <color name="grey500">#FF6E6E6E</color>
+    <color name="grey400">#FF919191</color>
+    <color name="grey300">#FFACACAC</color>
+    <color name="grey200">#D9303030</color>
+    <color name="grey50">#FFF1F1F1</color>
+    <color name="warnings">#605E5C</color>
+
+    <color name="defaultBlack">@android:color/black</color>
+    <color name="defaultWhite">@android:color/white</color>
+
+    <color name="selectedTab">#0063B1</color>
+    <color name="unselectedTab">#F1F1F1</color>
+</resources>

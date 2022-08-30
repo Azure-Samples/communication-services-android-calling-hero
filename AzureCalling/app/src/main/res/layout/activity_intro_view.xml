@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+   Copyright (c) Microsoft Corporation. All rights reserved.
+   Licensed under the MIT License.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.azure.samples.communication.calling.views.activities.IntroViewActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/fragment_background"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center|bottom">
+
+            <include
+                layout="@layout/landing_layout" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center|bottom">
+
+            <com.microsoft.fluentui.widget.Button
+                style="@style/Widget.FluentUI.Button"
+                android:id="@+id/start_call_button"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Start a call"
+                android:background="@drawable/button_background"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <com.microsoft.fluentui.widget.Button
+                style="@style/Widget.FluentUI.Button"
+                android:id="@+id/join_call_button"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bordered_button_background"
+                android:text="Join a call"
+                android:textColor="#0078D4"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="24dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/intro_overlay_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:id="@+id/intro_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateOnly="true"
+            android:isScrollContainer="true"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:soundEffectsEnabled="false"
+            android:background="@drawable/rounded_corners"
+            android:padding="20dp"
+            android:indeterminateTint="@color/grey400"
+            />
+    </FrameLayout>
+
+</LinearLayout>

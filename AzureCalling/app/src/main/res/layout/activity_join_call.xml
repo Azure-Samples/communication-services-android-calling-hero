@@ -1,105 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--
+   Copyright (c) Microsoft Corporation. All rights reserved.
+   Licensed under the MIT License.
+  -->
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     android:orientation="vertical"
-    tools:context=".activities.JoinCallActivity">
+    tools:context="com.azure.samples.communication.calling.views.activities.JoinCallActivity">
 
-    <LinearLayout
-        android:id="@+id/call_options_layout"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical">
+        android:background="#FFFFFF">
 
-        <RadioButton
-            android:id="@+id/group_call_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:button="@drawable/toggle_selector_radio_button"
-            android:checked="true"
-            android:fontFamily="sans-serif-medium"
-            android:paddingLeft="10dp"
-            android:textColor="@color/textbox_secondary"
-            android:text="@string/join_enter" />
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:background="@color/fragment_background"
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/group_call_text"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/meeting_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="Meeting ID"
-            android:ellipsize="end"
-            android:ems="10"
-            android:hint="@string/join_join_hint"
-            android:inputType="textNoSuggestions"
-            android:singleLine="true"
-            android:textColorHint="@color/textbox_secondary" />
+            android:layout_marginRight="16dp"
+            android:background="@drawable/tabview_background"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabMode="fixed"
+            app:tabIndicatorHeight="0dp"
+            app:tabTextColor="@color/textbox_primary"
+            app:tabSelectedTextColor="@color/tab_selected_text_color">
 
-        <RelativeLayout
-            android:id="@+id/teams_meeting"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/teams_meeting_radio_button"
-                android:layout_width="wrap_content"
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/group_meeting_tab"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:button="@drawable/toggle_selector_radio_button"
-                android:checked="false"
-                android:fontFamily="sans-serif-medium"
-                android:paddingLeft="10dp"
-                android:textColor="@color/textbox_secondary"
-                android:text="@string/join_teams_enter" />
+                android:text="Group Meeting"/>
 
-        </RelativeLayout>
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/teams_meeting_tab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teams Meeting"/>
 
-        <EditText
-            android:id="@+id/teams_meeting_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="Teams Meeting ID"
-            android:ellipsize="end"
-            android:ems="10"
-            android:hint="@string/join_teams_meeting_hint"
-            android:inputType="textNoSuggestions"
-            android:singleLine="true"
-            android:textColorHint="@color/textbox_secondary"
-            android:visibility="gone" />
-    </LinearLayout>
+        </com.google.android.material.tabs.TabLayout>
+    </androidx.appcompat.widget.Toolbar>
 
-    <RelativeLayout
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/calling_fragment_container_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/call_options_layout">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/join_holder"
-        android:layout_width="match_parent"
-        android:layout_height="48dp">
-
-        <Button
-            android:id="@+id/join_button"
-            style="@style/FluentButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="false"
-            android:enabled="false"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/join_start"/>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </RelativeLayout>
-</RelativeLayout>
+        android:layout_height="match_parent" />
+</androidx.appcompat.widget.LinearLayoutCompat>

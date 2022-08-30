@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) Microsoft Corporation.
-  ~ Licensed under the MIT license.
-  -->
-
 <resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
     <color name="window_background">@android:color/white</color>
     <color name="colorPrimary">@android:color/white</color>
-    <color name="colorPrimaryDark">@color/grey400</color>
+    <color name="colorPrimaryDark">#F1F1F1</color>
     <color name="colorAccent">#0078D4</color>
     <color name="colorAccent_light">#C7E0F4</color>
-    <color name="text_primary">@color/grey950</color>
+    <color name="text_primary">#212121</color>
     <color name="text_secondary">@color/grey700</color>
     <color name="textbox_primary">@color/grey500</color>
     <color name="textbox_secondary">@color/grey300</color>
     <color name="recording_transcription_notification_bar">@android:color/white</color>
     <color name="text_color_link_floating_bar">@color/grey900</color>
+    <color name="snackbar_color">#F9D9D9</color>
+    <color name="snackbar_text_color">#A52121</color>
+    <color name="tab_selected_text_color">#FFFFFF</color>
+    <color name="fragment_background">#F8F8F8</color>
 
     <color name="fluent_dismiss_icon_tint">@android:color/black</color>
     <color name="audio_device_menu">@android:color/white</color>
@@ -36,4 +43,7 @@
 
     <color name="defaultBlack">@android:color/black</color>
     <color name="defaultWhite">@android:color/white</color>
+
+    <color name="selectedTab">#0063B1</color>
+    <color name="unselectedTab">#F1F1F1</color>
 </resources>
