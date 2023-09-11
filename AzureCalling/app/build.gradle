@@ -60,11 +60,11 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.azure.android:azure-communication-ui-calling:1.4.0'
-    implementation 'com.microsoft.identity.client:msal:+'
-    implementation 'com.microsoft.fluentui:FluentUIAndroid:+'
+    implementation 'com.microsoft.identity.client:msal:4.7.0'
+    implementation 'com.microsoft.fluentui:FluentUIAndroid:0.1.35'
     implementation 'com.android.volley:volley:1.2.1'
 }
