@@ -28,6 +28,10 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
  <img src="./docs/images/landing-page-android.png" height="680">
  <img src="./docs/images/intro-page-android.png" height="680">
 
+## ❤️ Feedback
+
+We appreciate your feedback and energy helping us improve our services. [If you've tried the service, please give us feedback through this survey](https://microsoft.qualtrics.com/jfe/form/SV_9WTOR2ItSo0oFee). 
+
 ## Prerequisites
 
 - An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
