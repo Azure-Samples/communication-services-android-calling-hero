@@ -22,6 +22,7 @@ import com.azure.android.communication.ui.calling.CallCompositeBuilder;
 import com.azure.android.communication.ui.calling.CallCompositeEventHandler;
 import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
 import com.azure.android.communication.ui.calling.models.CallCompositeErrorEvent;
+import com.azure.android.communication.ui.calling.models.CallCompositeMultitaskingOptions;
 import com.azure.android.communication.ui.calling.models.CallCompositeRemoteOptions;
 import com.azure.samples.communication.calling.AzureCalling;
 import com.azure.samples.communication.calling.R;
@@ -122,7 +123,9 @@ public class InvitationActivity extends AppCompatActivity {
     }
 
     private void makeCall() {
-        final CallComposite composite = new CallCompositeBuilder().build();
+        final CallComposite composite = new CallCompositeBuilder()
+                .multitasking(new CallCompositeMultitaskingOptions(true, true))
+                .build();
         composite.addOnErrorEventHandler(callCompositeEventHandler);
         composite.launch(this, options);
     }
