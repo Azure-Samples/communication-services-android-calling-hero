@@ -1,0 +1,23 @@
+
+pool:
+  vmImage: 'macos-latest'
+
+steps:
+
+# By default, JAVA_HOME points to java1.8, but we need java11 for the current Android Gradle plugin.
+# macos-12 image comes iwth java11 preinstalled, so use that instead.
+- task: JavaToolInstaller@0
+  displayName: 'Configure Java 11'
+  inputs:
+    versionSpec: '11'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+- task: Gradle@2
+  displayName: 'build (compile, lint, test)'
+  inputs:
+    workingDirectory: 'AzureCalling'
+    gradleWrapperFile: 'AzureCalling/gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    tasks: 'build --stacktrace'
