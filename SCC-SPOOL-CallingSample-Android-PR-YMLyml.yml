@@ -16,7 +16,8 @@ steps:
 - task: Gradle@2
   displayName: 'build (compile, lint, test)'
   inputs:
-    gradleWrapperFile: '/gradlew'
+    workingDirectory: 'AzureCalling'
+    gradleWrapperFile: 'AzureCalling/gradlew'
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
     tasks: 'build --stacktrace'
